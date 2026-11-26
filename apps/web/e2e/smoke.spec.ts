@@ -1,4 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { seedSignedInSession } from './support'
+
+test.beforeEach(async ({ page }) => {
+  await seedSignedInSession(page)
+})
 
 test('home page renders the dashboard title', async ({ page }) => {
   await page.goto('/')

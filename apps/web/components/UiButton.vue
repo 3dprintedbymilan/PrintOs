@@ -1,20 +1,26 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
   type?: 'button' | 'submit'
   loading?: boolean
   disabled?: boolean
   block?: boolean
 }>(), { variant: 'primary', type: 'button' })
+
+function blockWhileLoading(event: MouseEvent) {
+  if (props.loading) event.preventDefault()
+}
 </script>
 
 <template>
   <button
     class="btn"
-    :class="[variant, { block }]"
+    :class="[variant, { block, loading }]"
     :type="type"
-    :disabled="disabled || loading"
+    :disabled="disabled"
+    :aria-disabled="loading || undefined"
     :aria-busy="loading || undefined"
+    @click="blockWhileLoading"
   >
     <span
       v-if="loading"
@@ -38,10 +44,14 @@ withDefaults(defineProps<{
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition: filter 0.15s, background 0.15s;
 }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn:not(:disabled):hover { filter: brightness(1.08); }
+.btn.loading { opacity: 0.75; cursor: progress; }
+@media (hover: hover) {
+  .btn:not(:disabled):hover { filter: brightness(1.08); }
+}
 .block { width: 100%; }
 .primary { background: var(--accent); color: var(--accent-contrast); }
 .secondary { background: var(--surface-2); color: var(--text); border-color: var(--border); }
