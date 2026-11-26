@@ -9,6 +9,16 @@
 5. CI must be green. Review the diff and leave review comments. Fix what is found.
 6. Squash-merge and delete the branch.
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every pull request and on pushes to `dev`:
+
+- Web: lint, typecheck, unit tests, build
+- API: restore, build (warnings are errors), xUnit tests
+- Docker images for api and web build
+
+Recommended branch protection for `dev` (GitHub, Settings, Branches): require a pull request, require the status checks `Web (lint, typecheck, test, build)`, `API (build, test)` and `Docker images build` to pass, and block force pushes.
+
 ## Rules
 
 - One issue per pull request; keep PRs small and focused.
