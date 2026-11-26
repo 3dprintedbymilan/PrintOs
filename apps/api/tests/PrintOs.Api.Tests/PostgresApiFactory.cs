@@ -23,7 +23,8 @@ public sealed class PostgresApiFactory : WebApplicationFactory<Program>, IAsyncL
             configuration.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:Default"] = postgresContainer.GetConnectionString(),
-                ["Database:MigrateOnStartup"] = "true"
+                ["Database:MigrateOnStartup"] = "true",
+                ["Storage:Provider"] = "Memory"
             }));
     }
 }
