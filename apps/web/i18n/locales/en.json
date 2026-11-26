@@ -31,7 +31,9 @@
     "licenses": "Licenses",
     "marketStock": "Market Stock",
     "settings": "Settings",
-    "settingsSubtitle": "Business name, rates and language"
+    "settingsSubtitle": "Business name, rates and language",
+    "printers": "Printers",
+    "printersSubtitle": "Your machines and their running costs"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -113,6 +115,44 @@
       "range": "{field} is too high.",
       "save": "Could not save your settings. Try again.",
       "network": "Can't reach the server. Check your connection and try again."
+    }
+  },
+  "printers": {
+    "title": "Printers",
+    "formTitle": "Printer",
+    "back": "Back to printers",
+    "addTitle": "Add a printer",
+    "editTitle": "Edit printer",
+    "add": "Add printer",
+    "save": "Save printer",
+    "archive": "Archive printer",
+    "restore": "Restore printer",
+    "archived": "Archived",
+    "showArchived": "Show archived printers",
+    "empty": "No printers yet. Add your first one.",
+    "perHour": "{amount}/h depreciation",
+    "depreciation": "Depreciation: {amount} per printing hour",
+    "fields": {
+      "name": "Name",
+      "model": "Model",
+      "volumeX": "Width (mm)",
+      "volumeY": "Depth (mm)",
+      "volumeZ": "Height (mm)",
+      "nozzle": "Nozzle diameter (mm)",
+      "power": "Power draw (watts)",
+      "cost": "Purchase cost",
+      "lifetime": "Expected lifetime (hours)"
+    },
+    "hints": {
+      "name": "A name you recognise, for example \"A1 desk\".",
+      "power": "Average draw while printing, not the maximum.",
+      "lifetime": "Printing hours until you expect to replace it."
+    },
+    "errors": {
+      "required": "Enter {field}.",
+      "number": "{field} must be a whole number or decimal, for example 256.",
+      "range": "{field} is outside the allowed range.",
+      "save": "Could not save. Check your connection and try again."
     }
   }
 }
