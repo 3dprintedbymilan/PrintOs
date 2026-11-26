@@ -11,5 +11,6 @@ public sealed class ProductionModule : IModule
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPrinterEndpoints();
+        endpoints.MapPrintJobEndpoints();
     }
 }

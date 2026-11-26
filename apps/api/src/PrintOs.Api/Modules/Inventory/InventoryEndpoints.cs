@@ -232,8 +232,7 @@ public static partial class InventoryEndpoints
             return TypedResults.NotFound();
         }
 
-        var balance = spool.RemainingWeightGrams + request.DeltaGrams;
-        if (balance < 0)
+        if (!StockLedger.TryApply(dbContext, spool, MovementKind.Adjustment, request.DeltaGrams, reason))
         {
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
             {
@@ -241,15 +240,6 @@ public static partial class InventoryEndpoints
             });
         }
 
-        spool.RemainingWeightGrams = balance;
-        dbContext.Set<MaterialMovement>().Add(new MaterialMovement
-        {
-            SpoolId = spool.Id,
-            Kind = MovementKind.Adjustment,
-            DeltaGrams = request.DeltaGrams,
-            BalanceAfterGrams = balance,
-            Reason = reason,
-        });
         await dbContext.SaveChangesAsync();
 
         return TypedResults.Ok(await LoadSpoolAsync(dbContext, id));

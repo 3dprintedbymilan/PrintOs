@@ -55,6 +55,7 @@ public sealed class MaterialMovementConfiguration : IEntityTypeConfiguration<Mat
         builder.Property(movement => movement.Kind).HasConversion<string>().HasMaxLength(20);
         builder.Property(movement => movement.Reason).HasMaxLength(300).IsRequired();
         builder.HasIndex(movement => new { movement.SpoolId, movement.CreatedAt });
+        builder.HasIndex(movement => movement.PrintJobId);
         builder.HasOne<FilamentSpool>().WithMany().HasForeignKey(movement => movement.SpoolId).OnDelete(DeleteBehavior.Cascade);
         builder.HasOne<Workspace>().WithMany().HasForeignKey(movement => movement.WorkspaceId).OnDelete(DeleteBehavior.Cascade);
     }
