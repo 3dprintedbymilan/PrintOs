@@ -1,0 +1,85 @@
+name: Deploy to Azure
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - "apps/**"
+      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  RESOURCE_GROUP: rg-printos-prod
+  REGISTRY: crprintosprod
+  API_APP: ca-printos-api
+  WEB_APP: ca-printos-web
+
+jobs:
+  deploy:
+    name: Build, push and deploy
+    runs-on: ubuntu-latest
+    environment: production
+    if: ${{ vars.AZURE_CLIENT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Log in to the container registry
+        run: az acr login --name "$REGISTRY"
+
+      - name: Build and push the API image
+        run: |
+          IMAGE="$REGISTRY.azurecr.io/printos-api:${GITHUB_SHA}"
+          docker build -t "$IMAGE" apps/api
+          docker push "$IMAGE"
+
+      - name: Build and push the web image
+        run: |
+          IMAGE="$REGISTRY.azurecr.io/printos-web:${GITHUB_SHA}"
+          docker build -t "$IMAGE" apps/web
+          docker push "$IMAGE"
+
+      - name: Let both apps pull from the registry (managed identity)
+        run: |
+          for APP in "$API_APP" "$WEB_APP"; do
+            az containerapp identity assign -g "$RESOURCE_GROUP" -n "$APP" --system-assigned
+            az containerapp registry set -g "$RESOURCE_GROUP" -n "$APP" \
+              --server "$REGISTRY.azurecr.io" --identity system
+          done
+
+      - name: Deploy the API
+        run: |
+          az containerapp ingress update -g "$RESOURCE_GROUP" -n "$API_APP" --target-port 8080
+          az containerapp update -g "$RESOURCE_GROUP" -n "$API_APP" \
+            --image "$REGISTRY.azurecr.io/printos-api:${GITHUB_SHA}"
+
+      - name: Deploy the web app
+        run: |
+          API_URL="https://$(az containerapp show -g "$RESOURCE_GROUP" -n "$API_APP" --query properties.configuration.ingress.fqdn -o tsv)"
+          az containerapp ingress update -g "$RESOURCE_GROUP" -n "$WEB_APP" --target-port 3000
+          az containerapp update -g "$RESOURCE_GROUP" -n "$WEB_APP" \
+            --image "$REGISTRY.azurecr.io/printos-web:${GITHUB_SHA}" \
+            --set-env-vars "NUXT_PUBLIC_API_BASE=$API_URL"
+
+      - name: Smoke check
+        run: |
+          API_URL="https://$(az containerapp show -g "$RESOURCE_GROUP" -n "$API_APP" --query properties.configuration.ingress.fqdn -o tsv)"
+          for attempt in $(seq 1 12); do
+            if curl -fsS "$API_URL/health/ready"; then echo; exit 0; fi
+            echo "waiting for the API (attempt $attempt)"; sleep 10
+          done
+          echo "API did not become ready"; exit 1
