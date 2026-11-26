@@ -3,6 +3,34 @@
     "name": "PrintOS",
     "tagline": "Beheer je 3D-printbedrijf, van bestand tot winst."
   },
+  "nav": {
+    "label": "Hoofdnavigatie",
+    "home": "Home",
+    "prints": "Prints",
+    "inventory": "Voorraad",
+    "business": "Bedrijf"
+  },
+  "home": {
+    "title": "Productieoverzicht",
+    "subtitle": "Bedrijfsprestaties in real time",
+    "placeholder": "Hier verschijnt je dashboard."
+  },
+  "prints": {
+    "title": "Prints",
+    "printing": "Printen",
+    "models": "Modellen"
+  },
+  "inventory": {
+    "title": "Voorraad"
+  },
+  "business": {
+    "title": "Bedrijf en operaties",
+    "orders": "Bestellingen",
+    "calculator": "Kostencalculator",
+    "margins": "Winstmarges",
+    "licenses": "Licenties",
+    "marketStock": "Marktvoorraad"
+  },
   "common": {
     "close": "Sluiten"
   },
