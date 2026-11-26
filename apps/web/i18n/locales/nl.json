@@ -217,5 +217,29 @@
       "range": "{field} valt buiten het toegestane bereik.",
       "save": "Opslaan lukt niet. Controleer je verbinding en probeer opnieuw."
     }
+  },
+  "alerts": {
+    "title": "Voorraadmeldingen",
+    "none": "Alle materialen zitten boven hun grens.",
+    "detail": "{total} g over, grens {threshold} g",
+    "severity": {
+      "LowStock": "Lage voorraad",
+      "ReorderSoon": "Binnenkort bijbestellen"
+    },
+    "materialsTitle": "Voorraadgrenzen",
+    "materialsSubtitle": "Grenzen voor lage voorraad en bijbestellen per materiaal",
+    "intro": "Stel in bij hoeveel gram een materiaal als laag telt of moet worden bijbesteld. Laat een veld leeg om die melding uit te zetten.",
+    "noMaterials": "Voeg eerst een spoel toe. Het materiaal verschijnt dan hier.",
+    "lowStock": "Grens lage voorraad (gram)",
+    "lowStockHint": "Eronder staat het materiaal als lage voorraad.",
+    "reorder": "Grens bijbestellen (gram)",
+    "reorderHint": "Eronder staat het materiaal als binnenkort bijbestellen. Houd dit minstens gelijk aan de grens voor lage voorraad.",
+    "save": "Grenzen opslaan",
+    "saved": "Grenzen opgeslagen.",
+    "errors": {
+      "number": "Vul een heel aantal gram in, of laat leeg.",
+      "order": "De bijbestelgrens moet minstens gelijk zijn aan de grens voor lage voorraad.",
+      "save": "Opslaan lukt niet. Controleer je verbinding en probeer opnieuw."
+    }
   }
 }

@@ -6,7 +6,11 @@ public sealed record SupplierResponse(Guid Id, string Name, string? Website);
 
 public sealed record MaterialRequest(string Name, string Type);
 
-public sealed record MaterialResponse(Guid Id, string Name, string Type);
+public sealed record MaterialResponse(Guid Id, string Name, string Type, int? LowStockGrams, int? ReorderGrams);
+
+public sealed record MaterialThresholdsRequest(int? LowStockGrams, int? ReorderGrams);
+
+public sealed record StockAlertResponse(Guid MaterialId, string MaterialName, string Severity, int TotalGrams, int ThresholdGrams);
 
 public sealed record SpoolRequest(
     Guid MaterialId,

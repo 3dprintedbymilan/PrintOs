@@ -22,6 +22,10 @@ public sealed class Material : IWorkspaceScoped
     public string Name { get; set; } = string.Empty;
 
     public string Type { get; set; } = string.Empty;
+
+    public int? LowStockGrams { get; set; }
+
+    public int? ReorderGrams { get; set; }
 }
 
 public sealed class FilamentSpool : IWorkspaceScoped

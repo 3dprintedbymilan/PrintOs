@@ -217,5 +217,29 @@
       "range": "{field} is outside the allowed range.",
       "save": "Could not save. Check your connection and try again."
     }
+  },
+  "alerts": {
+    "title": "Stock alerts",
+    "none": "All materials are above their thresholds.",
+    "detail": "{total} g left, level {threshold} g",
+    "severity": {
+      "LowStock": "Low stock",
+      "ReorderSoon": "Reorder soon"
+    },
+    "materialsTitle": "Stock thresholds",
+    "materialsSubtitle": "Low-stock and reorder levels per material",
+    "intro": "Set the grams at which a material counts as low or should be reordered. Leave a field empty to switch that alert off.",
+    "noMaterials": "Add a spool first. Its material will appear here.",
+    "lowStock": "Low-stock level (grams)",
+    "lowStockHint": "Below this, the material shows as low stock.",
+    "reorder": "Reorder level (grams)",
+    "reorderHint": "Below this, the material shows as reorder soon. Keep it at or above the low-stock level.",
+    "save": "Save levels",
+    "saved": "Levels saved.",
+    "errors": {
+      "number": "Enter a whole number of grams, or leave empty.",
+      "order": "The reorder level must be at or above the low-stock level.",
+      "save": "Could not save. Check your connection and try again."
+    }
   }
 }

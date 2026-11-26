@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { filterSpools, newMaterialValue, remainingPercent, summarizeStock, validateAdjustment, validateSpoolForm } from '../utils/inventory'
+import { filterSpools, newMaterialValue, remainingPercent, summarizeStock, validateAdjustment, validateSpoolForm, validateThresholds } from '../utils/inventory'
 import type { Spool } from '../utils/inventory'
 
 function spool(overrides: Partial<Spool>): Spool {
@@ -76,5 +76,20 @@ describe('validateAdjustment', () => {
 
   it('requires a whole positive amount and a reason', () => {
     expect(validateAdjustment('add', '1.5', '').errors).toEqual({ amount: 'amount', reason: 'reason' })
+  })
+})
+
+describe('validateThresholds', () => {
+  it('treats empty fields as switched off', () => {
+    expect(validateThresholds('', ' ').thresholds).toEqual({ lowStockGrams: null, reorderGrams: null })
+  })
+
+  it('parses whole grams', () => {
+    expect(validateThresholds('200', '500').thresholds).toEqual({ lowStockGrams: 200, reorderGrams: 500 })
+  })
+
+  it('rejects non-numbers and a reorder level below the low-stock level', () => {
+    expect(validateThresholds('abc', '').errors).toEqual({ low: 'number' })
+    expect(validateThresholds('500', '200').errors).toEqual({ reorder: 'order' })
   })
 })

@@ -17,6 +17,11 @@ public static partial class InventoryEndpoints
         var materials = endpoints.MapGroup("/api/materials").WithTags("Inventory").RequireAuthorization(AuthPolicies.RequireWorkspace);
         materials.MapGet("", ListMaterialsAsync);
         materials.MapPost("", CreateMaterialAsync);
+        materials.MapPut("/{id:guid}/thresholds", UpdateThresholdsAsync);
+
+        endpoints.MapGet("/api/inventory/alerts", ListAlertsAsync)
+            .WithTags("Inventory")
+            .RequireAuthorization(AuthPolicies.RequireWorkspace);
 
         var spools = endpoints.MapGroup("/api/spools").WithTags("Inventory").RequireAuthorization(AuthPolicies.RequireWorkspace);
         spools.MapGet("", ListSpoolsAsync);
@@ -65,8 +70,7 @@ public static partial class InventoryEndpoints
     }
 
     private static async Task<IResult> ListMaterialsAsync(PrintOsDbContext dbContext) =>
-        TypedResults.Ok(await dbContext.Set<Material>().OrderBy(material => material.Name)
-            .Select(material => new MaterialResponse(material.Id, material.Name, material.Type)).ToListAsync());
+        TypedResults.Ok((await dbContext.Set<Material>().OrderBy(material => material.Name).ToListAsync()).Select(ToResponse));
 
     private static async Task<IResult> CreateMaterialAsync(MaterialRequest request, PrintOsDbContext dbContext)
     {
@@ -95,7 +99,7 @@ public static partial class InventoryEndpoints
         var material = new Material { Name = name, Type = type };
         dbContext.Set<Material>().Add(material);
         await dbContext.SaveChangesAsync();
-        return TypedResults.Created($"/api/materials/{material.Id}", new MaterialResponse(material.Id, material.Name, material.Type));
+        return TypedResults.Created($"/api/materials/{material.Id}", ToResponse(material));
     }
 
     private static async Task<List<SpoolResponse>> LoadSpoolsAsync(PrintOsDbContext dbContext, Expression<Func<FilamentSpool, bool>> filter)
