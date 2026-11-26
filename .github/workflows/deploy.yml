@@ -61,12 +61,20 @@ jobs:
               --server "$REGISTRY.azurecr.io" --identity system
           done
 
+      - name: Keep only the newest revision active
+        run: |
+          for APP in "$API_APP" "$WEB_APP"; do
+            az containerapp revision set-mode -g "$RESOURCE_GROUP" -n "$APP" --mode single
+          done
+
       - name: Deploy the API
         run: |
           WEB_URL="https://$(az containerapp show -g "$RESOURCE_GROUP" -n "$WEB_APP" --query properties.configuration.ingress.fqdn -o tsv)"
           az containerapp ingress update -g "$RESOURCE_GROUP" -n "$API_APP" --target-port 8080
           az containerapp update -g "$RESOURCE_GROUP" -n "$API_APP" \
             --image "$REGISTRY.azurecr.io/printos-api:${GITHUB_SHA}" \
+            --revision-suffix "gh${GITHUB_RUN_NUMBER}" \
+            --min-replicas 1 --max-replicas 2 \
             --set-env-vars \
               "ASPNETCORE_ENVIRONMENT=Production" \
               "ConnectionStrings__Default=secretref:connection-string" \
@@ -79,13 +87,16 @@ jobs:
           az containerapp ingress update -g "$RESOURCE_GROUP" -n "$WEB_APP" --target-port 3000
           az containerapp update -g "$RESOURCE_GROUP" -n "$WEB_APP" \
             --image "$REGISTRY.azurecr.io/printos-web:${GITHUB_SHA}" \
+            --revision-suffix "gh${GITHUB_RUN_NUMBER}" \
+            --min-replicas 0 --max-replicas 2 \
             --set-env-vars "NUXT_PUBLIC_API_BASE=$API_URL"
 
       - name: Smoke check
         run: |
           API_URL="https://$(az containerapp show -g "$RESOURCE_GROUP" -n "$API_APP" --query properties.configuration.ingress.fqdn -o tsv)"
           for attempt in $(seq 1 12); do
-            if curl -fsS "$API_URL/health/ready"; then echo; exit 0; fi
+            if curl -fsS --max-time 15 "$API_URL/health/ready"; then echo; exit 0; fi
             echo "waiting for the API (attempt $attempt)"; sleep 10
           done
+          az containerapp logs show -g "$RESOURCE_GROUP" -n "$API_APP" --tail 60 --format text || true
           echo "API did not become ready"; exit 1
