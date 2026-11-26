@@ -1,12 +1,19 @@
+<script setup lang="ts">
+definePageMeta({ titleKey: 'home.title' })
+</script>
+
 <template>
-  <main class="home">
-    <h1>{{ $t('app.name') }}</h1>
-    <p>{{ $t('app.tagline') }}</p>
-  </main>
+  <div class="stack">
+    <p class="subtitle">
+      {{ $t('home.subtitle') }}
+    </p>
+    <UiCard>
+      <StateEmpty :message="$t('home.placeholder')" />
+    </UiCard>
+  </div>
 </template>
 
 <style scoped>
-.home { padding: 24px 16px; }
-h1 { margin: 0 0 8px; }
-p { color: var(--muted); margin: 0; }
+.stack { display: grid; gap: var(--space-4); }
+.subtitle { margin: 0; color: var(--muted); }
 </style>

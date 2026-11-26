@@ -3,6 +3,34 @@
     "name": "PrintOS",
     "tagline": "Manage your 3D printing business, from files to profit."
   },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Home",
+    "prints": "Prints",
+    "inventory": "Inventory",
+    "business": "Business"
+  },
+  "home": {
+    "title": "Production Overview",
+    "subtitle": "Real-time business performance",
+    "placeholder": "Your dashboard will appear here."
+  },
+  "prints": {
+    "title": "Prints",
+    "printing": "Printing",
+    "models": "Models"
+  },
+  "inventory": {
+    "title": "Inventory"
+  },
+  "business": {
+    "title": "Business & Operations",
+    "orders": "Orders",
+    "calculator": "Cost Calculator",
+    "margins": "Profit Margins",
+    "licenses": "Licenses",
+    "marketStock": "Market Stock"
+  },
   "common": {
     "close": "Close"
   },

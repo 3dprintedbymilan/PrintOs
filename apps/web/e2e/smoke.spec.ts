@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-test('home page renders the PrintOS heading', async ({ page }) => {
+test('home page renders the dashboard title', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'PrintOS' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Productieoverzicht' })).toBeVisible()
 })
 
 test('page fits the viewport without horizontal scroll', async ({ page }) => {
