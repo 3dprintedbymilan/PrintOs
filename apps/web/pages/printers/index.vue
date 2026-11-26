@@ -9,6 +9,7 @@ const auth = useAuthStore()
 const printers = ref<Printer[]>([])
 const status = ref<'loading' | 'ready' | 'failed'>('loading')
 const showArchived = ref(false)
+const busyPrinterIds = ref(new Set<string>())
 
 async function load() {
   status.value = 'loading'
@@ -18,6 +19,14 @@ async function load() {
   }
   catch {
     status.value = 'failed'
+    return
+  }
+  try {
+    const running = await auth.authorizedFetch<{ printerId: string }[]>('/api/print-jobs', { query: { status: 'Printing' } })
+    busyPrinterIds.value = new Set(running.map(job => job.printerId))
+  }
+  catch {
+    busyPrinterIds.value = new Set()
   }
 }
 
@@ -58,11 +67,20 @@ onMounted(load)
         :subtitle="subtitle(printer)"
       >
         <template
-          v-if="printer.isArchived"
+          v-if="printer.isArchived || busyPrinterIds.has(printer.id)"
           #trailing
         >
-          <UiStatusChip status="neutral">
+          <UiStatusChip
+            v-if="printer.isArchived"
+            status="neutral"
+          >
             {{ $t('printers.archived') }}
+          </UiStatusChip>
+          <UiStatusChip
+            v-else
+            status="info"
+          >
+            {{ $t('printJobs.status.Printing') }}
           </UiStatusChip>
         </template>
       </UiListRow>

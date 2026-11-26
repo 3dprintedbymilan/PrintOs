@@ -311,5 +311,83 @@
       "save": "Could not save. Check your connection and try again.",
       "network": "Can't reach the server. Check your connection and try again."
     }
+  },
+  "printJobs": {
+    "newTitle": "New print",
+    "detailTitle": "Print",
+    "back": "Back to prints",
+    "add": "New print",
+    "search": "Search prints",
+    "allStatuses": "All statuses",
+    "allPrinters": "All printers",
+    "noMatches": "No prints match your filters.",
+    "empty": "No prints yet. Log your first print.",
+    "noPrinters": "Add a printer first to log prints.",
+    "chooseSpool": "Choose a spool",
+    "spoolNumber": "Spool {number}",
+    "addSpool": "Add spool",
+    "removeSpool": "Remove spool {number}",
+    "filament": "Filament",
+    "noFilament": "No filament recorded.",
+    "wasteOf": "{grams} g waste",
+    "duration": "Duration",
+    "source": "Imported from",
+    "start": "Start print",
+    "finish": "Finish print",
+    "edit": "Edit print",
+    "delete": "Delete print",
+    "deleteTitle": "Delete this print?",
+    "deleteBody": "The filament it used goes back to the spools. This cannot be undone.",
+    "cancel": "Cancel",
+    "savedMessage": "Print saved.",
+    "finishedMessage": "Print finished and filament booked.",
+    "startedMessage": "Print started.",
+    "status": {
+      "Planned": "Planned",
+      "Printing": "Printing",
+      "Done": "Done",
+      "Failed": "Failed",
+      "Cancelled": "Cancelled"
+    },
+    "fields": {
+      "name": "Name",
+      "printer": "Printer",
+      "status": "Status",
+      "outcome": "Result",
+      "startedAt": "Started",
+      "finishedAt": "Finished",
+      "spool": "Spool",
+      "grams": "Used (gram)",
+      "waste": "Of which waste (gram)",
+      "finishedUnits": "Finished units",
+      "notes": "Notes"
+    },
+    "hints": {
+      "name": "For example \"Benchy\" or the model name.",
+      "consumes": "Filament is booked from the spools when you save, failed prints included.",
+      "planned": "Filament is only booked from the spools once the print is finished.",
+      "finishedUnits": "Optional: how many good pieces came off the plate."
+    },
+    "form": {
+      "create": "New print",
+      "edit": "Edit print",
+      "finish": "Finish print"
+    },
+    "save": {
+      "create": "Save print",
+      "edit": "Save changes",
+      "finish": "Finish print"
+    },
+    "errors": {
+      "required": "Fill in {field}.",
+      "number": "{field} must be a whole number.",
+      "range": "{field} is out of range.",
+      "date": "{field} is not a valid date and time.",
+      "order": "The finish time cannot be before the start time.",
+      "duplicate": "This spool is already used in this print.",
+      "waste": "Waste cannot be more than the weight used.",
+      "save": "Saving failed. Please try again.",
+      "network": "No connection. Check your network and try again."
+    }
   }
 }

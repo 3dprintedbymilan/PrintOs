@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const route = useRoute()
 
 const tabs = computed(() => [
   { to: '/', icon: 'home', label: t('nav.home') },
@@ -19,6 +20,7 @@ const tabs = computed(() => [
       :key="tab.to"
       :to="tab.to"
       class="tab"
+      :class="{ active: tab.to === '/prints' && route.path.startsWith('/print-jobs') }"
       active-class="active"
       exact-active-class="active"
     >

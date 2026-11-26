@@ -311,5 +311,83 @@
       "save": "Opslaan is niet gelukt. Controleer je verbinding en probeer het opnieuw.",
       "network": "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
     }
+  },
+  "printJobs": {
+    "newTitle": "Nieuwe print",
+    "detailTitle": "Print",
+    "back": "Terug naar prints",
+    "add": "Nieuwe print",
+    "search": "Prints zoeken",
+    "allStatuses": "Alle statussen",
+    "allPrinters": "Alle printers",
+    "noMatches": "Geen prints gevonden voor deze filters.",
+    "empty": "Nog geen prints. Log je eerste print.",
+    "noPrinters": "Voeg eerst een printer toe om prints te loggen.",
+    "chooseSpool": "Kies een spoel",
+    "spoolNumber": "Spoel {number}",
+    "addSpool": "Spoel toevoegen",
+    "removeSpool": "Spoel {number} verwijderen",
+    "filament": "Filament",
+    "noFilament": "Geen filament vastgelegd.",
+    "wasteOf": "{grams} g afval",
+    "duration": "Duur",
+    "source": "Geïmporteerd uit",
+    "start": "Print starten",
+    "finish": "Print afronden",
+    "edit": "Print bewerken",
+    "delete": "Print verwijderen",
+    "deleteTitle": "Deze print verwijderen?",
+    "deleteBody": "Het gebruikte filament gaat terug naar de spoelen. Dit kan niet ongedaan worden gemaakt.",
+    "cancel": "Annuleren",
+    "savedMessage": "Print opgeslagen.",
+    "finishedMessage": "Print afgerond en filament verwerkt.",
+    "startedMessage": "Print gestart.",
+    "status": {
+      "Planned": "Gepland",
+      "Printing": "Bezig",
+      "Done": "Klaar",
+      "Failed": "Mislukt",
+      "Cancelled": "Geannuleerd"
+    },
+    "fields": {
+      "name": "Naam",
+      "printer": "Printer",
+      "status": "Status",
+      "outcome": "Resultaat",
+      "startedAt": "Gestart",
+      "finishedAt": "Afgerond",
+      "spool": "Spoel",
+      "grams": "Gebruikt (gram)",
+      "waste": "Waarvan afval (gram)",
+      "finishedUnits": "Aantal klaar",
+      "notes": "Notities"
+    },
+    "hints": {
+      "name": "Bijvoorbeeld \"Benchy\" of de modelnaam.",
+      "consumes": "Het filament wordt bij opslaan van de spoelen afgeboekt, ook bij mislukte prints.",
+      "planned": "Het filament wordt pas afgeboekt zodra de print is afgerond.",
+      "finishedUnits": "Optioneel: hoeveel goede stuks er van de plaat kwamen."
+    },
+    "form": {
+      "create": "Nieuwe print",
+      "edit": "Print bewerken",
+      "finish": "Print afronden"
+    },
+    "save": {
+      "create": "Print opslaan",
+      "edit": "Wijzigingen opslaan",
+      "finish": "Print afronden"
+    },
+    "errors": {
+      "required": "Vul {field} in.",
+      "number": "{field} moet een geheel getal zijn.",
+      "range": "{field} valt buiten het toegestane bereik.",
+      "date": "{field} is geen geldige datum en tijd.",
+      "order": "De eindtijd kan niet voor de starttijd liggen.",
+      "duplicate": "Deze spoel wordt al gebruikt in deze print.",
+      "waste": "Afval kan niet meer zijn dan het gebruikte gewicht.",
+      "save": "Opslaan is mislukt. Probeer het opnieuw.",
+      "network": "Geen verbinding. Controleer je netwerk en probeer het opnieuw."
+    }
   }
 }
