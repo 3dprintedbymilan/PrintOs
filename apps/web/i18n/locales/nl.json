@@ -96,7 +96,8 @@
     "settings": "Instellingen",
     "settingsSubtitle": "Bedrijfsnaam, tarieven en taal",
     "printers": "Printers",
-    "printersSubtitle": "Je machines en hun kosten per uur"
+    "printersSubtitle": "Je machines en hun kosten per uur",
+    "calculatorSubtitle": "Kosten, prijs en winst per print"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -240,6 +241,75 @@
       "number": "Vul een heel aantal gram in, of laat leeg.",
       "order": "De bijbestelgrens moet minstens gelijk zijn aan de grens voor lage voorraad.",
       "save": "Opslaan lukt niet. Controleer je verbinding en probeer opnieuw."
+    }
+  },
+  "calculator": {
+    "title": "Kostencalculator",
+    "savedTitle": "Opgeslagen berekeningen",
+    "snapshotTitle": "Opgeslagen berekening",
+    "back": "Terug naar calculator",
+    "backToSaved": "Terug naar opgeslagen berekeningen",
+    "savedLink": "Opgeslagen berekeningen",
+    "savedEmpty": "Nog geen opgeslagen berekeningen. Sla er een op vanuit de calculator.",
+    "needSetup": "Voeg minstens één printer en één spoel toe om te kunnen rekenen.",
+    "fillIn": "Vul de gram en printtijd in om je prijs te zien.",
+    "suggestedPrice": "Adviesprijs",
+    "profit": "Winst",
+    "totalCost": "Totale kosten",
+    "fees": "Kosten platform ({percent}%)",
+    "breakdown": "Kostenopbouw",
+    "addExtra": "Extra kosten toevoegen",
+    "remove": "Verwijderen",
+    "removeExtra": "Extra kosten {number} verwijderen",
+    "save": "Berekening opslaan",
+    "saved": "Opgeslagen als \"{name}\".",
+    "viewSaved": "Bekijken",
+    "snapshotMeta": "Opgeslagen op {date}",
+    "immutable": "Een opgeslagen berekening verandert nooit, ook niet als je tarieven of prijzen later wijzigen.",
+    "groups": {
+      "print": "Print",
+      "work": "Werk en extra's",
+      "extras": "Extra kosten",
+      "price": "Prijs",
+      "save": "Opslaan"
+    },
+    "lines": {
+      "material": "Materiaal (incl. verlies)",
+      "electricity": "Elektriciteit",
+      "machine": "Machine",
+      "labour": "Arbeid",
+      "packaging": "Verpakking"
+    },
+    "fields": {
+      "printerId": "Printer",
+      "spoolId": "Materiaal en kleur",
+      "grams": "Gebruikt filament (gram)",
+      "printHours": "Printtijd (uren)",
+      "printMinutes": "Minuten",
+      "printTime": "Printtijd",
+      "labourMinutes": "Arbeid (minuten)",
+      "packagingCost": "Verpakkingskosten",
+      "extraLabel": "Omschrijving",
+      "extraAmount": "Bedrag",
+      "marginPercent": "Gewenste marge (%)",
+      "feePercent": "Platformkosten (%)",
+      "snapshotName": "Naam"
+    },
+    "hints": {
+      "labourMinutes": "Voorbereiden, nabewerken en inpakken.",
+      "margin": "Prijs = kosten / (1 - marge - platformkosten). Platformkosten, zoals commissie, gaan af van de verkoopprijs.",
+      "snapshotName": "Optioneel. Laat leeg voor de voorgestelde naam."
+    },
+    "errors": {
+      "required": "Vul {field} in.",
+      "number": "{field} moet een getal zijn, bijvoorbeeld 12,5.",
+      "range": "{field} is te hoog.",
+      "positive": "{field} moet groter zijn dan nul.",
+      "margin": "{field} moet onder 100% blijven.",
+      "marginPlusFee": "Marge plus platformkosten moet onder 100% blijven.",
+      "calculate": "Berekenen is niet gelukt. Probeer het opnieuw.",
+      "save": "Opslaan is niet gelukt. Controleer je verbinding en probeer het opnieuw.",
+      "network": "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
     }
   }
 }
