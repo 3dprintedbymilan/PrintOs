@@ -1,0 +1,21 @@
+:root {
+  color-scheme: dark;
+  --bg: #06130f;
+  --surface: #0d211b;
+  --text: #eafaf3;
+  --muted: #8fb0a2;
+  --accent: #22d39a;
+  --danger: #ff5d5d;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}

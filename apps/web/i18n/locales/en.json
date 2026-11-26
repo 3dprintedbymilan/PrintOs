@@ -1,0 +1,12 @@
+{
+  "app": {
+    "name": "PrintOS",
+    "tagline": "Manage your 3D printing business, from files to profit."
+  },
+  "state": {
+    "loading": "Loading...",
+    "empty": "Nothing here yet.",
+    "error": "Something went wrong.",
+    "retry": "Try again"
+  }
+}
