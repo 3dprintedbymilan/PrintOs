@@ -132,6 +132,7 @@ export function buildCostRequest(values: CostFormValues): { request: CostRequest
 
   const extraCosts: CostRequest['extraCosts'] = []
   values.extras.forEach((extra, index) => {
+    if (!extra.label.trim() && !extra.amount.trim()) return
     const label = extra.label.trim()
     const amount = parseDecimal(extra.amount)
     if (!label) errors[`extraLabel${index}`] = 'required'

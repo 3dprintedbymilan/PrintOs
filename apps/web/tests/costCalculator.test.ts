@@ -68,6 +68,13 @@ describe('buildCostRequest', () => {
     expect(errors.extraLabel1).toBeUndefined()
   })
 
+  it('ignores extra rows that are still blank', () => {
+    const { request, errors } = buildCostRequest(valid({ extras: [{ label: '', amount: '' }] }))
+
+    expect(errors).toEqual({})
+    expect(request?.extraCosts).toEqual([])
+  })
+
   it('keeps valid extras in order', () => {
     const { request } = buildCostRequest(valid({ extras: [{ label: ' Magnet ', amount: '0,25' }] }))
 
