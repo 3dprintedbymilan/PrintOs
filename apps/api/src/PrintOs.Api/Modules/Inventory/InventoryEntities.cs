@@ -78,5 +78,7 @@ public sealed class MaterialMovement : IWorkspaceScoped
 
     public string Reason { get; set; } = string.Empty;
 
+    public Guid? PrintJobId { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
