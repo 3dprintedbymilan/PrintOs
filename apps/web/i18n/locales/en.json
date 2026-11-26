@@ -96,7 +96,8 @@
     "settings": "Settings",
     "settingsSubtitle": "Business name, rates and language",
     "printers": "Printers",
-    "printersSubtitle": "Your machines and their running costs"
+    "printersSubtitle": "Your machines and their running costs",
+    "calculatorSubtitle": "Cost, price and profit per print"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -240,6 +241,75 @@
       "number": "Enter a whole number of grams, or leave empty.",
       "order": "The reorder level must be at or above the low-stock level.",
       "save": "Could not save. Check your connection and try again."
+    }
+  },
+  "calculator": {
+    "title": "Cost Calculator",
+    "savedTitle": "Saved calculations",
+    "snapshotTitle": "Saved calculation",
+    "back": "Back to calculator",
+    "backToSaved": "Back to saved calculations",
+    "savedLink": "Saved calculations",
+    "savedEmpty": "No saved calculations yet. Save one from the calculator.",
+    "needSetup": "Add at least one printer and one spool to start calculating.",
+    "fillIn": "Enter the grams and print time to see your price.",
+    "suggestedPrice": "Suggested price",
+    "profit": "Profit",
+    "totalCost": "Total cost",
+    "fees": "Fees ({percent}%)",
+    "breakdown": "Cost breakdown",
+    "addExtra": "Add extra cost",
+    "remove": "Remove",
+    "removeExtra": "Remove extra cost {number}",
+    "save": "Save calculation",
+    "saved": "Saved as \"{name}\".",
+    "viewSaved": "View",
+    "snapshotMeta": "Saved on {date}",
+    "immutable": "A saved calculation never changes, even when your rates or prices change later.",
+    "groups": {
+      "print": "Print",
+      "work": "Work and extras",
+      "extras": "Extra costs",
+      "price": "Price",
+      "save": "Save"
+    },
+    "lines": {
+      "material": "Material (incl. waste)",
+      "electricity": "Electricity",
+      "machine": "Machine",
+      "labour": "Labour",
+      "packaging": "Packaging"
+    },
+    "fields": {
+      "printerId": "Printer",
+      "spoolId": "Material and colour",
+      "grams": "Filament used (grams)",
+      "printHours": "Print time (hours)",
+      "printMinutes": "Minutes",
+      "printTime": "Print time",
+      "labourMinutes": "Labour (minutes)",
+      "packagingCost": "Packaging cost",
+      "extraLabel": "Description",
+      "extraAmount": "Amount",
+      "marginPercent": "Target margin (%)",
+      "feePercent": "Fees (%)",
+      "snapshotName": "Name"
+    },
+    "hints": {
+      "labourMinutes": "Preparing, post-processing and packing.",
+      "margin": "Price = cost / (1 - margin - fees). Fees such as platform commission are taken from the selling price.",
+      "snapshotName": "Optional. Leave empty to use the suggested name."
+    },
+    "errors": {
+      "required": "Enter {field}.",
+      "number": "{field} must be a number, for example 12,5.",
+      "range": "{field} is too high.",
+      "positive": "{field} must be more than zero.",
+      "margin": "{field} must be below 100%.",
+      "marginPlusFee": "Margin plus fees must stay below 100%.",
+      "calculate": "Could not calculate. Try again.",
+      "save": "Could not save. Check your connection and try again.",
+      "network": "Can't reach the server. Check your connection and try again."
     }
   }
 }
