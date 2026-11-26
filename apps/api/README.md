@@ -26,6 +26,20 @@ dotnet run --project src/PrintOs.Api
 
 Configuration: `ConnectionStrings:Default` (override with the `ConnectionStrings__Default` environment variable). Each environment uses its own database.
 
+## Authentication
+
+ASP.NET Core Identity with opaque bearer tokens (access 30 min, refresh 14 days).
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/auth/sign-up` | creates a workspace and its owner (`email`, `password`, `workspaceName`) |
+| `POST /api/auth/sign-in` | returns `accessToken` and `refreshToken`; 5 failed attempts lock the account for 15 minutes (423) |
+| `POST /api/auth/refresh` | exchanges a refresh token for new tokens |
+| `POST /api/auth/sign-out` | needs a token; rotates the security stamp so existing refresh tokens stop working |
+| `GET /api/workspace` | the caller's own workspace (policy `RequireWorkspace`) |
+
+Passwords need 10+ characters with upper case, lower case and a digit. Tokens carry a `workspace_id` claim; entities that implement `IWorkspaceScoped` get an automatic query filter and are stamped with the caller's workspace on save. Token protection keys are stored in the database (data protection), so tokens survive restarts and work across replicas.
+
 ## Tests
 
 xUnit v3 (`tests/PrintOs.Api.Tests`). Integration tests start a real PostgreSQL container with Testcontainers, so Docker must be running.
