@@ -21,7 +21,70 @@
     "models": "Modellen"
   },
   "inventory": {
-    "title": "Voorraad"
+    "title": "Voorraad",
+    "spoolTitle": "Spoel",
+    "back": "Terug naar voorraad",
+    "totalStock": "Op voorraad",
+    "materials": "Materialen",
+    "spools": "Spoelen",
+    "addSpool": "Spoel toevoegen",
+    "saveSpool": "Spoel opslaan",
+    "search": "Spoelen zoeken",
+    "material": "Materiaal",
+    "supplier": "Leverancier",
+    "allMaterials": "Alle materialen",
+    "newMaterial": "Nieuw materiaal...",
+    "newSupplier": "Nieuwe leverancier...",
+    "noSupplier": "Geen leverancier",
+    "noMatches": "Geen spoelen gevonden voor je zoekopdracht.",
+    "empty": "Nog geen spoelen. Voeg je eerste spoel toe.",
+    "showArchived": "Toon gearchiveerde spoelen",
+    "archived": "Gearchiveerd",
+    "archive": "Spoel archiveren",
+    "restore": "Spoel terugzetten",
+    "remaining": "{grams} g over ({percent}%)",
+    "costPerKg": "{amount} per kg",
+    "adjustStock": "Voorraad aanpassen",
+    "direction": "Soort aanpassing",
+    "remove": "Verwijderen",
+    "add": "Toevoegen",
+    "amount": "Hoeveelheid (gram)",
+    "reason": "Reden",
+    "saveAdjustment": "Aanpassing opslaan",
+    "adjusted": "Voorraad aangepast.",
+    "history": "Bewegingen",
+    "balance": "Saldo {grams} g",
+    "kinds": {
+      "Initial": "Spoel toegevoegd",
+      "Adjustment": "Aanpassing",
+      "Consumption": "Gebruikt in print"
+    },
+    "fields": {
+      "materialName": "Materiaalnaam",
+      "materialType": "Soort materiaal",
+      "supplierName": "Naam leverancier",
+      "colorName": "Kleur",
+      "colorHex": "Kleurcode",
+      "weight": "Gewicht spoel (gram)",
+      "cost": "Aankoopprijs"
+    },
+    "hints": {
+      "materialName": "Bijvoorbeeld \"PLA Basic\".",
+      "materialType": "Bijvoorbeeld PLA, PETG of TPU.",
+      "colorName": "Bijvoorbeeld \"Jade White\".",
+      "colorHex": "Optioneel, zoals #1A2B3C. Toont een kleurpunt in de lijst.",
+      "reason": "Bijvoorbeeld \"Mislukte print\" of \"Opnieuw geteld\"."
+    },
+    "errors": {
+      "required": "Vul {field} in.",
+      "number": "{field} moet een getal zijn.",
+      "range": "{field} valt buiten het toegestane bereik.",
+      "hex": "{field} moet eruitzien als #1A2B3C.",
+      "amount": "Vul een heel aantal gram in, minstens 1.",
+      "reason": "Vul een reden in zodat de wijziging traceerbaar blijft.",
+      "save": "Opslaan lukt niet. Controleer je verbinding en probeer opnieuw.",
+      "network": "Geen verbinding met de server. Controleer je verbinding en probeer het opnieuw."
+    }
   },
   "business": {
     "title": "Bedrijf en operaties",
