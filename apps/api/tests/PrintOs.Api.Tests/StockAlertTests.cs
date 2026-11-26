@@ -128,7 +128,8 @@ public class StockAlertTests(PostgresApiFactory factory) : IClassFixture<Postgre
         Assert.Equal(HttpStatusCode.OK, (await SetThresholdsAsync(client, material.Id, 200, 500)).StatusCode);
 
         var materials = await client.GetFromJsonAsync<List<MaterialResponse>>("/api/materials", cancellationToken);
-        Assert.Equal((200, 500), (materials!.Single().LowStockGrams, materials.Single().ReorderGrams));
+        var stored = Assert.Single(materials!);
+        Assert.Equal((200, 500), (stored.LowStockGrams, stored.ReorderGrams));
 
         await SetThresholdsAsync(client, material.Id, null, null);
         Assert.Empty(await GetAlertsAsync(client));
