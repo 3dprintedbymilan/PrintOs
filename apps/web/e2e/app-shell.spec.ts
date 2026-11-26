@@ -1,4 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { seedSignedInSession } from './support'
+
+test.beforeEach(async ({ page }) => {
+  await seedSignedInSession(page)
+})
 
 test('bottom navigation has four tabs and navigates between sections', async ({ page }) => {
   await page.goto('/')

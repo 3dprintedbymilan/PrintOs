@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, public: true })
 const range = ref('today')
 const name = ref('')
 const material = ref('pla')

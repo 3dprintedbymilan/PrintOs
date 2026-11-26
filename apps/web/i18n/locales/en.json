@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "PrintOS",
     "tagline": "Manage your 3D printing business, from files to profit."
@@ -31,8 +31,38 @@
     "licenses": "Licenses",
     "marketStock": "Market Stock"
   },
+  "auth": {
+    "modeLabel": "Sign in or create an account",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "signInTitle": "Welcome back",
+    "signUpTitle": "Set up your workspace",
+    "email": "Email address",
+    "password": "Password",
+    "workspaceName": "Business name",
+    "workspaceHint": "For example: 3D Printed by Milan",
+    "signInAction": "Sign in",
+    "createAccount": "Create account",
+    "passwordRules": "At least {min} characters with an upper case letter, a lower case letter and a number.",
+    "errors": {
+      "email": "Enter a valid email address.",
+      "passwordRequired": "Enter your password.",
+      "workspaceName": "Enter your business name.",
+      "invalidCredentials": "That email and password don't match. Check them and try again.",
+      "locked": "Too many failed attempts. Try again in 15 minutes.",
+      "network": "Can't reach the server. Check your connection and try again.",
+      "unknown": "Something went wrong. Try again in a moment."
+    }
+  },
+  "account": {
+    "signedInAs": "Signed in as",
+    "workspace": "Workspace",
+    "signOut": "Sign out"
+  },
   "common": {
-    "close": "Close"
+    "close": "Close",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "theme": {
     "label": "Theme",

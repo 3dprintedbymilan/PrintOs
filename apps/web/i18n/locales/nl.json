@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "PrintOS",
     "tagline": "Beheer je 3D-printbedrijf, van bestand tot winst."
@@ -31,8 +31,38 @@
     "licenses": "Licenties",
     "marketStock": "Marktvoorraad"
   },
+  "auth": {
+    "modeLabel": "Aanmelden of account maken",
+    "signIn": "Aanmelden",
+    "signUp": "Account maken",
+    "signInTitle": "Welkom terug",
+    "signUpTitle": "Richt je werkruimte in",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "workspaceName": "Naam van je bedrijf",
+    "workspaceHint": "Bijvoorbeeld: 3D Printed by Milan",
+    "signInAction": "Aanmelden",
+    "createAccount": "Account maken",
+    "passwordRules": "Minstens {min} tekens met een hoofdletter, een kleine letter en een cijfer.",
+    "errors": {
+      "email": "Vul een geldig e-mailadres in.",
+      "passwordRequired": "Vul je wachtwoord in.",
+      "workspaceName": "Vul de naam van je bedrijf in.",
+      "invalidCredentials": "Dit e-mailadres en wachtwoord kloppen niet. Controleer ze en probeer opnieuw.",
+      "locked": "Te veel mislukte pogingen. Probeer het over 15 minuten opnieuw.",
+      "network": "Geen verbinding met de server. Controleer je internet en probeer opnieuw.",
+      "unknown": "Er ging iets mis. Probeer het zo meteen opnieuw."
+    }
+  },
+  "account": {
+    "signedInAs": "Aangemeld als",
+    "workspace": "Werkruimte",
+    "signOut": "Afmelden"
+  },
   "common": {
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "showPassword": "Toon wachtwoord",
+    "hidePassword": "Verberg wachtwoord"
   },
   "theme": {
     "label": "Thema",
