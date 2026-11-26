@@ -24,6 +24,11 @@ const sections = computed(() => [
 <template>
   <div class="stack">
     <UiListRow
+      to="/settings"
+      :title="$t('business.settings')"
+      :subtitle="$t('business.settingsSubtitle')"
+    />
+    <UiListRow
       v-for="section in sections"
       :key="section.key"
       :title="section.title"

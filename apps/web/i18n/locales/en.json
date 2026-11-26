@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "PrintOS",
     "tagline": "Manage your 3D printing business, from files to profit."
@@ -29,7 +29,9 @@
     "calculator": "Cost Calculator",
     "margins": "Profit Margins",
     "licenses": "Licenses",
-    "marketStock": "Market Stock"
+    "marketStock": "Market Stock",
+    "settings": "Settings",
+    "settingsSubtitle": "Business name, rates and language"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -75,5 +77,42 @@
     "empty": "Nothing here yet.",
     "error": "Something went wrong.",
     "retry": "Try again"
+  },
+  "settings": {
+    "title": "Settings",
+    "back": "Back to Business",
+    "save": "Save settings",
+    "saved": "Settings saved.",
+    "costsIntro": "These rates feed the cost calculator.",
+    "groups": {
+      "business": "Business",
+      "costs": "Costs and rates"
+    },
+    "fields": {
+      "name": "Business name",
+      "currency": "Currency",
+      "language": "Language",
+      "electricityPricePerKwh": "Electricity price (per kWh)",
+      "labourRatePerHour": "Labour rate (per hour)",
+      "machineRatePerHour": "Machine rate (per hour)",
+      "wastePercent": "Waste allowance (%)"
+    },
+    "hints": {
+      "electricityPricePerKwh": "What you pay your supplier per kWh.",
+      "labourRatePerHour": "What your own time is worth per hour.",
+      "machineRatePerHour": "Wear and depreciation per printing hour.",
+      "wastePercent": "Extra filament for purge, supports and failed prints."
+    },
+    "languages": {
+      "nl": "Nederlands",
+      "en": "English"
+    },
+    "errors": {
+      "required": "Enter {field}.",
+      "number": "{field} must be a number, for example 0,30.",
+      "range": "{field} is too high.",
+      "save": "Could not save your settings. Try again.",
+      "network": "Can't reach the server. Check your connection and try again."
+    }
   }
 }

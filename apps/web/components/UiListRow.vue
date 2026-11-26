@@ -1,10 +1,11 @@
 <script setup lang="ts">
 defineProps<{ title: string, subtitle?: string, to?: string }>()
+const link = resolveComponent('NuxtLink')
 </script>
 
 <template>
   <component
-    :is="to ? 'NuxtLink' : 'div'"
+    :is="to ? link : 'div'"
     :to="to"
     class="row"
   >
