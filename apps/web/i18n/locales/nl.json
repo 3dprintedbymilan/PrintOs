@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "PrintOS",
     "tagline": "Beheer je 3D-printbedrijf, van bestand tot winst."
@@ -29,7 +29,9 @@
     "calculator": "Kostencalculator",
     "margins": "Winstmarges",
     "licenses": "Licenties",
-    "marketStock": "Marktvoorraad"
+    "marketStock": "Marktvoorraad",
+    "settings": "Instellingen",
+    "settingsSubtitle": "Bedrijfsnaam, tarieven en taal"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -75,5 +77,42 @@
     "empty": "Hier is nog niets.",
     "error": "Er ging iets mis.",
     "retry": "Opnieuw proberen"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "back": "Terug naar Bedrijf",
+    "save": "Instellingen opslaan",
+    "saved": "Instellingen opgeslagen.",
+    "costsIntro": "Deze tarieven voeden de kostencalculator.",
+    "groups": {
+      "business": "Bedrijf",
+      "costs": "Kosten en tarieven"
+    },
+    "fields": {
+      "name": "Naam van je bedrijf",
+      "currency": "Munteenheid",
+      "language": "Taal",
+      "electricityPricePerKwh": "Elektriciteitsprijs (per kWh)",
+      "labourRatePerHour": "Uurtarief arbeid",
+      "machineRatePerHour": "Uurtarief machine",
+      "wastePercent": "Afvalmarge (%)"
+    },
+    "hints": {
+      "electricityPricePerKwh": "Wat je leverancier per kWh rekent.",
+      "labourRatePerHour": "Wat je eigen tijd per uur waard is.",
+      "machineRatePerHour": "Slijtage en afschrijving per printuur.",
+      "wastePercent": "Extra filament voor purge, supports en mislukte prints."
+    },
+    "languages": {
+      "nl": "Nederlands",
+      "en": "English"
+    },
+    "errors": {
+      "required": "Vul {field} in.",
+      "number": "{field} moet een getal zijn, bijvoorbeeld 0,30.",
+      "range": "{field} is te hoog.",
+      "save": "Je instellingen konden niet worden opgeslagen. Probeer het opnieuw.",
+      "network": "Geen verbinding met de server. Controleer je verbinding en probeer het opnieuw."
+    }
   }
 }
