@@ -13,9 +13,12 @@ npm install
 npm run dev          # http://localhost:3000
 npm run lint
 npm run typecheck
-npm test
+npm test             # unit tests (Vitest)
 npm run build
+npm run test:e2e     # Playwright smoke tests, mobile (iPhone 14) and desktop; needs a build first
 ```
+
+First time only: `npx playwright install chromium`.
 
 ## API client
 
