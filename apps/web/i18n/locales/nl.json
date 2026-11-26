@@ -1,0 +1,12 @@
+{
+  "app": {
+    "name": "PrintOS",
+    "tagline": "Beheer je 3D-printbedrijf, van bestand tot winst."
+  },
+  "state": {
+    "loading": "Laden...",
+    "empty": "Hier is nog niets.",
+    "error": "Er ging iets mis.",
+    "retry": "Opnieuw proberen"
+  }
+}
