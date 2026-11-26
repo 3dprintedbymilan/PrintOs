@@ -10,5 +10,6 @@ public sealed class InventoryModule : IModule
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapInventoryEndpoints();
     }
 }
