@@ -31,7 +31,9 @@
     "licenses": "Licenties",
     "marketStock": "Marktvoorraad",
     "settings": "Instellingen",
-    "settingsSubtitle": "Bedrijfsnaam, tarieven en taal"
+    "settingsSubtitle": "Bedrijfsnaam, tarieven en taal",
+    "printers": "Printers",
+    "printersSubtitle": "Je machines en hun kosten per uur"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -113,6 +115,44 @@
       "range": "{field} is te hoog.",
       "save": "Je instellingen konden niet worden opgeslagen. Probeer het opnieuw.",
       "network": "Geen verbinding met de server. Controleer je verbinding en probeer het opnieuw."
+    }
+  },
+  "printers": {
+    "title": "Printers",
+    "formTitle": "Printer",
+    "back": "Terug naar printers",
+    "addTitle": "Printer toevoegen",
+    "editTitle": "Printer bewerken",
+    "add": "Printer toevoegen",
+    "save": "Printer opslaan",
+    "archive": "Printer archiveren",
+    "restore": "Printer terugzetten",
+    "archived": "Gearchiveerd",
+    "showArchived": "Toon gearchiveerde printers",
+    "empty": "Nog geen printers. Voeg je eerste toe.",
+    "perHour": "{amount}/u afschrijving",
+    "depreciation": "Afschrijving: {amount} per printuur",
+    "fields": {
+      "name": "Naam",
+      "model": "Model",
+      "volumeX": "Breedte (mm)",
+      "volumeY": "Diepte (mm)",
+      "volumeZ": "Hoogte (mm)",
+      "nozzle": "Nozzlediameter (mm)",
+      "power": "Vermogen (watt)",
+      "cost": "Aankoopprijs",
+      "lifetime": "Verwachte levensduur (uren)"
+    },
+    "hints": {
+      "name": "Een naam die je herkent, bijvoorbeeld \"A1 bureau\".",
+      "power": "Gemiddeld verbruik tijdens het printen, niet het maximum.",
+      "lifetime": "Printuren tot je verwacht de printer te vervangen."
+    },
+    "errors": {
+      "required": "Vul {field} in.",
+      "number": "{field} moet een getal zijn, bijvoorbeeld 256.",
+      "range": "{field} valt buiten het toegestane bereik.",
+      "save": "Opslaan lukt niet. Controleer je verbinding en probeer opnieuw."
     }
   }
 }

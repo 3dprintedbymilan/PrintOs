@@ -29,6 +29,11 @@ const sections = computed(() => [
       :subtitle="$t('business.settingsSubtitle')"
     />
     <UiListRow
+      to="/printers"
+      :title="$t('business.printers')"
+      :subtitle="$t('business.printersSubtitle')"
+    />
+    <UiListRow
       v-for="section in sections"
       :key="section.key"
       :title="section.title"
