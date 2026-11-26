@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const port = process.env.E2E_PORT ?? '3100'
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -7,7 +9,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: 'http://localhost:3100',
+    baseURL: `http://localhost:${port}`,
     trace: 'on-first-retry',
     locale: 'nl-BE',
   },
@@ -23,9 +25,9 @@ export default defineConfig({
   ],
   webServer: {
     command: 'node .output/server/index.mjs',
-    url: 'http://localhost:3100',
+    url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,
-    env: { PORT: '3100', HOST: '127.0.0.1' },
+    env: { PORT: port, HOST: '127.0.0.1' },
     timeout: 60_000,
   },
 })
