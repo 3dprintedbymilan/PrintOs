@@ -3,6 +3,15 @@
     "name": "PrintOS",
     "tagline": "Manage your 3D printing business, from files to profit."
   },
+  "common": {
+    "close": "Close"
+  },
+  "theme": {
+    "label": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "state": {
     "loading": "Loading...",
     "empty": "Nothing here yet.",

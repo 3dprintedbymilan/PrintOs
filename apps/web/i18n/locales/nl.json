@@ -3,6 +3,15 @@
     "name": "PrintOS",
     "tagline": "Beheer je 3D-printbedrijf, van bestand tot winst."
   },
+  "common": {
+    "close": "Sluiten"
+  },
+  "theme": {
+    "label": "Thema",
+    "system": "Systeem",
+    "light": "Licht",
+    "dark": "Donker"
+  },
   "state": {
     "loading": "Laden...",
     "empty": "Hier is nog niets.",
