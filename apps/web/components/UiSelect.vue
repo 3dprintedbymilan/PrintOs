@@ -2,6 +2,7 @@
 defineProps<{
   label: string
   options: { value: string, label: string }[]
+  error?: string
 }>()
 const model = defineModel<string>({ default: '' })
 const id = useId()
@@ -13,6 +14,8 @@ const id = useId()
     <select
       :id="id"
       v-model="model"
+      :aria-invalid="error ? 'true' : undefined"
+      :aria-describedby="error ? `${id}-help` : undefined"
     >
       <option
         v-for="option in options"
@@ -22,6 +25,13 @@ const id = useId()
         {{ option.label }}
       </option>
     </select>
+    <p
+      v-if="error"
+      :id="`${id}-help`"
+      class="help"
+    >
+      {{ error }}
+    </p>
   </div>
 </template>
 
@@ -37,4 +47,6 @@ select {
   border-radius: var(--radius-md);
   font: inherit;
 }
+select[aria-invalid='true'] { border-color: var(--danger); }
+.help { margin: 0; font-size: var(--font-size-sm); color: var(--danger); }
 </style>

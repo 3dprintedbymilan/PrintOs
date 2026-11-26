@@ -11,7 +11,8 @@ const section = ref('printing')
       :label="t('prints.title')"
       :options="[{ value: 'printing', label: t('prints.printing') }, { value: 'models', label: t('prints.models') }]"
     />
-    <UiCard>
+    <PrintLog v-if="section === 'printing'" />
+    <UiCard v-else>
       <StateEmpty />
     </UiCard>
   </div>
