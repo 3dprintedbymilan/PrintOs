@@ -10,7 +10,8 @@ const auth = useAuthStore()
 const spools = ref<Spool[]>([])
 const materials = ref<Material[]>([])
 const status = ref<'loading' | 'ready' | 'failed'>('loading')
-const materialFilter = ref('')
+const route = useRoute()
+const materialFilter = ref(typeof route.query.material === 'string' ? route.query.material : '')
 const search = ref('')
 const showArchived = ref(false)
 
@@ -68,12 +69,19 @@ onMounted(load)
         />
       </div>
 
+      <StockAlertsCard />
+
       <UiButton
         block
         @click="navigateTo('/inventory/new')"
       >
         {{ $t('inventory.addSpool') }}
       </UiButton>
+      <UiListRow
+        to="/inventory/materials"
+        :title="$t('alerts.materialsTitle')"
+        :subtitle="$t('alerts.materialsSubtitle')"
+      />
 
       <template v-if="spools.length > 0">
         <div class="filters">

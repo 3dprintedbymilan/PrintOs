@@ -355,10 +355,16 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int?>("LowStockGrams")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<int?>("ReorderGrams")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()

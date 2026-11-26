@@ -19,6 +19,8 @@ export interface Material {
   id: string
   name: string
   type: string
+  lowStockGrams: number | null
+  reorderGrams: number | null
 }
 
 export interface Supplier {
@@ -146,4 +148,37 @@ export function validateAdjustment(direction: 'add' | 'remove', amount: string, 
   if (!reason.trim()) errors.reason = 'reason'
   if (Object.keys(errors).length > 0) return { adjustment: null, errors }
   return { adjustment: { deltaGrams: direction === 'remove' ? -grams! : grams!, reason: reason.trim() }, errors }
+}
+
+export type AlertSeverity = 'LowStock' | 'ReorderSoon'
+
+export interface StockAlert {
+  materialId: string
+  materialName: string
+  severity: AlertSeverity
+  totalGrams: number
+  thresholdGrams: number
+}
+
+export type ThresholdErrorKind = 'number' | 'order'
+
+export function validateThresholds(low: string, reorder: string): {
+  thresholds: { lowStockGrams: number | null, reorderGrams: number | null } | null
+  errors: Partial<Record<'low' | 'reorder', ThresholdErrorKind>>
+} {
+  const errors: Partial<Record<'low' | 'reorder', ThresholdErrorKind>> = {}
+  const parse = (text: string, key: 'low' | 'reorder'): number | null => {
+    if (!text.trim()) return null
+    const value = parseDecimal(text)
+    if (value === null || !Number.isInteger(value) || value > 1_000_000) {
+      errors[key] = 'number'
+      return null
+    }
+    return value
+  }
+  const lowStockGrams = parse(low, 'low')
+  const reorderGrams = parse(reorder, 'reorder')
+  if (!errors.reorder && lowStockGrams !== null && reorderGrams !== null && reorderGrams < lowStockGrams) errors.reorder = 'order'
+  if (Object.keys(errors).length > 0) return { thresholds: null, errors }
+  return { thresholds: { lowStockGrams, reorderGrams }, errors }
 }

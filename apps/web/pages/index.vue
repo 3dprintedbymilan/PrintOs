@@ -7,9 +7,7 @@ definePageMeta({ titleKey: 'home.title' })
     <p class="subtitle">
       {{ $t('home.subtitle') }}
     </p>
-    <UiCard>
-      <StateEmpty :message="$t('home.placeholder')" />
-    </UiCard>
+    <StockAlertsCard />
   </div>
 </template>
 
