@@ -21,7 +21,70 @@
     "models": "Models"
   },
   "inventory": {
-    "title": "Inventory"
+    "title": "Inventory",
+    "spoolTitle": "Spool",
+    "back": "Back to inventory",
+    "totalStock": "In stock",
+    "materials": "Materials",
+    "spools": "Spools",
+    "addSpool": "Add spool",
+    "saveSpool": "Save spool",
+    "search": "Search spools",
+    "material": "Material",
+    "supplier": "Supplier",
+    "allMaterials": "All materials",
+    "newMaterial": "New material...",
+    "newSupplier": "New supplier...",
+    "noSupplier": "No supplier",
+    "noMatches": "No spools match your search.",
+    "empty": "No spools yet. Add your first spool.",
+    "showArchived": "Show archived spools",
+    "archived": "Archived",
+    "archive": "Archive spool",
+    "restore": "Restore spool",
+    "remaining": "{grams} g left ({percent}%)",
+    "costPerKg": "{amount} per kg",
+    "adjustStock": "Adjust stock",
+    "direction": "Adjustment type",
+    "remove": "Remove",
+    "add": "Add",
+    "amount": "Amount (grams)",
+    "reason": "Reason",
+    "saveAdjustment": "Save adjustment",
+    "adjusted": "Stock adjusted.",
+    "history": "Movement history",
+    "balance": "Balance {grams} g",
+    "kinds": {
+      "Initial": "Spool added",
+      "Adjustment": "Adjustment",
+      "Consumption": "Used in print"
+    },
+    "fields": {
+      "materialName": "Material name",
+      "materialType": "Material type",
+      "supplierName": "Supplier name",
+      "colorName": "Colour",
+      "colorHex": "Colour code",
+      "weight": "Spool weight (grams)",
+      "cost": "Purchase cost"
+    },
+    "hints": {
+      "materialName": "For example \"PLA Basic\".",
+      "materialType": "For example PLA, PETG or TPU.",
+      "colorName": "For example \"Jade White\".",
+      "colorHex": "Optional, like #1A2B3C. Shows a colour dot in the list.",
+      "reason": "For example \"Failed print\" or \"Counted again\"."
+    },
+    "errors": {
+      "required": "Enter {field}.",
+      "number": "{field} must be a number.",
+      "range": "{field} is outside the allowed range.",
+      "hex": "{field} must look like #1A2B3C.",
+      "amount": "Enter a whole number of grams, at least 1.",
+      "reason": "Enter a reason so the change can be traced.",
+      "save": "Could not save. Check your connection and try again.",
+      "network": "Can't reach the server. Check your connection and try again."
+    }
   },
   "business": {
     "title": "Business & Operations",
