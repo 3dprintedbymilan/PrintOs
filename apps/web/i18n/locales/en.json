@@ -97,7 +97,9 @@
     "settingsSubtitle": "Business name, rates and language",
     "printers": "Printers",
     "printersSubtitle": "Your machines and their running costs",
-    "calculatorSubtitle": "Cost, price and profit per print"
+    "calculatorSubtitle": "Cost, price and profit per print",
+    "audit": "Audit log",
+    "auditSubtitle": "Who changed what and when"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -388,6 +390,28 @@
       "waste": "Waste cannot be more than the weight used.",
       "save": "Saving failed. Please try again.",
       "network": "No connection. Check your network and try again."
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "intro": "Read-only overview of changes to your business: who, when and what changed.",
+    "filter": "Filter by area",
+    "allTypes": "Everything",
+    "empty": "No changes have been recorded yet.",
+    "loadMore": "Load more",
+    "system": "System",
+    "actions": {
+      "Created": "Created",
+      "Updated": "Updated",
+      "Deleted": "Deleted"
+    },
+    "entities": {
+      "Workspace": "Business",
+      "Printer": "Printer",
+      "Material": "Material",
+      "FilamentSpool": "Spool",
+      "Supplier": "Supplier",
+      "MaterialMovement": "Stock movement"
     }
   }
 }

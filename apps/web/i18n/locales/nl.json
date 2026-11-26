@@ -97,7 +97,9 @@
     "settingsSubtitle": "Bedrijfsnaam, tarieven en taal",
     "printers": "Printers",
     "printersSubtitle": "Je machines en hun kosten per uur",
-    "calculatorSubtitle": "Kosten, prijs en winst per print"
+    "calculatorSubtitle": "Kosten, prijs en winst per print",
+    "audit": "Auditlog",
+    "auditSubtitle": "Wie wat wanneer heeft gewijzigd"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -388,6 +390,28 @@
       "waste": "Afval kan niet meer zijn dan het gebruikte gewicht.",
       "save": "Opslaan is mislukt. Probeer het opnieuw.",
       "network": "Geen verbinding. Controleer je netwerk en probeer het opnieuw."
+    }
+  },
+  "audit": {
+    "title": "Auditlog",
+    "intro": "Alleen-lezen overzicht van wijzigingen in je bedrijf: wie, wanneer en wat er veranderde.",
+    "filter": "Filter op onderdeel",
+    "allTypes": "Alles",
+    "empty": "Er zijn nog geen wijzigingen vastgelegd.",
+    "loadMore": "Meer laden",
+    "system": "Systeem",
+    "actions": {
+      "Created": "Aangemaakt",
+      "Updated": "Gewijzigd",
+      "Deleted": "Verwijderd"
+    },
+    "entities": {
+      "Workspace": "Bedrijf",
+      "Printer": "Printer",
+      "Material": "Materiaal",
+      "FilamentSpool": "Spoel",
+      "Supplier": "Leverancier",
+      "MaterialMovement": "Voorraadmutatie"
     }
   }
 }
