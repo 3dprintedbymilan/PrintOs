@@ -13,6 +13,7 @@ public sealed class IdentityModule : IModule
     {
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentWorkspace, HttpContextCurrentWorkspace>();
+        services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
 
         services.AddDataProtection()
             .SetApplicationName("PrintOs")
