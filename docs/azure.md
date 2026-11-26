@@ -29,7 +29,7 @@ Regions: PostgreSQL provisioning failed twice in Sweden Central (the same subscr
 | `Database__MigrateOnStartup` | `true` (single replica; move migrations into the pipeline before scaling out) |
 | `Cors__AllowedOrigins__0` | the web app URL |
 
-The web app gets `NUXT_PUBLIC_API_BASE` from the deploy workflow.
+The deploy workflow sets all of these on every deploy, so they are defined in the repo. The one secret, `connection-string` (the full connection string including the database password), is created by hand once in the Azure Portal (`ca-printos-api`, Security, Secrets); `ConnectionStrings__Default` references it as `secretref:connection-string`. The web app gets `NUXT_PUBLIC_API_BASE` from the workflow too.
 
 ## Deploying
 
