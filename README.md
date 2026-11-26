@@ -14,13 +14,24 @@ From filament to profit. An internal production and business management system f
 
 Nuxt / Vue 3 / TypeScript PWA, ASP.NET Core .NET 10, EF Core + PostgreSQL, ASP.NET Core Identity, SignalR, Quartz.NET, S3-compatible storage, Docker Compose, GitHub Actions, xUnit and Playwright.
 
-## Running the apps
+## Running the full stack
 
-Each app documents its own commands once it exists:
+Requires Docker.
 
-- Web: see `apps/web/README.md`
-- API: see `apps/api/README.md`
-- Full local stack: see issue #3 (Docker Compose)
+```powershell
+docker compose up -d --build
+```
+
+| Service | URL |
+|---|---|
+| Web | http://localhost:3000 |
+| API | http://localhost:5000 (`/health/ready`, `/openapi/v1.json`) |
+| PostgreSQL | localhost:5432 (user, password and database `printos`) |
+| S3-compatible storage (SeaweedFS) | http://localhost:8333, bucket `printos` |
+
+Data persists in Docker volumes; `docker compose down -v` wipes it. Copy `.env.example` to `.env` to change ports or credentials. The API applies migrations on startup in this setup.
+
+Each app documents its own commands: `apps/web/README.md`, `apps/api/README.md`.
 
 ## Working agreement
 
