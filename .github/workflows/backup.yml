@@ -1,0 +1,101 @@
+name: Backup
+
+# Two independent jobs:
+#   rehearsal: always runs on pull requests that touch the backup scripts, weekly and on demand.
+#              Starts a throwaway Postgres, backs it up, destroys it and restores it. No Azure, no secrets.
+#   backup:    nightly logical backup of the production database to Azure Blob Storage. DISABLED until the
+#              repository variables below exist (same pattern as deploy.yml). See docs/backups.md.
+#
+# Repository variables (identifiers, not secrets):
+#   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID   Entra app with a federated credential
+#   BACKUP_PG_HOST       e.g. psql-printos-ne.postgres.database.azure.com
+#   BACKUP_PG_USER       a read-only role is enough (pg_read_all_data)
+#   BACKUP_STORAGE_ACCOUNT, BACKUP_CONTAINER   target of the encrypted dumps (Storage Blob Data Contributor)
+# Repository secrets (created by hand, never committed):
+#   BACKUP_PG_PASSWORD, BACKUP_PASSPHRASE (at least 24 characters, also stored in the owner's password manager)
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/backup/**'
+      - '.github/workflows/backup.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  rehearsal:
+    name: Backup and restore rehearsal (throwaway Postgres)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Install dotnet-ef
+        run: |
+          dotnet tool install --global dotnet-ef
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+      - name: Roundtrip
+        run: bash scripts/backup/roundtrip-test.sh
+
+  backup:
+    name: Encrypted backup of production
+    runs-on: ubuntu-latest
+    needs: rehearsal
+    environment: production
+    if: ${{ github.event_name != 'pull_request' && vars.AZURE_CLIENT_ID != '' && vars.BACKUP_PG_HOST != '' && vars.BACKUP_STORAGE_ACCOUNT != '' }}
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PGHOST: ${{ vars.BACKUP_PG_HOST }}
+      PGPORT: '5432'
+      PGUSER: ${{ vars.BACKUP_PG_USER }}
+      PGPASSWORD: ${{ secrets.BACKUP_PG_PASSWORD }}
+      PGDATABASE: printos
+      PGSSLMODE: require
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      BACKUP_DIR: ${{ runner.temp }}/backups
+      PG_IMAGE: postgres:18-alpine
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Dump and encrypt
+        id: dump
+        run: |
+          export PG_EXEC="docker run --rm -i -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD -e PGDATABASE -e PGSSLMODE $PG_IMAGE"
+          file="$(bash scripts/backup/backup.sh)"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+
+      - name: Restore test on a throwaway Postgres
+        run: |
+          docker run -d --name restore-target -e POSTGRES_PASSWORD=restore-test "$PG_IMAGE"
+          for _ in $(seq 1 30); do docker exec restore-target pg_isready -q -U postgres && break; sleep 1; done
+          trap "docker rm -f restore-target" EXIT
+          env -u PGHOST PGUSER=postgres PGPASSWORD=restore-test PGSSLMODE=disable \
+            PG_EXEC="docker exec -i -e PGUSER -e PGPASSWORD restore-target" \
+            bash scripts/backup/restore-test.sh "${{ steps.dump.outputs.file }}"
+
+      - name: Upload encrypted backup
+        run: |
+          file="${{ steps.dump.outputs.file }}"
+          for f in "$file" "$file.sha256"; do
+            az storage blob upload \
+              --auth-mode login \
+              --account-name "${{ vars.BACKUP_STORAGE_ACCOUNT }}" \
+              --container-name "${{ vars.BACKUP_CONTAINER }}" \
+              --name "database/$(basename "$f")" \
+              --file "$f" \
+              --overwrite false
+          done
