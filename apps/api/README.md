@@ -26,6 +26,16 @@ dotnet run --project src/PrintOs.Api
 
 Configuration: `ConnectionStrings:Default` (override with the `ConnectionStrings__Default` environment variable). Each environment uses its own database.
 
+## Tests
+
+xUnit v3 (`tests/PrintOs.Api.Tests`). Integration tests start a real PostgreSQL container with Testcontainers, so Docker must be running.
+
+```powershell
+dotnet test
+```
+
+`global.json` opts into the Microsoft.Testing.Platform runner required by xUnit v3 on .NET 10.
+
 ## Migrations
 
 ```powershell
