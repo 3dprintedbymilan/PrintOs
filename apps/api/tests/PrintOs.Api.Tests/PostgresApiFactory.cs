@@ -7,7 +7,7 @@ namespace PrintOs.Api.Tests;
 
 public sealed class PostgresApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer postgresContainer = new PostgreSqlBuilder("postgres:17-alpine").Build();
+    private readonly PostgreSqlContainer postgresContainer = new PostgreSqlBuilder("postgres:18-alpine").Build();
 
     public async ValueTask InitializeAsync() => await postgresContainer.StartAsync();
 
