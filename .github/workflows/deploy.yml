@@ -63,9 +63,15 @@ jobs:
 
       - name: Deploy the API
         run: |
+          WEB_URL="https://$(az containerapp show -g "$RESOURCE_GROUP" -n "$WEB_APP" --query properties.configuration.ingress.fqdn -o tsv)"
           az containerapp ingress update -g "$RESOURCE_GROUP" -n "$API_APP" --target-port 8080
           az containerapp update -g "$RESOURCE_GROUP" -n "$API_APP" \
-            --image "$REGISTRY.azurecr.io/printos-api:${GITHUB_SHA}"
+            --image "$REGISTRY.azurecr.io/printos-api:${GITHUB_SHA}" \
+            --set-env-vars \
+              "ASPNETCORE_ENVIRONMENT=Production" \
+              "ConnectionStrings__Default=secretref:connection-string" \
+              "Database__MigrateOnStartup=true" \
+              "Cors__AllowedOrigins__0=$WEB_URL"
 
       - name: Deploy the web app
         run: |
