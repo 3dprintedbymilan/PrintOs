@@ -1,7 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ titleKey: 'prints.title' })
 const { t } = useI18n()
-const section = ref('printing')
+const route = useRoute()
+const section = ref(route.query.section === 'models' ? 'models' : 'printing')
 </script>
 
 <template>
@@ -12,9 +13,7 @@ const section = ref('printing')
       :options="[{ value: 'printing', label: t('prints.printing') }, { value: 'models', label: t('prints.models') }]"
     />
     <PrintLog v-if="section === 'printing'" />
-    <UiCard v-else>
-      <StateEmpty />
-    </UiCard>
+    <ModelLibrary v-else />
   </div>
 </template>
 
