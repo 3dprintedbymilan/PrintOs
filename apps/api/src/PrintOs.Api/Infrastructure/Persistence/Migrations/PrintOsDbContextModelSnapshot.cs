@@ -619,6 +619,9 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("MaterialId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("PurchaseLineId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("RemainingWeightGrams")
                         .HasColumnType("integer");
 
@@ -631,6 +634,8 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MaterialId");
+
+                    b.HasIndex("PurchaseLineId");
 
                     b.HasIndex("SupplierId");
 
@@ -1307,6 +1312,122 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.ToTable("VariantCostSnapshots", (string)null);
                 });
 
+            modelBuilder.Entity("PrintOs.Api.Modules.Purchases.Purchase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Discount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<string>("InvoiceReference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateOnly>("PurchasedOn")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ReceiptContentType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ReceiptFileKey")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("ReceiptFileName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal>("ShippingCost")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasIndex("WorkspaceId", "PurchasedOn");
+
+                    b.ToTable("Purchases", (string)null);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Purchases.PurchaseLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColorHex")
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
+
+                    b.Property<string>("ColorName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<decimal>("LandedUnitCost")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)");
+
+                    b.Property<Guid>("MaterialId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PurchaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReceivedQuantity")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<int>("WeightGramsPerSpool")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("PurchaseId");
+
+                    b.HasIndex("WorkspaceId");
+
+                    b.ToTable("PurchaseLines", (string)null);
+                });
+
             modelBuilder.Entity("PrintOs.Api.Modules.Sales.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1473,6 +1594,11 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Purchases.PurchaseLine", null)
+                        .WithMany()
+                        .HasForeignKey("PurchaseLineId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("PrintOs.Api.Modules.Inventory.Supplier", null)
                         .WithMany()
@@ -1676,6 +1802,42 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PrintOs.Api.Modules.Purchases.Purchase", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Inventory.Supplier", null)
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Purchases.PurchaseLine", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Inventory.Material", null)
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Purchases.Purchase", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PrintOs.Api.Modules.Sales.Customer", b =>
                 {
                     b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
@@ -1688,6 +1850,11 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("PrintOs.Api.Modules.Production.PrintJob", b =>
                 {
                     b.Navigation("Filaments");
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Purchases.Purchase", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }
