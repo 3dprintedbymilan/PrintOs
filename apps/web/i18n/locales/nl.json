@@ -498,5 +498,98 @@
       "failed": "Het voorbeeld kon niet geladen worden.",
       "hint": "Sleep om te draaien, knijp of scrol om te zoomen."
     }
+  },
+  "bambu": {
+    "title": "Bambu Lab",
+    "rowSubtitle": "Koppel je account voor live status",
+    "never": "nog niet",
+    "reconnect": "Opnieuw verbinden",
+    "connect": {
+      "heading": "Verbind je Bambu Lab-account",
+      "intro": "Plak je toegangstoken één keer. PrintOS vraagt nooit om je Bambu-wachtwoord en leest alleen status en printgeschiedenis. Je printer besturen kan niet.",
+      "guideTitle": "Waar vind ik het toegangstoken?",
+      "step1": "Log in op bambulab.com in je browser.",
+      "step2": "Open de ontwikkelaarstools van je browser (F12) en ga naar Application of Opslag, dan Cookies.",
+      "step3": "Kies https://bambulab.com en kopieer de waarde van de cookie met de naam token.",
+      "step4": "Plak die hieronder. Het blijft versleuteld op de server staan en wordt nooit meer getoond.",
+      "guideNote": "Dit is een onofficiële methode en Bambu Lab kan die wijzigen. Het token verloopt na een tijd; plak dan een nieuw token.",
+      "tokenLabel": "Toegangstoken",
+      "tokenHint": "Behandel het als een wachtwoord. Deel het niet.",
+      "show": "Token tonen",
+      "hide": "Token verbergen",
+      "region": "Regio van je account",
+      "regions": {
+        "global": "Wereldwijd (Europa, Amerika en andere)",
+        "china": "China"
+      },
+      "submit": "Verbinden"
+    },
+    "connected": {
+      "heading": "Verbonden",
+      "chip": "Verbonden",
+      "account": "Account: {name}",
+      "lastSync": "Laatst gesynchroniseerd: {time}",
+      "flagged": "{count} geïmporteerde prints hebben geen filament afgeboekt. Controleer ze in je printlog.",
+      "refresh": "Nu synchroniseren",
+      "retry": "Opnieuw proberen",
+      "done": "Verbonden met Bambu Lab.",
+      "refreshed": "Gesynchroniseerd met Bambu Lab."
+    },
+    "devices": {
+      "heading": "Je printers",
+      "empty": "Geen printers gevonden op dit account.",
+      "online": "Online",
+      "offline": "Offline",
+      "linkLabel": "Koppel {name} aan",
+      "createNew": "Nieuwe printer aanmaken (A1-standaard)",
+      "link": "Printer koppelen",
+      "unlink": "Ontkoppelen",
+      "linkedTo": "Gekoppeld aan {printer}",
+      "linked": "Printer gekoppeld. Live status start zo.",
+      "unlinked": "Printer ontkoppeld."
+    },
+    "disconnect": {
+      "button": "Bambu Lab ontkoppelen",
+      "title": "Bambu Lab ontkoppelen?",
+      "body": "Het opgeslagen token wordt verwijderd en de live status stopt. Je printers en geïmporteerde prints blijven staan.",
+      "confirm": "Ontkoppelen",
+      "cancel": "Annuleren",
+      "done": "Losgekoppeld van Bambu Lab."
+    },
+    "errors": {
+      "required": "Plak je toegangstoken.",
+      "spaces": "Het token bevat spaties. Kopieer alleen de waarde.",
+      "rejected": "Bambu Lab accepteert dit token niet. Kopieer een nieuw token en probeer opnieuw.",
+      "unreachable": "Bambu Lab is nu niet bereikbaar. Probeer het over een minuut opnieuw.",
+      "unreachableTitle": "Bambu Lab antwoordt niet",
+      "generic": "Er ging iets mis. Probeer het opnieuw.",
+      "link": "De koppeling kon niet worden gewijzigd. Probeer het opnieuw.",
+      "expiredTitle": "Je token is verlopen",
+      "expiredBody": "Plak hieronder een nieuw toegangstoken om opnieuw te verbinden. Je printers en prints blijven staan.",
+      "expiredShort": "Bambu Lab-token verlopen."
+    },
+    "state": {
+      "idle": "Inactief",
+      "printing": "Bezig met printen",
+      "paused": "Gepauzeerd",
+      "finished": "Klaar",
+      "failed": "Mislukt",
+      "offline": "Offline"
+    },
+    "live": {
+      "remaining": "Nog {time}",
+      "layer": "Laag {layer} van {total}",
+      "nozzle": "Nozzle {value} °C",
+      "bed": "Bed {value} °C"
+    },
+    "now": {
+      "title": "Wat print ik nu",
+      "notConnected": "Verbind je Bambu Lab-account om hier live prints te zien.",
+      "connect": "Bambu Lab verbinden",
+      "noPrinters": "Er is nog geen printer gekoppeld.",
+      "link": "Printer koppelen",
+      "nothing": "Er wordt nu niets geprint.",
+      "unnamed": "Naamloze print"
+    }
   }
 }
