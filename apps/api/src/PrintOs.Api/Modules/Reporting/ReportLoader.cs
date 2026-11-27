@@ -22,6 +22,7 @@ public static class ReportLoader
         var fromUtc = new DateTimeOffset(from.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
         var toUtc = new DateTimeOffset(to.AddDays(1).ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
         var names = await LoadVariantNamesAsync(dbContext, cancellationToken);
+        var customers = await LoadCustomerNamesAsync(dbContext, cancellationToken);
         var facts = new List<SaleFact>();
 
         var orders = await dbContext.Set<Order>()
@@ -29,6 +30,7 @@ public static class ReportLoader
             .Select(order => new
             {
                 order.OrderedAt,
+                order.CustomerId,
                 order.Subtotal,
                 order.TotalAmount,
                 Lines = order.Lines.Select(line => new { line.VariantId, line.Description, line.Sku, line.Quantity, line.LineTotal, line.UnitCost }).ToList(),
@@ -51,7 +53,9 @@ public static class ReportLoader
                     ReportMath.AllocateRevenue(line.LineTotal, order.Subtotal, order.TotalAmount),
                     line.Quantity * (line.UnitCost ?? 0m),
                     line.UnitCost is not null,
-                    names));
+                    names,
+                    order.CustomerId,
+                    customers));
             }
         }
 
@@ -62,6 +66,7 @@ public static class ReportLoader
             .Select(sale => new
             {
                 sale.MarketId,
+                sale.CustomerId,
                 sale.BusinessDate,
                 sale.Subtotal,
                 sale.TotalAmount,
@@ -85,11 +90,13 @@ public static class ReportLoader
                     ReportMath.AllocateRevenue(line.LineTotal, sale.Subtotal, sale.TotalAmount),
                     line.Quantity * (line.UnitCost ?? 0m),
                     line.UnitCost is not null,
-                    names));
+                    names,
+                    sale.CustomerId,
+                    customers));
             }
         }
 
-        facts.AddRange(await LoadOrderReturnsAsync(dbContext, fromUtc, toUtc, names, cancellationToken));
+        facts.AddRange(await LoadOrderReturnsAsync(dbContext, fromUtc, toUtc, names, customers, cancellationToken));
 
         var marketCosts = await dbContext.Set<Market>()
             .Where(market => market.StartDate >= fromDay && market.StartDate <= to && market.StandCost > 0)
@@ -151,6 +158,7 @@ public static class ReportLoader
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,
         Dictionary<Guid, VariantName> names,
+        Dictionary<Guid, string> customers,
         CancellationToken cancellationToken)
     {
         var returns = await dbContext.Set<FinishedStockMovement>()
@@ -172,6 +180,7 @@ public static class ReportLoader
             .Select(order => new
             {
                 order.Id,
+                order.CustomerId,
                 order.Subtotal,
                 order.TotalAmount,
                 Lines = order.Lines.Select(line => new { line.VariantId, line.Description, line.Sku, line.Quantity, line.LineTotal, line.UnitCost }).ToList(),
@@ -206,7 +215,9 @@ public static class ReportLoader
                 -item.Delta * netUnitPrice,
                 -item.Delta * (unitCost ?? 0m),
                 unitCost is not null,
-                names));
+                names,
+                order.CustomerId,
+                customers));
         }
 
         return facts;
@@ -224,15 +235,21 @@ public static class ReportLoader
         decimal revenue,
         decimal cost,
         bool costKnown,
-        Dictionary<Guid, VariantName> names)
+        Dictionary<Guid, VariantName> names,
+        Guid? customerId,
+        Dictionary<Guid, string> customers)
     {
+        var customerName = customerId is { } customer ? customers.GetValueOrDefault(customer) : null;
         if (variantId is { } id && names.TryGetValue(id, out var name))
         {
-            return new SaleFact(day, channel, marketId, marketName, name.ProductId, name.ProductName, id, Label(name), name.Sku ?? sku, quantity, revenue, cost, costKnown);
+            return new SaleFact(day, channel, marketId, marketName, name.ProductId, name.ProductName, id, Label(name), name.Sku ?? sku, quantity, revenue, cost, costKnown, customerId, customerName);
         }
 
-        return new SaleFact(day, channel, marketId, marketName, null, null, variantId, description, sku, quantity, revenue, cost, costKnown);
+        return new SaleFact(day, channel, marketId, marketName, null, null, variantId, description, sku, quantity, revenue, cost, costKnown, customerId, customerName);
     }
+
+    public static async Task<Dictionary<Guid, string>> LoadCustomerNamesAsync(PrintOsDbContext dbContext, CancellationToken cancellationToken) =>
+        await dbContext.Set<Customer>().ToDictionaryAsync(customer => customer.Id, customer => customer.Name, cancellationToken);
 
     private static string Label(VariantName name) => $"{name.ProductName} - {name.Name}";
 

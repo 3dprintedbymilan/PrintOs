@@ -102,6 +102,26 @@ const stamp = computed(() => (report.value ? `${report.value.period.from}_${repo
           :title="$t('reports.bestsellers.title')"
           :subtitle="$t('business.bestsellersSubtitle')"
         />
+        <UiListRow
+          :to="`/reports/production?${baseQuery}`"
+          :title="$t('analytics.production.title')"
+          :subtitle="$t('analytics.production.subtitle')"
+        />
+        <UiListRow
+          :to="`/reports/sales?${baseQuery}`"
+          :title="$t('analytics.sales.title')"
+          :subtitle="$t('analytics.sales.subtitle')"
+        />
+        <UiListRow
+          :to="`/reports/inventory?${baseQuery}`"
+          :title="$t('analytics.inventory.title')"
+          :subtitle="$t('analytics.inventory.subtitle')"
+        />
+        <UiListRow
+          :to="`/reports/profitability?${baseQuery}`"
+          :title="$t('analytics.profit.title')"
+          :subtitle="$t('analytics.profit.subtitle')"
+        />
       </nav>
 
       <UiCard>

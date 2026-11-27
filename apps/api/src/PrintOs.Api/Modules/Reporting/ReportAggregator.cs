@@ -32,7 +32,9 @@ public sealed record SaleFact(
     int Quantity,
     decimal Revenue,
     decimal Cost,
-    bool CostKnown);
+    bool CostKnown,
+    Guid? CustomerId = null,
+    string? CustomerName = null);
 
 public sealed record MarketCostFact(Guid MarketId, string Name, DateOnly Day, decimal StandCost);
 

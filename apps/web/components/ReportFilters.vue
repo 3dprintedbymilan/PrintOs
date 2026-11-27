@@ -2,7 +2,7 @@
 import { reportChannels, reportPeriods } from '~/utils/reports'
 import type { ReportChannel, ReportPeriodKind } from '~/utils/reports'
 
-defineProps<{ rangeError: 'from' | 'to' | null }>()
+withDefaults(defineProps<{ rangeError: 'from' | 'to' | null, showChannel?: boolean }>(), { showChannel: true })
 
 const period = defineModel<ReportPeriodKind>('period', { required: true })
 const channel = defineModel<ReportChannel>('channel', { required: true })
@@ -43,6 +43,7 @@ const channelOptions = computed(() => reportChannels.map(value => ({ value, labe
       </div>
     </div>
     <UiSegmentedControl
+      v-if="showChannel"
       v-model="channel"
       :label="$t('reports.channel.label')"
       :options="channelOptions"
