@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using PrintOs.Api.Infrastructure.ErrorHandling;
 using PrintOs.Api.Infrastructure.Persistence;
@@ -13,8 +14,9 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) => loggerConfig
     .ReadFrom.Services(services)
     .Enrich.FromLogContext());
 
-builder.Services.AddDbContext<PrintOsDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddDbContext<PrintOsDbContext>((provider, options) =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Default"))
+        .AddInterceptors(provider.GetServices<ISaveChangesInterceptor>()));
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy

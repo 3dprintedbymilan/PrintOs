@@ -24,7 +24,8 @@ public sealed class PostgresApiFactory : WebApplicationFactory<Program>, IAsyncL
             {
                 ["ConnectionStrings:Default"] = postgresContainer.GetConnectionString(),
                 ["Database:MigrateOnStartup"] = "true",
-                ["Storage:Provider"] = "Memory"
+                ["Storage:Provider"] = "Memory",
+                ["Scheduling:Enabled"] = "false"
             }));
     }
 }

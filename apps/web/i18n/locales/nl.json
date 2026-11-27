@@ -1868,5 +1868,59 @@
       "done": "{name} is gedownload.",
       "failed": "De export is mislukt. Probeer opnieuw."
     }
+  },
+  "schedule": {
+    "title": "Planning",
+    "back": "Terug naar de wachtrij",
+    "open": "Planning bekijken",
+    "horizonLabel": "Periode",
+    "horizon": "{days} dagen",
+    "replan": "Nu herplannen",
+    "replanned": "Herplanning klaar: {count} job naar een andere printer verplaatst. | Herplanning klaar: {count} jobs naar een andere printer verplaatst.",
+    "replannedNone": "Herplanning klaar: alles stond al goed.",
+    "readOnlyHint": "PrintOS leest je printers alleen uit. Starten doe je zelf op de printer; de planning is een voorstel.",
+    "empty": "Er staat niets gepland. Maak jobs aan in de wachtrij.",
+    "noPrinters": "Voeg eerst een printer toe om te kunnen plannen.",
+    "laneFree": "Vrij: er staat niets gepland.",
+    "blockedTitle": "Kan niet ingepland worden",
+    "blockedHint": "Pas de job aan of los het probleem op, dan neemt de planning hem vanzelf mee.",
+    "reason": {
+      "NoPrinter": "Geen printer beschikbaar",
+      "TooLarge": "Past op geen enkele printer",
+      "FilamentShort": "Te weinig filament",
+      "PrinterUnavailable": "Vastgezette printer niet beschikbaar"
+    },
+    "priority": {
+      "0": "Laag",
+      "1": "Normaal",
+      "2": "Hoog",
+      "3": "Dringend"
+    },
+    "late": "Te laat",
+    "pinned": "Vastgezet",
+    "estimated": "geschat op {minutes} min",
+    "auto": "Automatisch",
+    "edit": "Aanpassen",
+    "editLabel": "{name} aanpassen",
+    "saved": "{name} bijgewerkt.",
+    "beyond": "Nog {count} job staat verder dan de gekozen periode. | Nog {count} jobs staan verder dan de gekozen periode.",
+    "fields": {
+      "priority": "Prioriteit",
+      "printer": "Printer",
+      "start": "Vaste starttijd (optioneel)",
+      "startHint": "Alleen met een gekozen printer. Leeg laten voor de eerste vrije plek.",
+      "partSize": "Afmeting van het stuk (mm, optioneel)",
+      "partX": "Breedte",
+      "partY": "Diepte",
+      "partZ": "Hoogte",
+      "partSizeHint": "Met een afmeting kiest de planning alleen printers waar het stuk op past."
+    },
+    "errors": {
+      "action": "Dat lukte niet. Probeer het opnieuw.",
+      "rejected": "De planning weigerde deze waarden. Controleer ze en probeer opnieuw.",
+      "partSize": "Vul breedte, diepte en hoogte in (hele getallen van 1 tot 2000), of laat alles leeg.",
+      "start": "Geef een geldige datum en tijd op.",
+      "startNeedsPrinter": "Kies eerst een printer voor een vaste starttijd."
+    }
   }
 }

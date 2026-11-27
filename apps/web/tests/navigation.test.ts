@@ -19,6 +19,8 @@ describe('navigation active state', () => {
   it('highlights Prints for jobs and models', () => {
     expect(isPrimaryActive(byPath('/prints'), '/print-jobs/1')).toBe(true)
     expect(isPrimaryActive(byPath('/prints'), '/models/1')).toBe(true)
+    expect(isPrimaryActive(byPath('/prints'), '/schedule')).toBe(true)
+    expect(activeSecondary('/schedule')).toBe('/schedule')
   })
 
   it('does not match on a shared prefix without a segment boundary', () => {

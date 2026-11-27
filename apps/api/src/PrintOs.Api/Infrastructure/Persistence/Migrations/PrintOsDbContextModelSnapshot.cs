@@ -1463,11 +1463,31 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("OrderLineId")
                         .HasColumnType("uuid");
 
+                    b.Property<int?>("PartXMillimetres")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PartYMillimetres")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PartZMillimetres")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("PinnedStartAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("PlannedUnits")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("PrinterId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("PrinterPinned")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Priority")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<Guid?>("ProductVariantId")
                         .HasColumnType("uuid");
