@@ -69,7 +69,11 @@ public class AccountDataTests(PostgresApiFactory factory) : IClassFixture<Postgr
         var printer = new PrinterRequest("Bambu A1 " + modelName, "A1", 256, 256, 256, 0.4m, 150, 400m, 5000);
         Assert.Equal(HttpStatusCode.Created, (await session.Client.PostAsJsonAsync("/api/printers", printer, cancellationToken)).StatusCode);
 
-        Assert.Equal(HttpStatusCode.Created, (await session.Client.PostAsJsonAsync("/api/customers", new PrintOs.Api.Modules.Sales.CustomerRequest("Customer " + modelName, "klant@example.com", null, null, null, null), cancellationToken)).StatusCode);
+        var customerResponse = await session.Client.PostAsJsonAsync("/api/customers", new PrintOs.Api.Modules.Sales.CustomerRequest("Customer " + modelName, "klant@example.com", null, null, null, null), cancellationToken);
+        Assert.Equal(HttpStatusCode.Created, customerResponse.StatusCode);
+        var customerId = (await customerResponse.Content.ReadFromJsonAsync<JsonElement>(cancellationToken)).GetProperty("id").GetGuid();
+        var order = new PrintOs.Api.Modules.Sales.OrderRequest(customerId, null, null, null, null, null, [new PrintOs.Api.Modules.Sales.OrderLineRequest(null, null, "Gift " + modelName, 1, 5m, null, null)], null);
+        Assert.Equal(HttpStatusCode.Created, (await session.Client.PostAsJsonAsync("/api/orders", order, cancellationToken)).StatusCode);
 
         var license = await session.Client.PostAsJsonAsync("/api/licenses", new LicenseRequest("Lic " + modelName, "Other", "Commercial", false, null, null, null, null, null, null), cancellationToken);
         var licenseId = (await license.Content.ReadFromJsonAsync<JsonElement>(cancellationToken)).GetProperty("id").GetGuid();
@@ -147,6 +151,7 @@ public class AccountDataTests(PostgresApiFactory factory) : IClassFixture<Postgr
         Assert.Contains("Benchy", Text(entries, "data/PrintModel.json"));
         Assert.Contains("Bambu A1 Benchy", Text(entries, "data/Printer.json"));
         Assert.Contains("klant@example.com", Text(entries, "data/Customer.json"));
+        Assert.Contains("Gift Benchy", Text(entries, "data/OrderLine.json"));
         Assert.Contains(session.Email, Text(entries, "data/Account.json"));
         Assert.Contains(session.WorkspaceName, Text(entries, "data/Workspace.json"));
         Assert.Contains("AuditEntry", string.Join(",", entries.Keys));

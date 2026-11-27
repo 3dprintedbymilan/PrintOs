@@ -36,6 +36,9 @@ public static class ExportCatalog
         [typeof(ProductVariant)] = "Variants of a product with price.",
         [typeof(BomLine)] = "Bill of materials lines of a variant.",
         [typeof(Customer)] = "Customers: contact details, VAT number and notes.",
+        [typeof(Order)] = "Orders with status, totals, payment status, due date and notes.",
+        [typeof(OrderLine)] = "Order lines with the price and cost frozen at the time of the order.",
+        [typeof(OrderPayment)] = "Payments recorded against orders.",
         [typeof(VariantCostSnapshot)] = "Calculated cost and margin snapshots of variants.",
     };
 }
