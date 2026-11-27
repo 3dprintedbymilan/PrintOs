@@ -17,6 +17,9 @@ public static class ReportEndpoints
         group.MapGet("/margin", GetMarginAsync);
         group.MapGet("/bestsellers", GetBestsellersAsync);
         group.MapGet("/slow-movers", GetSlowMoversAsync);
+        group.MapGet("/margin/export", ExportMarginAsync);
+        group.MapGet("/bestsellers/export", ExportBestsellersAsync);
+        group.MapGet("/slow-movers/export", ExportSlowMoversAsync);
     }
 
     public static ReportQuery? ParseQuery(
@@ -238,5 +241,99 @@ public static class ReportEndpoints
             rows.Count,
             ReportMath.Round(rows.Sum(row => row.StockValue)),
             rows);
+    }
+
+    private static IResult Csv(byte[] content, string name) => TypedResults.File(content, "text/csv; charset=utf-8", name + ".csv");
+
+    private static string Stamp(ReportPeriod period) => $"{period.From:yyyy-MM-dd}_{period.To:yyyy-MM-dd}";
+
+    private static async Task<IResult> ExportMarginAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        TimeProvider clock,
+        CancellationToken cancellationToken,
+        string? period = null,
+        DateOnly? date = null,
+        DateOnly? from = null,
+        DateOnly? to = null,
+        string? channel = null,
+        Guid? productId = null,
+        string? part = null)
+    {
+        var query = ParseQuery(clock, period, date, from, to, channel, productId, out var errors);
+        var trend = string.Equals(part, "trend", StringComparison.OrdinalIgnoreCase);
+        if (!trend && !string.IsNullOrEmpty(part) && !string.Equals(part, "breakdown", StringComparison.OrdinalIgnoreCase))
+        {
+            errors["part"] = ["Use breakdown or trend."];
+        }
+
+        if (query is null || errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var report = await BuildMarginAsync(dbContext, currentWorkspace, query, cancellationToken);
+        return trend
+            ? Csv(ReportCsv.MarginTrend(report), $"margin-trend-{Stamp(query.Period)}")
+            : Csv(ReportCsv.Margin(report), $"margin-{Stamp(query.Period)}");
+    }
+
+    private static async Task<IResult> ExportBestsellersAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        TimeProvider clock,
+        CancellationToken cancellationToken,
+        string? period = null,
+        DateOnly? date = null,
+        DateOnly? from = null,
+        DateOnly? to = null,
+        string? channel = null,
+        Guid? productId = null,
+        string? level = null,
+        string? sort = null)
+    {
+        var query = ParseQuery(clock, period, date, from, to, channel, productId, out var errors);
+        var levelKey = level?.Trim().ToLowerInvariant();
+        var productLevel = levelKey != "variant";
+        if (levelKey is not (null or "" or "product" or "variant"))
+        {
+            errors["level"] = ["Use product or variant."];
+        }
+
+        var sortKey = sort?.Trim().ToLowerInvariant();
+        if (sortKey is not (null or "" or "units" or "revenue" or "profit"))
+        {
+            errors["sort"] = ["Use units, revenue or profit."];
+        }
+
+        if (query is null || errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var report = await BuildBestsellersAsync(dbContext, currentWorkspace, query, productLevel, MaximumRankingLimit, cancellationToken);
+        var items = sortKey switch
+        {
+            "revenue" => report.ByRevenue,
+            "profit" => report.ByProfit,
+            _ => report.ByUnits,
+        };
+        return Csv(ReportCsv.Bestsellers(items), $"bestsellers-{Stamp(query.Period)}");
+    }
+
+    private static async Task<IResult> ExportSlowMoversAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        TimeProvider clock,
+        CancellationToken cancellationToken,
+        int? days = null)
+    {
+        if (days is < 1 or > MaximumSlowMoverDays)
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]> { ["days"] = [$"Use between 1 and {MaximumSlowMoverDays} days."] });
+        }
+
+        var report = await BuildSlowMoversAsync(dbContext, currentWorkspace, clock, days ?? DefaultSlowMoverDays, cancellationToken);
+        return Csv(ReportCsv.SlowMovers(report.Items), $"slow-movers-{report.Days}d");
     }
 }

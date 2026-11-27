@@ -21,7 +21,7 @@ test('bottom navigation has four tabs and navigates between sections', async ({ 
 
   await nav.getByRole('link', { name: 'Bedrijf' }).click()
   await expect(page).toHaveURL(/\/business$/)
-  await expect(page.getByRole('main').getByText('Winstmarges')).toBeVisible()
+  await expect(page.getByRole('main').getByText('Rapporten')).toBeVisible()
 })
 
 for (const route of ['/', '/prints', '/inventory', '/business']) {

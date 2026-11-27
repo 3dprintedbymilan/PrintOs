@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deltaTrend, reportDate, reportQuery } from '~/utils/reports'
+import { reportDate, reportQuery } from '~/utils/reports'
 import type { MarginReport } from '~/utils/reports'
 
 definePageMeta({ titleKey: 'reports.margin.title' })
@@ -51,46 +51,6 @@ const previousText = computed(() => (report.value ? t('reports.previousRange', {
 const empty = computed(() => !!report.value && report.value.current.units === 0 && report.value.current.revenue === 0 && report.value.current.standCosts === 0)
 const productLabel = computed(() => report.value?.products[0]?.label ?? '')
 
-function signed(value: number, formatter: (v: number) => string) {
-  return `${value > 0 ? '+' : ''}${formatter(value)}`
-}
-
-function changeText(change: number, percentChange: number | null) {
-  if (percentChange === null) return t('reports.deltaAbsolute', { change: signed(change, money) })
-  return t('reports.deltaPercent', { percent: `${percentChange > 0 ? '+' : ''}${n(percentChange, { maximumFractionDigits: 1 })}%` })
-}
-
-const tiles = computed(() => {
-  const data = report.value
-  if (!data) return []
-  const { current, delta } = data
-  const hasPrevious = data.previous.revenue !== 0 || data.previous.cost !== 0
-  return [
-    {
-      key: 'revenue',
-      label: t('reports.revenue'),
-      value: money(current.revenue),
-      delta: hasPrevious ? changeText(delta.revenueChange, delta.revenueChangePercent) : undefined,
-      trend: deltaTrend(delta.revenueChange),
-    },
-    { key: 'cost', label: t('reports.cost'), value: money(current.cost), delta: undefined, trend: 'up' as const },
-    {
-      key: 'profit',
-      label: t('reports.grossProfit'),
-      value: money(current.grossProfit),
-      delta: hasPrevious ? changeText(delta.grossProfitChange, delta.grossProfitChangePercent) : undefined,
-      trend: deltaTrend(delta.grossProfitChange),
-    },
-    {
-      key: 'margin',
-      label: t('reports.marginPercent'),
-      value: percent(current.marginPercent),
-      delta: delta.marginPointsChange === null ? undefined : t('reports.deltaPoints', { points: `${delta.marginPointsChange > 0 ? '+' : ''}${n(delta.marginPointsChange, { maximumFractionDigits: 1 })}` }),
-      trend: deltaTrend(delta.marginPointsChange ?? 0),
-    },
-  ]
-})
-
 const channelLabel = (row: { key: string }) => t(`reports.channel.${row.key}`)
 </script>
 
@@ -136,20 +96,7 @@ const channelLabel = (row: { key: string }) => t(`reports.channel.${row.key}`)
         :message="$t('reports.margin.empty')"
       />
       <template v-else>
-        <div
-          class="tiles"
-          role="group"
-          :aria-label="$t('reports.kpiLabel')"
-        >
-          <UiKpiTile
-            v-for="tile in tiles"
-            :key="tile.key"
-            :label="tile.label"
-            :value="tile.value"
-            :delta="tile.delta"
-            :trend="tile.trend"
-          />
-        </div>
+        <ReportKpiTiles :report="report" />
         <p
           v-if="!report.current.costComplete"
           class="note"
@@ -176,6 +123,12 @@ const channelLabel = (row: { key: string }) => t(`reports.channel.${row.key}`)
             :granularity="report.granularity"
           />
         </UiCard>
+
+        <ReportExportButton
+          :path="`/api/reports/margin/export?${reportQuery(filter)}`"
+          :file-name="`margin-${report.period.from}_${report.period.to}.csv`"
+          :label="$t('reports.export.margin')"
+        />
 
         <UiCard v-if="report.channels.length > 1">
           <h2>{{ $t('reports.byChannel') }}</h2>
@@ -217,7 +170,6 @@ const channelLabel = (row: { key: string }) => t(`reports.channel.${row.key}`)
 
 <style scoped>
 .stack { display: grid; gap: var(--space-3); }
-.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
 h2 { margin: 0 0 var(--space-2); font-size: var(--font-size-md); }
 .range-text { margin: 0; color: var(--text); font-size: var(--font-size-sm); font-weight: 600; }
 .range-text span { color: var(--muted); font-weight: 400; }
@@ -230,5 +182,4 @@ h2 { margin: 0 0 var(--space-2); font-size: var(--font-size-md); }
 .net dt { color: var(--muted); }
 .net dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
 .net .total dt, .net .total dd { color: var(--text); font-weight: 700; }
-@media (min-width: 768px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 </style>
