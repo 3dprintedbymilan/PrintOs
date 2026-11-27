@@ -1,10 +1,12 @@
 ﻿<script setup lang="ts">
 import type { Customer, CustomerErrorKind, CustomerField, CustomerFormValues } from '~/utils/customers'
+import type { OrderSummary } from '~/utils/orders'
+import { orderLabel, orderPaymentTone, orderStatusTone } from '~/utils/orders'
 import { customerToForm, emptyCustomerForm, validateCustomerForm } from '~/utils/customers'
 
 definePageMeta({ titleKey: 'customers.formTitle' })
 
-const { t } = useI18n()
+const { t, n } = useI18n()
 const route = useRoute()
 const auth = useAuthStore()
 
@@ -17,6 +19,8 @@ const status = ref<'loading' | 'ready' | 'failed'>(isNew ? 'ready' : 'loading')
 const saving = ref(false)
 const saveError = ref('')
 const archived = ref(false)
+const orders = ref<OrderSummary[]>([])
+const ordersFailed = ref(false)
 
 async function load() {
   status.value = 'loading'
@@ -68,8 +72,20 @@ async function setArchived(value: boolean) {
   }
 }
 
+async function loadOrders() {
+  ordersFailed.value = false
+  try {
+    orders.value = await auth.authorizedFetch<OrderSummary[]>('/api/orders', { query: { customerId: id } })
+  }
+  catch {
+    ordersFailed.value = true
+  }
+}
+
 onMounted(() => {
-  if (!isNew) load()
+  if (isNew) return
+  load()
+  loadOrders()
 })
 </script>
 
@@ -129,6 +145,53 @@ onMounted(() => {
         {{ archived ? $t('customers.restore') : $t('customers.archive') }}
       </UiButton>
     </form>
+
+    <section
+      v-if="!isNew && status === 'ready'"
+      class="history"
+      :aria-label="$t('customers.orders')"
+    >
+      <h3>{{ $t('customers.orders') }}</h3>
+      <p
+        v-if="ordersFailed"
+        class="error"
+        role="alert"
+      >
+        {{ $t('customers.ordersFailed') }}
+      </p>
+      <p
+        v-else-if="orders.length === 0"
+        class="hint"
+      >
+        {{ $t('customers.noOrders') }}
+      </p>
+      <UiListRow
+        v-for="order in orders"
+        :key="order.id"
+        :to="`/orders/${order.id}`"
+        :title="orderLabel(order.number)"
+        :subtitle="n(order.totalAmount, { style: 'currency', currency: order.currency })"
+      >
+        <template #trailing>
+          <span class="chips">
+            <UiStatusChip :status="orderStatusTone[order.status]">
+              {{ $t(`orders.status.${order.status}`) }}
+            </UiStatusChip>
+            <UiStatusChip :status="orderPaymentTone[order.paymentStatus]">
+              {{ $t(`orders.payment.${order.paymentStatus}`) }}
+            </UiStatusChip>
+          </span>
+        </template>
+      </UiListRow>
+      <UiButton
+        v-if="!archived"
+        variant="secondary"
+        block
+        @click="navigateTo({ path: '/orders/new', query: { customerId: id } })"
+      >
+        {{ $t('customers.newOrder') }}
+      </UiButton>
+    </section>
   </div>
 </template>
 
@@ -136,5 +199,9 @@ onMounted(() => {
 .stack, .form { display: grid; gap: var(--space-3); }
 .back { display: inline-flex; align-items: center; justify-self: start; min-height: var(--tap-size); color: var(--accent); font-weight: 600; text-decoration: none; }
 .heading { margin: 0; font-size: var(--font-size-lg); }
+.history { display: grid; gap: var(--space-3); }
+.history h3 { margin: 0; font-size: var(--font-size-md); }
+.hint { margin: 0; color: var(--muted); font-size: var(--font-size-sm); }
+.chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-1); }
 .error { margin: 0; color: var(--danger); font-size: var(--font-size-sm); }
 </style>
