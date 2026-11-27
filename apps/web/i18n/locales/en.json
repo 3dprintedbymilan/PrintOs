@@ -11,7 +11,7 @@
     "business": "Business"
   },
   "home": {
-    "title": "Production Overview",
+    "title": "Production overview",
     "subtitle": "Real-time business performance",
     "period": {
       "label": "Period",
@@ -44,7 +44,7 @@
     "trend": {
       "title": "Print hours per day",
       "empty": "No finished prints in this period yet.",
-      "bar": "{date}: {hours} h, {count} prints"
+      "bar": "{date}: {hours} h, {count} print | {date}: {hours} h, {count} prints"
     },
     "empty": "Nothing printed in this period yet. Log a print to see your production here.",
     "recent": {
@@ -53,9 +53,9 @@
       "all": "All prints"
     },
     "licenses": {
-      "title": "Licenses",
-      "expired": "{count} license expired | {count} licenses expired",
-      "soon": "{count} license expires within 30 days | {count} licenses expire within 30 days",
+      "title": "Licences",
+      "expired": "{count} licence expired | {count} licences expired",
+      "soon": "{count} licence expires within 30 days | {count} licences expire within 30 days",
       "review": "Review"
     }
   },
@@ -131,12 +131,12 @@
     }
   },
   "business": {
-    "title": "Business & Operations",
+    "title": "Business and operations",
     "orders": "Orders",
-    "calculator": "Cost Calculator",
-    "margins": "Profit Margins",
-    "licenses": "Licenses",
-    "marketStock": "Market Stock",
+    "calculator": "Cost calculator",
+    "margins": "Profit margins",
+    "licenses": "Licences",
+    "marketStock": "Market stock",
     "settings": "Settings",
     "settingsSubtitle": "Business name, rates and language",
     "printers": "Printers",
@@ -168,7 +168,8 @@
       "invalidCredentials": "That email and password don't match. Check them and try again.",
       "locked": "Too many failed attempts. Try again in 15 minutes.",
       "network": "Can't reach the server. Check your connection and try again.",
-      "unknown": "Something went wrong. Try again in a moment."
+      "unknown": "Something went wrong. Try again in a moment.",
+      "emailTaken": "An account with this email address already exists."
     }
   },
   "account": {
@@ -179,7 +180,11 @@
   "common": {
     "close": "Close",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "rejected": "This value was not accepted. Check it and try again.",
+    "serverErrors": {
+      "spoolStock": "This spool only has {grams} g left."
+    }
   },
   "theme": {
     "label": "Theme",
@@ -224,7 +229,7 @@
     },
     "errors": {
       "required": "Enter {field}.",
-      "number": "{field} must be a number, for example 0,30.",
+      "number": "{field} must be a number, for example 0.30.",
       "range": "{field} is too high.",
       "save": "Could not save your settings. Try again.",
       "network": "Can't reach the server. Check your connection and try again."
@@ -293,7 +298,7 @@
     }
   },
   "calculator": {
-    "title": "Cost Calculator",
+    "title": "Cost calculator",
     "savedTitle": "Saved calculations",
     "snapshotTitle": "Saved calculation",
     "back": "Back to calculator",
@@ -351,7 +356,7 @@
     },
     "errors": {
       "required": "Enter {field}.",
-      "number": "{field} must be a number, for example 12,5.",
+      "number": "{field} must be a number, for example 12.5.",
       "range": "{field} is too high.",
       "positive": "{field} must be more than zero.",
       "margin": "{field} must be below 100%.",
@@ -406,8 +411,8 @@
       "startedAt": "Started",
       "finishedAt": "Finished",
       "spool": "Spool",
-      "grams": "Used (gram)",
-      "waste": "Of which waste (gram)",
+      "grams": "Used (grams)",
+      "waste": "Of which waste (grams)",
       "finishedUnits": "Finished units",
       "notes": "Notes"
     },
@@ -428,15 +433,15 @@
       "finish": "Finish print"
     },
     "errors": {
-      "required": "Fill in {field}.",
+      "required": "Enter {field}.",
       "number": "{field} must be a whole number.",
-      "range": "{field} is out of range.",
+      "range": "{field} is outside the allowed range.",
       "date": "{field} is not a valid date and time.",
       "order": "The finish time cannot be before the start time.",
       "duplicate": "This spool is already used in this print.",
       "waste": "Waste cannot be more than the weight used.",
-      "save": "Saving failed. Please try again.",
-      "network": "No connection. Check your network and try again."
+      "save": "Could not save. Try again.",
+      "network": "Can't reach the server. Check your connection and try again."
     }
   },
   "audit": {
@@ -458,7 +463,110 @@
       "Material": "Material",
       "FilamentSpool": "Spool",
       "Supplier": "Supplier",
-      "MaterialMovement": "Stock movement"
+      "MaterialMovement": "Stock movement",
+      "CostSnapshot": "Saved calculation",
+      "License": "Licence",
+      "PrintModel": "Model",
+      "PrintModelVersion": "Model version",
+      "PrintJob": "Print",
+      "PrintJobFilament": "Print filament",
+      "Product": "Product",
+      "ProductVariant": "Product variant",
+      "BomLine": "BOM line",
+      "VariantCostSnapshot": "Saved cost",
+      "BambuConnection": "Bambu Lab connection",
+      "BambuDevice": "Bambu Lab printer"
+    },
+    "fields": {
+      "accountName": "Account name",
+      "amount": "Amount",
+      "archivedAt": "Archived on",
+      "balanceAfterGrams": "Balance after (grams)",
+      "buildVolumeXMillimetres": "Width (mm)",
+      "buildVolumeYMillimetres": "Depth (mm)",
+      "buildVolumeZMillimetres": "Height (mm)",
+      "colorHex": "Colour code",
+      "colorName": "Colour",
+      "cost": "Purchase cost",
+      "currency": "Currency",
+      "deltaGrams": "Change (grams)",
+      "description": "Description",
+      "durationMinutes": "Duration (minutes)",
+      "electricityPricePerKwh": "Electricity price (per kWh)",
+      "feePercent": "Platform fees (%)",
+      "fileName": "File name",
+      "finishedAt": "Finished",
+      "finishedUnits": "Finished units",
+      "format": "Format",
+      "grams": "Grams",
+      "infillPercent": "Infill (%)",
+      "initialWeightGrams": "Spool weight (grams)",
+      "kind": "Kind",
+      "label": "Description",
+      "labourRatePerHour": "Labour rate (per hour)",
+      "language": "Language",
+      "layerHeightMillimetres": "Layer height (mm)",
+      "lifetimeHours": "Expected lifetime (hours)",
+      "lowStockGrams": "Low-stock level (grams)",
+      "machineRatePerHour": "Machine rate (per hour)",
+      "marginPercent": "Margin (%)",
+      "materialId": "Material",
+      "materialType": "Material type",
+      "minutes": "Minutes",
+      "model": "Model",
+      "modelId": "Model",
+      "name": "Name",
+      "notes": "Notes",
+      "nozzleDiameterMillimetres": "Nozzle diameter (mm)",
+      "powerDrawWatts": "Power draw (watts)",
+      "price": "Selling price",
+      "printProfileNotes": "Profile notes",
+      "printerId": "Printer",
+      "purchaseCost": "Purchase cost",
+      "readyForSale": "Ready for sale",
+      "reason": "Reason",
+      "reorderGrams": "Reorder level (grams)",
+      "saleRiskAcknowledgedAt": "Sale risk accepted on",
+      "sizeBytes": "Size (bytes)",
+      "sku": "SKU",
+      "sourceUrl": "Source URL",
+      "spoolId": "Spool",
+      "startedAt": "Started",
+      "status": "Status",
+      "supportsRequired": "Supports",
+      "tags": "Tags",
+      "targetMarginPercent": "Target margin (%)",
+      "totalCost": "Total cost",
+      "type": "Type",
+      "versionNumber": "Version number",
+      "wasteGrams": "Waste (grams)",
+      "wastePercent": "Waste allowance (%)",
+      "website": "Website"
+    },
+    "values": {
+      "true": "Yes",
+      "false": "No",
+      "Planned": "Planned",
+      "Printing": "Printing",
+      "Done": "Done",
+      "Failed": "Failed",
+      "Cancelled": "Cancelled",
+      "Initial": "Spool added",
+      "Adjustment": "Adjustment",
+      "Consumption": "Used in print",
+      "Personal": "Personal use",
+      "Commercial": "Commercial",
+      "CommercialWithLimits": "Commercial with limits",
+      "OwnDesign": "Own design",
+      "MakerWorld": "MakerWorld",
+      "Printables": "Printables",
+      "Thingiverse": "Thingiverse",
+      "Other": "Other source",
+      "filament": "Filament",
+      "print": "Printing",
+      "labour": "Labour",
+      "packaging": "Packaging",
+      "extra": "Extra"
     }
   },
   "models": {
@@ -475,7 +583,7 @@
     "viewList": "List",
     "empty": "No models yet. Upload your first STL, 3MF or OBJ file.",
     "noMatches": "No models match your search.",
-    "versions": "{count} versions",
+    "versions": "{count} version | {count} versions",
     "back": "Back to models",
     "notFound": "This model no longer exists.",
     "version": "Version",
@@ -516,7 +624,7 @@
       "sourceUrl": "Enter a valid http(s) address.",
       "tags": "Use at most 10 tags of 30 characters.",
       "save": "Could not save. Try again.",
-      "network": "No connection to the server. Check your network and try again.",
+      "network": "Can't reach the server. Check your connection and try again.",
       "storage": "File storage is not available right now. Try again later.",
       "download": "Could not start the download.",
       "delete": "Could not delete the model. Try again."
@@ -576,7 +684,7 @@
       "chip": "Connected",
       "account": "Account: {name}",
       "lastSync": "Last synced: {time}",
-      "flagged": "{count} imported prints did not book any filament. Check them in your print log.",
+      "flagged": "{count} imported print did not book any filament. Check it in your print log. | {count} imported prints did not book any filament. Check them in your print log.",
       "refresh": "Sync now",
       "retry": "Try again",
       "done": "Connected to Bambu Lab.",
@@ -662,8 +770,8 @@
       "range": "{field} is outside the allowed range.",
       "length": "{field} is too long.",
       "skuTaken": "This SKU is already in use.",
-      "network": "No connection to the server. Check your connection and try again.",
-      "save": "Saving failed. Check your connection and try again.",
+      "network": "Can't reach the server. Check your connection and try again.",
+      "save": "Could not save. Check your connection and try again.",
       "snapshot": "The cost could not be saved. Try again.",
       "onePrintLine": "A variant can have only one print line."
     },
@@ -749,32 +857,32 @@
     "confirmRemoveProductAction": "Yes, delete product"
   },
   "licenses": {
-    "title": "Licenses",
-    "back": "Back to licenses",
-    "backToDetail": "Back to license",
-    "addTitle": "Add license",
-    "editTitle": "Edit license",
-    "detailTitle": "License",
-    "add": "Add license",
+    "title": "Licences",
+    "back": "Back to licences",
+    "backToDetail": "Back to licence",
+    "addTitle": "Add licence",
+    "editTitle": "Edit licence",
+    "detailTitle": "Licence",
+    "add": "Add licence",
     "edit": "Edit",
-    "save": "Save license",
+    "save": "Save licence",
     "cancel": "Cancel",
-    "delete": "Delete license",
-    "deleteTitle": "Delete license?",
-    "deleteBody": "\"{name}\" will be deleted, including its proof file. {count} linked models stay but will no longer have a license.",
+    "delete": "Delete licence",
+    "deleteTitle": "Delete licence?",
+    "deleteBody": "\"{name}\" will be deleted, including its proof file. | \"{name}\" will be deleted, including its proof file. The linked model stays but will no longer have a licence. | \"{name}\" will be deleted, including its proof file. The {count} linked models stay but will no longer have a licence.",
     "deleteConfirm": "Yes, delete",
-    "empty": "No licenses yet. Record the terms under which you may print and sell a model.",
-    "notFound": "This license no longer exists.",
-    "attention": "{count} license needs attention | {count} licenses need attention",
+    "empty": "No licences yet. Record the terms under which you may print and sell a model.",
+    "notFound": "This licence no longer exists.",
+    "attention": "{count} licence needs attention | {count} licences need attention",
     "yes": "Yes",
     "no": "No",
     "commercialAllowed": "Selling is allowed",
     "commercialBlocked": "Not cleared for sale",
     "attributionNeeded": "Attribution required",
-    "limitNear": "Close to your limit: {remaining} units left.",
+    "limitNear": "Close to your limit: {remaining} unit left. | Close to your limit: {remaining} units left.",
     "unitsUsage": "{used} of {limit} units used",
     "linkedModels": "Linked models",
-    "noModels": "No models linked to this license yet.",
+    "noModels": "No models linked to this licence yet.",
     "status": {
       "Valid": "Valid",
       "ExpiringSoon": "Expiring soon",
@@ -782,7 +890,7 @@
       "PersonalOnly": "Personal only",
       "LimitReached": "Limit reached",
       "NotYetValid": "Not yet valid",
-      "NoLicense": "No license"
+      "NoLicense": "No licence"
     },
     "type": {
       "Personal": "Personal use",
@@ -804,26 +912,26 @@
     "fields": {
       "name": "Name",
       "source": "Source",
-      "type": "License type",
+      "type": "Licence type",
       "unitsLimit": "Maximum units",
       "validFrom": "Valid from",
       "validUntil": "Valid until",
       "attributionRequired": "Attribution required",
       "attributionText": "Attribution text",
-      "proofUrl": "Link to license or proof",
+      "proofUrl": "Link to licence or proof",
       "notes": "Notes"
     },
     "hints": {
-      "name": "For example: Benchy CC-BY or Printables commercial license.",
+      "name": "For example: Benchy CC-BY or Printables commercial licence.",
       "unitsLimit": "Leave empty if there is no maximum.",
       "attributionText": "Shown with the model so you can copy it when selling.",
       "proofUrl": "The creator or platform page where the terms are stated."
     },
     "expiry": {
       "none": "Does not expire",
-      "future": "Expires in {days} days",
+      "future": "Expires in {days} day | Expires in {days} days",
       "today": "Expires today",
-      "past": "Expired {days} days ago"
+      "past": "Expired {days} day ago | Expired {days} days ago"
     },
     "proof": {
       "title": "Proof",
@@ -838,16 +946,16 @@
     "proofSaved": "Proof file saved.",
     "proofRemoved": "Proof file removed.",
     "picker": {
-      "title": "License",
-      "label": "License of this model",
-      "none": "No license",
-      "hint": "Link a license to see whether you may sell this model.",
-      "linked": "License linked.",
-      "unlinked": "License unlinked.",
-      "open": "View license",
-      "create": "New license",
-      "error": "The license could not be saved. Try again.",
-      "loadFailed": "The licenses could not be loaded.",
+      "title": "Licence",
+      "label": "Licence of this model",
+      "none": "No licence",
+      "hint": "Link a licence to see whether you may sell this model.",
+      "linked": "Licence linked.",
+      "unlinked": "Licence unlinked.",
+      "open": "View licence",
+      "create": "New licence",
+      "error": "The licence could not be saved. Try again.",
+      "loadFailed": "The licences could not be loaded.",
       "retry": "Try again"
     },
     "errors": {
@@ -855,8 +963,8 @@
       "number": "{field} must be a whole number of 1 or more.",
       "dateOrder": "{field} cannot be before the start date.",
       "url": "{field} must be a valid web address (http or https).",
-      "save": "The license could not be saved. Check the fields and try again.",
-      "delete": "The license could not be deleted.",
+      "save": "The licence could not be saved. Check the fields and try again.",
+      "delete": "The licence could not be deleted.",
       "proofType": "Choose a PDF, PNG, JPEG or WebP file.",
       "proofEmpty": "This file is empty.",
       "proofSize": "The file is larger than {max}.",
@@ -872,35 +980,35 @@
       "NotCleared": "Rights not verified"
     },
     "listNotCleared": "Rights missing",
-    "bannerTitle": "No valid commercial license",
+    "bannerTitle": "No valid commercial licence",
     "bannerBody": "Do not sell this variant without commercial rights for: {models}.",
     "modelStatus": "{name}: {status}",
     "clearedTitle": "Commercial rights verified",
-    "clearedBody": "Every linked model has a valid commercial license.",
-    "expiringSoon": "A license expires soon. Renew it before it lapses.",
+    "clearedBody": "Every linked model has a valid commercial licence.",
+    "expiringSoon": "A licence expires soon. Renew it before it lapses.",
     "noModelTitle": "No model linked",
     "noModelBody": "Link a model to the print line to check the commercial rights.",
     "attributionTitle": "Attribution required with every sale",
-    "attributionFallback": "See the license for the required text.",
+    "attributionFallback": "See the licence for the required text.",
     "readyBadge": "Ready for sale",
     "readyAtRisk": "Ready for sale, at your own risk",
-    "staleWarning": "Marked for sale, but the rights are no longer verified. Remove it from sale or fix the license.",
+    "staleWarning": "Marked for sale, but the rights are no longer verified. Remove it from sale or fix the licence.",
     "markReady": "Mark ready for sale",
     "markReadyAtRisk": "Mark ready for sale anyway",
     "unmark": "Remove from sale",
     "confirmTitle": "Sell without valid rights?",
-    "confirmBody": "There is no valid commercial license for {models}. Selling may infringe the maker's license. The choice is recorded in the audit log.",
+    "confirmBody": "There is no valid commercial licence for {models}. Selling may infringe the maker's licence. The choice is recorded in the audit log.",
     "confirmAction": "Mark ready anyway",
     "cancel": "Cancel",
     "errors": {
       "save": "The sale status could not be saved. Try again.",
-      "network": "No connection to the server. Check your connection and try again.",
+      "network": "Can't reach the server. Check your connection and try again.",
       "stale": "The rights changed in the meantime. Review the warning and try again."
     },
     "printJob": {
       "model": "Model (optional)",
       "noModel": "No model",
-      "hint": "Link the model so finished units count toward its license limit."
+      "hint": "Link the model so finished units count toward its licence limit."
     }
   },
   "accountData": {
@@ -911,7 +1019,7 @@
     },
     "export": {
       "title": "Export my data",
-      "intro": "Download everything in your workspace as a ZIP: one JSON file per kind of data, a README describing the fields, and your uploaded files (models, thumbnails, license proofs). Passwords and access tokens are never included.",
+      "intro": "Download everything in your workspace as a ZIP: one JSON file per kind of data, a README describing the fields, and your uploaded files (models, thumbnails, licence proofs). Passwords and access tokens are never included.",
       "passwordHint": "We ask for your password again to protect your data.",
       "action": "Export my data",
       "running": "Exporting…",
@@ -925,7 +1033,7 @@
       "dialogTitle": "Delete your account?",
       "warning": "This takes effect immediately and cannot be undone.",
       "consequences": {
-        "data": "All data in this workspace is deleted: models, products, inventory, print jobs, licenses and the audit log.",
+        "data": "All data in this workspace is deleted: models, products, inventory, print jobs, licences and the audit log.",
         "files": "All uploaded files are deleted.",
         "bambu": "The Bambu Lab connection and its access token are removed.",
         "signedOut": "Everyone using this workspace is signed out and their accounts are deleted.",
@@ -942,7 +1050,7 @@
       "workspaceNameWrong": "The name does not match your workspace name.",
       "rateLimited": "You exported recently. Please try again in a while.",
       "locked": "Your account is temporarily locked after too many attempts. Try again later.",
-      "network": "No connection. Check your internet and try again.",
+      "network": "Can't reach the server. Check your connection and try again.",
       "exportFailed": "The export failed. Try again.",
       "deleteFailed": "Deleting your account failed. Nothing was removed; try again."
     }

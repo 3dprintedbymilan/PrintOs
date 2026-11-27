@@ -13,7 +13,7 @@ function label(point: DashboardTrendPoint) {
     date: d(trendDate(point.date), { dateStyle: 'medium', timeZone: 'UTC' }),
     hours: n(point.printHours, { maximumFractionDigits: 1 }),
     count: point.prints,
-  })
+  }, point.prints)
 }
 
 const first = computed(() => (props.points[0] ? d(trendDate(props.points[0].date), { month: 'short', day: 'numeric', timeZone: 'UTC' }) : ''))

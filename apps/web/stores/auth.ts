@@ -4,6 +4,10 @@ import type { AccessTokenResponse, SignInInput, SignUpInput, WorkspaceSummary } 
 const storageKey = 'printos_session'
 const refreshMarginSeconds = 60
 
+function isSupportedLanguage(value: string): value is 'nl' | 'en' {
+  return value === 'nl' || value === 'en'
+}
+
 interface StoredSession {
   accessToken: string
   refreshToken: string
@@ -74,6 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
     })
     applyTokens(tokens, input.email.trim())
     await loadWorkspace()
+    await syncLanguage()
   }
 
   async function signUp(input: SignUpInput) {
@@ -83,6 +88,33 @@ export const useAuthStore = defineStore('auth', () => {
       body: { email: input.email.trim(), password: input.password, workspaceName: input.workspaceName.trim() },
     })
     await signIn({ email: input.email, password: input.password })
+    await adoptInterfaceLanguage()
+  }
+
+  async function syncLanguage() {
+    try {
+      const settings = await authorizedFetch<{ language: string }>('/api/workspace/settings')
+      const { $i18n } = useNuxtApp()
+      if (isSupportedLanguage(settings.language) && settings.language !== $i18n.locale.value) {
+        await $i18n.setLocale(settings.language)
+      }
+    }
+    catch {
+      // the interface keeps the language it already has
+    }
+  }
+
+  async function adoptInterfaceLanguage() {
+    try {
+      const { $i18n } = useNuxtApp()
+      const settings = await authorizedFetch<{ language: string }>('/api/workspace/settings')
+      if (settings.language !== $i18n.locale.value) {
+        await authorizedFetch('/api/workspace/settings', { method: 'PUT', body: { ...settings, language: $i18n.locale.value } })
+      }
+    }
+    catch {
+      // the workspace keeps its default language
+    }
   }
 
   async function refresh(): Promise<boolean> {
@@ -126,5 +158,5 @@ export const useAuthStore = defineStore('auth', () => {
     clearSession()
   }
 
-  return { session, workspace, isSignedIn, email, hydrate, signIn, signUp, refresh, authorizedFetch, loadWorkspace, signOut }
+  return { session, workspace, isSignedIn, email, hydrate, signIn, signUp, refresh, authorizedFetch, loadWorkspace, syncLanguage, signOut }
 })

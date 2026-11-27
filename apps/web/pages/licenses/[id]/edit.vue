@@ -38,7 +38,7 @@ async function save(request: LicenseRequest) {
   catch (error) {
     const parsed = parseApiError(error)
     if (parsed.kind === 'validation') {
-      serverErrors.value = Object.fromEntries(Object.keys(parsed.fieldErrors).map(field => [field, parsed.fieldErrors[field]?.[0] ?? t('licenses.errors.save')]))
+      serverErrors.value = Object.fromEntries(Object.keys(parsed.fieldErrors).map(field => [field, t('common.rejected')]))
     }
     saveError.value = t('licenses.errors.save')
   }

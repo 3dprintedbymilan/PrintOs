@@ -64,9 +64,8 @@ async function adjust() {
   }
   catch (error) {
     const parsed = parseApiError(error)
-    saveError.value = parsed.kind === 'validation'
-      ? (Object.values(parsed.fieldErrors)[0]?.[0] ?? t('inventory.errors.save'))
-      : t('inventory.errors.save')
+    const known = parsed.kind === 'validation' ? localizeServerMessage(Object.values(parsed.fieldErrors)[0]?.[0] ?? '', t) : undefined
+    saveError.value = known ?? (parsed.kind === 'network' ? t('inventory.errors.network') : t('inventory.errors.save'))
   }
   finally {
     saving.value = false

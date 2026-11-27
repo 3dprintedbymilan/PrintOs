@@ -182,12 +182,12 @@ export function validateProofFile(file: { name: string, size: number }): 'type' 
   return null
 }
 
-export function describeExpiry(translate: (key: string, params?: Record<string, unknown>) => string, assessment: LicenseAssessment): string {
+export function describeExpiry(translate: (key: string, params?: Record<string, unknown>, plural?: number) => string, assessment: LicenseAssessment): string {
   const days = assessment.daysUntilExpiry
   switch (expiryKind(assessment)) {
-    case 'future': return translate('licenses.expiry.future', { days })
+    case 'future': return translate('licenses.expiry.future', { days }, days ?? 0)
     case 'today': return translate('licenses.expiry.today')
-    case 'past': return translate('licenses.expiry.past', { days: Math.abs(days ?? 0) })
+    case 'past': return translate('licenses.expiry.past', { days: Math.abs(days ?? 0) }, Math.abs(days ?? 0))
     default: return translate('licenses.expiry.none')
   }
 }

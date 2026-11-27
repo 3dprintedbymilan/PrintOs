@@ -52,7 +52,7 @@ test('the models segment lists models and searches and filters on the server', a
   await page.goto('/prints')
   await page.getByRole('radio', { name: 'Modellen' }).check()
 
-  await expect(page.getByRole('link', { name: /Dragon/ })).toContainText('STL · 2.4 MB')
+  await expect(page.getByRole('link', { name: /Dragon/ })).toContainText('STL · 2,4 MB')
   await expect(page.getByRole('link', { name: /Phone stand/ })).toBeVisible()
 
   const searched = page.waitForRequest(request => request.url().includes('/api/models?') && request.url().includes('search=drag'))

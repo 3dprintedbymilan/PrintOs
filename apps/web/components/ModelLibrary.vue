@@ -2,7 +2,7 @@
 import { formatFileSize } from '~/utils/modelLibrary'
 import type { ModelSummary } from '~/utils/modelLibrary'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const auth = useAuthStore()
 const apiBase = useRuntimeConfig().public.apiBase
 
@@ -53,8 +53,8 @@ function thumbnailSource(model: ModelSummary) {
 }
 
 function details(model: ModelSummary) {
-  const parts = [model.format?.toUpperCase(), model.sizeBytes === null ? null : formatFileSize(model.sizeBytes)]
-  if (model.versionCount > 1) parts.push(t('models.versions', { count: model.versionCount }))
+  const parts = [model.format?.toUpperCase(), model.sizeBytes === null ? null : formatFileSize(model.sizeBytes, locale.value)]
+  if (model.versionCount > 1) parts.push(t('models.versions', { count: model.versionCount }, model.versionCount))
   return parts.filter(Boolean).join(' · ')
 }
 

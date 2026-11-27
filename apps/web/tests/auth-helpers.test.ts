@@ -45,16 +45,16 @@ describe('parseApiError', () => {
 
 describe('mapSignUpFieldErrors', () => {
   it('routes Identity error codes to the matching field', () => {
-    const { fields, unmatched } = mapSignUpFieldErrors({
+    const { fields, hasUnmatched } = mapSignUpFieldErrors({
       PasswordRequiresDigit: ['Needs a digit'],
       DuplicateEmail: ['Already used'],
       workspaceName: ['Required'],
       Other: ['Something else'],
     })
 
-    expect(fields.password).toBe('Needs a digit')
-    expect(fields.email).toBe('Already used')
-    expect(fields.workspaceName).toBe('Required')
-    expect(unmatched).toEqual(['Something else'])
+    expect(fields.password).toBe('passwordRejected')
+    expect(fields.email).toBe('emailTaken')
+    expect(fields.workspaceName).toBe('workspaceName')
+    expect(hasUnmatched).toBe(true)
   })
 })

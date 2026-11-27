@@ -137,9 +137,9 @@ async function save() {
   catch (error) {
     const parsed = parseApiError(error)
     if (parsed.kind === 'validation') {
-      const { fields, general } = mapServerErrors(parsed.fieldErrors)
+      const { fields, hasGeneral } = mapServerErrors(parsed.fieldErrors, message => localizeServerMessage(message, t) ?? t('common.rejected'))
       errors.value = fields
-      saveError.value = general[0] ?? (Object.keys(fields).length ? '' : t('printJobs.errors.save'))
+      saveError.value = hasGeneral || Object.keys(fields).length === 0 ? t('printJobs.errors.save') : ''
       await nextTick()
       document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
     }

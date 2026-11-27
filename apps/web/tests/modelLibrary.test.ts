@@ -36,7 +36,8 @@ describe('model library helpers', () => {
   it('formats sizes and default names', () => {
     expect(formatFileSize(512)).toBe('512 B')
     expect(formatFileSize(2048)).toBe('2 KB')
-    expect(formatFileSize(5 * 1024 * 1024)).toBe('5.0 MB')
+    expect(formatFileSize(5 * 1024 * 1024, 'en')).toBe('5.0 MB')
+    expect(formatFileSize(5 * 1024 * 1024, 'nl-BE')).toBe('5,0 MB')
     expect(nameFromFileName('3DBenchy.v2.stl')).toBe('3DBenchy.v2')
   })
 

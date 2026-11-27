@@ -221,16 +221,15 @@ export function jobToFormValues(job: PrintJob): JobFormValues {
   }
 }
 
-export function mapServerErrors(fieldErrors: Record<string, string[]>): { fields: Record<string, string>, general: string[] } {
+export function mapServerErrors(fieldErrors: Record<string, string[]>, localize: (serverMessage: string) => string): { fields: Record<string, string>, hasGeneral: boolean } {
   const fields: Record<string, string> = {}
-  const general: string[] = []
+  let hasGeneral = false
   const known = ['name', 'printerId', 'modelId', 'status', 'startedAt', 'finishedAt', 'finishedUnits', 'notes']
   for (const [key, messages] of Object.entries(fieldErrors)) {
-    const message = messages[0] ?? ''
     const line = /^filaments\[(\d+)]\.(\w+)$/.exec(key)
-    if (line) fields[`lines.${line[1]}.${line[2]}`] = message
-    else if (known.includes(key)) fields[key] = message
-    else general.push(message)
+    if (line) fields[`lines.${line[1]}.${line[2]}`] = localize(messages[0] ?? '')
+    else if (known.includes(key)) fields[key] = localize(messages[0] ?? '')
+    else hasGeneral = true
   }
-  return { fields, general }
+  return { fields, hasGeneral }
 }

@@ -90,13 +90,7 @@ async function save() {
   }
   catch (error) {
     const parsed = parseApiError(error)
-    if (parsed.kind === 'validation') {
-      const first = Object.values(parsed.fieldErrors)[0]?.[0]
-      saveError.value = first ?? t('inventory.errors.save')
-    }
-    else {
-      saveError.value = parsed.kind === 'network' ? t('inventory.errors.network') : t('inventory.errors.save')
-    }
+    saveError.value = parsed.kind === 'network' ? t('inventory.errors.network') : t('inventory.errors.save')
   }
   finally {
     saving.value = false

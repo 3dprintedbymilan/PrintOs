@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
       class="overlay"
       role="alert"
     >
-      <span>{{ state === 'tooLarge' ? $t('models.viewer.tooLarge', { size: formatFileSize(version.sizeBytes) }) : $t(`models.viewer.${state}`) }}</span>
+      <span>{{ state === 'tooLarge' ? $t('models.viewer.tooLarge', { size: formatFileSize(version.sizeBytes, $i18n.locale) }) : $t(`models.viewer.${state}`) }}</span>
       <button
         v-if="state === 'failed'"
         type="button"
