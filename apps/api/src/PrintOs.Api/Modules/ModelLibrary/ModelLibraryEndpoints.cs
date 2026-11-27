@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using PrintOs.Api.Infrastructure.Persistence;
 using PrintOs.Api.Infrastructure.Storage;
 using PrintOs.Api.Modules.Identity;
+using PrintOs.Api.Modules.Licensing;
 
 namespace PrintOs.Api.Modules.ModelLibrary;
 
@@ -27,6 +28,7 @@ public static class ModelLibraryEndpoints
         models.MapGet("/{id:guid}", GetModelAsync);
         models.MapPut("/{id:guid}", UpdateModelAsync);
         models.MapDelete("/{id:guid}", DeleteModelAsync);
+        models.MapPut("/{id:guid}/license", SetLicenseAsync);
         models.MapPut("/{id:guid}/thumbnail", SetThumbnailAsync);
         models.MapPost("/{id:guid}/versions", AddVersionAsync).WithMetadata(new RequestSizeLimitAttribute(ModelFileRules.RequestSizeCeilingBytes));
         models.MapPut("/{id:guid}/versions/{versionId:guid}", UpdateVersionAsync);
@@ -174,11 +176,48 @@ public static class ModelLibraryEndpoints
             new PrintProfileResponse(version.LayerHeightMillimetres, version.InfillPercent, version.SupportsRequired, version.MaterialType, version.PrintProfileNotes),
             version.CreatedAt);
 
-    private static ModelDetailResponse ToDetail(PrintModel model, IEnumerable<PrintModelVersion> versions, ModelFileSigner signer) =>
+    private static ModelDetailResponse ToDetail(PrintModel model, IEnumerable<PrintModelVersion> versions, ModelFileSigner signer, LicenseSummaryResponse? license = null) =>
         new(model.Id, model.Name, model.Description, model.SourceUrl, model.Tags, ThumbnailUrl(model, signer),
-            versions.OrderByDescending(version => version.VersionNumber).Select(ToResponse).ToList(), model.CreatedAt, model.UpdatedAt);
+            versions.OrderByDescending(version => version.VersionNumber).Select(ToResponse).ToList(), model.CreatedAt, model.UpdatedAt, model.LicenseId, license);
 
-    private static async Task<IResult> ListModelsAsync(PrintOsDbContext dbContext, ModelFileSigner signer, string? search = null, string? tag = null)
+    private static async Task<LicenseSummaryResponse?> LoadLicenseAsync(PrintModel model, PrintOsDbContext dbContext, LicenseAssessor assessor)
+    {
+        if (model.LicenseId is not { } licenseId)
+        {
+            return null;
+        }
+
+        var license = await dbContext.Set<License>().FirstOrDefaultAsync(candidate => candidate.Id == licenseId);
+        if (license is null)
+        {
+            return null;
+        }
+
+        var assessments = await assessor.AssessLicensesAsync([license]);
+        return LicenseEndpoints.ToSummary(license, assessments[license.Id]);
+    }
+
+    private static async Task<IResult> SetLicenseAsync(Guid id, ModelLicenseRequest request, PrintOsDbContext dbContext, ModelFileSigner signer, LicenseAssessor assessor)
+    {
+        var model = await dbContext.Set<PrintModel>().FirstOrDefaultAsync(candidate => candidate.Id == id);
+        if (model is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        if (request.LicenseId is { } licenseId && !await dbContext.Set<License>().AnyAsync(candidate => candidate.Id == licenseId))
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]> { ["licenseId"] = ["The license does not exist."] });
+        }
+
+        model.LicenseId = request.LicenseId;
+        model.UpdatedAt = DateTimeOffset.UtcNow;
+        await dbContext.SaveChangesAsync();
+        var versions = await dbContext.Set<PrintModelVersion>().Where(version => version.ModelId == id).ToListAsync();
+        return TypedResults.Ok(ToDetail(model, versions, signer, await LoadLicenseAsync(model, dbContext, assessor)));
+    }
+
+    private static async Task<IResult> ListModelsAsync(PrintOsDbContext dbContext, ModelFileSigner signer, LicenseAssessor assessor, string? search = null, string? tag = null)
     {
         var query = dbContext.Set<PrintModel>().AsQueryable();
         if (!string.IsNullOrWhiteSpace(search))
@@ -202,12 +241,17 @@ public static class ModelLibraryEndpoints
         var versions = await dbContext.Set<PrintModelVersion>().Where(version => ids.Contains(version.ModelId)).ToListAsync();
         var byModel = versions.GroupBy(version => version.ModelId).ToDictionary(group => group.Key, group => group.OrderByDescending(version => version.VersionNumber).ToList());
 
+        var licenseIds = models.Where(model => model.LicenseId != null).Select(model => model.LicenseId!.Value).Distinct().ToList();
+        var licenses = await dbContext.Set<License>().Where(license => licenseIds.Contains(license.Id)).ToListAsync();
+        var statuses = (await assessor.AssessLicensesAsync(licenses)).ToDictionary(pair => pair.Key, pair => pair.Value.Status);
+
         return TypedResults.Ok(models.Select(model =>
         {
             var modelVersions = byModel.GetValueOrDefault(model.Id) ?? [];
             var latest = modelVersions.FirstOrDefault();
             return new ModelSummaryResponse(model.Id, model.Name, model.Description, model.Tags, latest?.Format, latest?.SizeBytes,
-                modelVersions.Count, ThumbnailUrl(model, signer), model.CreatedAt, model.UpdatedAt);
+                modelVersions.Count, ThumbnailUrl(model, signer), model.CreatedAt, model.UpdatedAt, model.LicenseId,
+                (model.LicenseId is { } linked ? statuses.GetValueOrDefault(linked) : LicenseStatus.NoLicense).ToString());
         }).ToList());
     }
 
@@ -217,7 +261,8 @@ public static class ModelLibraryEndpoints
         return TypedResults.Ok(tagLists.SelectMany(tags => tags).Distinct().Order(StringComparer.Ordinal).ToList());
     }
 
-    private static async Task<IResult> GetModelAsync(Guid id, PrintOsDbContext dbContext, ModelFileSigner signer)
+    private static async Task<IResult> GetModelAsync(Guid id, PrintOsDbContext dbContext, ModelFileSigner signer,
+        LicenseAssessor assessor)
     {
         var model = await dbContext.Set<PrintModel>().FirstOrDefaultAsync(candidate => candidate.Id == id);
         if (model is null)
@@ -226,7 +271,7 @@ public static class ModelLibraryEndpoints
         }
 
         var versions = await dbContext.Set<PrintModelVersion>().Where(version => version.ModelId == id).ToListAsync();
-        return TypedResults.Ok(ToDetail(model, versions, signer));
+        return TypedResults.Ok(ToDetail(model, versions, signer, await LoadLicenseAsync(model, dbContext, assessor)));
     }
 
     private static string StorageKey(Guid workspaceId, Guid modelId, string name) => $"{workspaceId:N}/models/{modelId:N}/{name}";
@@ -338,7 +383,8 @@ public static class ModelLibraryEndpoints
         };
     }
 
-    private static async Task<IResult> UpdateModelAsync(Guid id, ModelUpdateRequest request, PrintOsDbContext dbContext, ModelFileSigner signer)
+    private static async Task<IResult> UpdateModelAsync(Guid id, ModelUpdateRequest request, PrintOsDbContext dbContext, ModelFileSigner signer,
+        LicenseAssessor assessor)
     {
         var model = await dbContext.Set<PrintModel>().FirstOrDefaultAsync(candidate => candidate.Id == id);
         if (model is null)
@@ -365,7 +411,7 @@ public static class ModelLibraryEndpoints
         await dbContext.SaveChangesAsync();
 
         var versions = await dbContext.Set<PrintModelVersion>().Where(version => version.ModelId == id).ToListAsync();
-        return TypedResults.Ok(ToDetail(model, versions, signer));
+        return TypedResults.Ok(ToDetail(model, versions, signer, await LoadLicenseAsync(model, dbContext, assessor)));
     }
 
     private static async Task<IResult> DeleteModelAsync(Guid id, PrintOsDbContext dbContext, IFileStorage storage, CancellationToken cancellationToken)
@@ -399,6 +445,7 @@ public static class ModelLibraryEndpoints
         IFileStorage storage,
         IOptions<ModelLibraryOptions> options,
         ModelFileSigner signer,
+        LicenseAssessor assessor,
         CancellationToken cancellationToken)
     {
         var model = await dbContext.Set<PrintModel>().FirstOrDefaultAsync(candidate => candidate.Id == id, cancellationToken);
@@ -440,7 +487,7 @@ public static class ModelLibraryEndpoints
         }
 
         var versions = await dbContext.Set<PrintModelVersion>().Where(version => version.ModelId == id).ToListAsync(cancellationToken);
-        return TypedResults.Ok(ToDetail(model, versions, signer));
+        return TypedResults.Ok(ToDetail(model, versions, signer, await LoadLicenseAsync(model, dbContext, assessor)));
     }
 
     private static async Task<IResult> AddVersionAsync(
@@ -450,6 +497,7 @@ public static class ModelLibraryEndpoints
         IFileStorage storage,
         IOptions<ModelLibraryOptions> options,
         ModelFileSigner signer,
+        LicenseAssessor assessor,
         CancellationToken cancellationToken)
     {
         var model = await dbContext.Set<PrintModel>().FirstOrDefaultAsync(candidate => candidate.Id == id, cancellationToken);
@@ -496,7 +544,7 @@ public static class ModelLibraryEndpoints
         }
 
         var versions = await dbContext.Set<PrintModelVersion>().Where(candidate => candidate.ModelId == id).ToListAsync(cancellationToken);
-        return TypedResults.Created($"/api/models/{id}", ToDetail(model, versions, signer));
+        return TypedResults.Created($"/api/models/{id}", ToDetail(model, versions, signer, await LoadLicenseAsync(model, dbContext, assessor)));
     }
 
     private static async Task<IResult> UpdateVersionAsync(Guid id, Guid versionId, VersionUpdateRequest request, PrintOsDbContext dbContext)
@@ -561,7 +609,7 @@ public static class ModelLibraryEndpoints
             contentType = ModelFileRules.ModelContentType(version.Format);
             downloadName = version.FileName;
         }
-        else
+        else if (claim.Kind == SignedFileKind.Thumbnail)
         {
             var model = await dbContext.Set<PrintModel>().IgnoreQueryFilters()
                 .FirstOrDefaultAsync(candidate => candidate.Id == claim.Id && candidate.WorkspaceId == claim.WorkspaceId, cancellationToken);
@@ -572,6 +620,10 @@ public static class ModelLibraryEndpoints
 
             key = model.ThumbnailKey;
             contentType = model.ThumbnailContentType ?? "image/jpeg";
+        }
+        else
+        {
+            return TypedResults.NotFound();
         }
 
         var stream = await storage.OpenReadAsync(key, cancellationToken);

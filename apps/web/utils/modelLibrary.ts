@@ -1,3 +1,4 @@
+import type { LicenseSummary } from './licenses'
 import { parseDecimal } from './settingsForm'
 
 export interface PrintProfile {
@@ -42,6 +43,8 @@ export interface ModelDetail {
   versions: ModelVersion[]
   createdAt: string
   updatedAt: string
+  licenseId?: string | null
+  license?: LicenseSummary | null
 }
 
 export interface DownloadLink {

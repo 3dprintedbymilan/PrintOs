@@ -1,3 +1,5 @@
+using PrintOs.Api.Modules.Licensing;
+
 namespace PrintOs.Api.Modules.ModelLibrary;
 
 public sealed class ModelUploadForm
@@ -86,7 +88,9 @@ public sealed record ModelSummaryResponse(
     int VersionCount,
     string? ThumbnailUrl,
     DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt);
+    DateTimeOffset UpdatedAt,
+    Guid? LicenseId = null,
+    string? LicenseStatus = null);
 
 public sealed record ModelDetailResponse(
     Guid Id,
@@ -97,6 +101,8 @@ public sealed record ModelDetailResponse(
     string? ThumbnailUrl,
     IReadOnlyList<ModelVersionResponse> Versions,
     DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt);
+    DateTimeOffset UpdatedAt,
+    Guid? LicenseId = null,
+    LicenseSummaryResponse? License = null);
 
 public sealed record DownloadUrlResponse(string Url, DateTimeOffset ExpiresAt);
