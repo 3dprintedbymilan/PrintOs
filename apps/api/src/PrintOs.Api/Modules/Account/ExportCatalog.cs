@@ -6,6 +6,7 @@ using PrintOs.Api.Modules.Licensing;
 using PrintOs.Api.Modules.ModelLibrary;
 using PrintOs.Api.Modules.Production;
 using PrintOs.Api.Modules.Products;
+using PrintOs.Api.Modules.Sales;
 
 namespace PrintOs.Api.Modules.Account;
 
@@ -31,6 +32,7 @@ public static class ExportCatalog
         [typeof(Product)] = "Products you sell.",
         [typeof(ProductVariant)] = "Variants of a product with price.",
         [typeof(BomLine)] = "Bill of materials lines of a variant.",
+        [typeof(Customer)] = "Customers: contact details, VAT number and notes.",
         [typeof(VariantCostSnapshot)] = "Calculated cost and margin snapshots of variants.",
     };
 }

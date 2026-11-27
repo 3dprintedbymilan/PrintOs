@@ -146,7 +146,9 @@
     "auditSubtitle": "Who changed what and when",
     "products": "Products",
     "productsSubtitle": "Variants, bills of materials, cost and margin",
-    "licensesSubtitle": "Rights per model: terms, expiry and proof"
+    "licensesSubtitle": "Rights per model: terms, expiry and proof",
+    "customers": "Customers",
+    "customersSubtitle": "Contact details and order history"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -1053,6 +1055,41 @@
       "network": "Can't reach the server. Check your connection and try again.",
       "exportFailed": "The export failed. Try again.",
       "deleteFailed": "Deleting your account failed. Nothing was removed; try again."
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "formTitle": "Customer",
+    "back": "Back to customers",
+    "addTitle": "Add customer",
+    "editTitle": "Edit customer",
+    "add": "Add customer",
+    "save": "Save customer",
+    "archive": "Archive customer",
+    "restore": "Restore customer",
+    "archived": "Archived",
+    "showArchived": "Show archived customers",
+    "empty": "No customers yet. Add your first one.",
+    "noResults": "No customers found.",
+    "search": "Search",
+    "searchPlaceholder": "Name, email or phone",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "vatNumber": "VAT number",
+      "notes": "Notes"
+    },
+    "hints": {
+      "address": "Street, number, postcode and city.",
+      "vatNumber": "Optional, for business customers."
+    },
+    "errors": {
+      "required": "Enter {field}.",
+      "email": "Enter a valid email address.",
+      "tooLong": "{field} is too long.",
+      "save": "Saving failed. Try again."
     }
   }
 }

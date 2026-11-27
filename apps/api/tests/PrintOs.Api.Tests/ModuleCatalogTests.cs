@@ -9,6 +9,6 @@ public class ModuleCatalogTests
     {
         var moduleNames = ModuleCatalog.DiscoverModules().Select(module => module.Name).ToList();
 
-        Assert.Equal(["Account", "Audit", "Bambu", "Costing", "Dashboard", "Identity", "Inventory", "Licensing", "ModelLibrary", "Production", "Products"], moduleNames.Order().ToList());
+        Assert.Equal(["Account", "Audit", "Bambu", "Costing", "Dashboard", "Identity", "Inventory", "Licensing", "ModelLibrary", "Production", "Products", "Sales"], moduleNames.Order().ToList());
     }
 }
