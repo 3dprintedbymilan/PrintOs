@@ -26,7 +26,7 @@ test('the MVP journey works end to end against the real API', async ({ page }, t
 
   await test.step('settings are saved and survive a reload', async () => {
     await page.goto('/business')
-    await page.getByRole('link', { name: /Instellingen/ }).click()
+    await page.locator('main').getByRole('link', { name: /Instellingen/ }).click()
     await expect(page.getByLabel('Naam van je bedrijf').first()).toHaveValue(business)
 
     await page.getByLabel('Elektriciteitsprijs (per kWh)').fill('0,25')

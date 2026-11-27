@@ -70,4 +70,8 @@
 
   --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
   --tap-size: 44px;
+
+  --nav-rail-width: 80px;
+  --nav-wide-width: 248px;
+  --content-max: 1040px;
 }

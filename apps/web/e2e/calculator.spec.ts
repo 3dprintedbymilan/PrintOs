@@ -173,7 +173,7 @@ test('saved calculations are listed and the business tab links to the calculator
   })
 
   await page.goto('/business')
-  await page.getByRole('link', { name: /Kostencalculator/ }).click()
+  await page.locator('main').getByRole('link', { name: /Kostencalculator/ }).click()
   await expect(page).toHaveURL(/\/calculator$/)
 
   await page.goto('/calculator/saved')

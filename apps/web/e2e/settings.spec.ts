@@ -19,7 +19,7 @@ test('the Business tab links to settings, which load the saved values', async ({
   })
 
   await page.goto('/business')
-  await page.getByRole('link', { name: /Instellingen/ }).click()
+  await page.locator('main').getByRole('link', { name: /Instellingen/ }).click()
 
   await expect(page).toHaveURL(/\/settings$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Instellingen' })).toBeVisible()

@@ -256,4 +256,7 @@ li a, .license-link { display: flex; align-items: center; justify-content: space
 @media (min-width: 900px) {
   .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+@media (min-width: 1200px) {
+  .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 </style>

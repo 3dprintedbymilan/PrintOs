@@ -8,7 +8,12 @@
     "home": "Home",
     "prints": "Prints",
     "inventory": "Voorraad",
-    "business": "Bedrijf"
+    "business": "Bedrijf",
+    "moreLabel": "Meer secties",
+    "more": "Meer",
+    "skip": "Naar de inhoud",
+    "collapse": "Menu inklappen",
+    "expand": "Menu uitklappen"
   },
   "home": {
     "title": "Productieoverzicht",

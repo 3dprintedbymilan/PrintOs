@@ -128,7 +128,7 @@ test('the business tab links to products', async ({ page }) => {
   await mockApi(page, { 'GET /api/products': () => ({ status: 200, json: [] }) })
 
   await page.goto('/business')
-  await page.getByRole('link', { name: /Producten/ }).click()
+  await page.locator('main').getByRole('link', { name: /Producten/ }).click()
 
   await expect(page).toHaveURL(/\/products$/)
   await expect(page.getByText('Nog geen producten. Voeg je eerste product toe.')).toBeVisible()

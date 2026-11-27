@@ -65,7 +65,7 @@ test('the business tab links to the audit log', async ({ page }) => {
   })
 
   await page.goto('/business')
-  await page.getByRole('link', { name: /Auditlog/ }).click()
+  await page.locator('main').getByRole('link', { name: /Auditlog/ }).click()
 
   await expect(page).toHaveURL(/\/audit$/)
 })
