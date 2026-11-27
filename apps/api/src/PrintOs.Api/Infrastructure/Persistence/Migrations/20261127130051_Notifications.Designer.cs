@@ -13,7 +13,7 @@ using PrintOs.Api.Infrastructure.Persistence;
 namespace PrintOs.Api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PrintOsDbContext))]
-    [Migration("20261127123832_Notifications")]
+    [Migration("20261127130051_Notifications")]
     partial class Notifications
     {
         /// <inheritdoc />
@@ -288,6 +288,11 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("HmsCodesJson")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
                     b.Property<string>("JobName")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
@@ -314,6 +319,10 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("Online")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("PrintErrorCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<Guid?>("PrinterId")
                         .HasColumnType("uuid");
@@ -366,6 +375,39 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("BambuDevices", (string)null);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuStateChange", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DeviceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("JobName")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeviceId");
+
+                    b.HasIndex("WorkspaceId", "DeviceId", "ChangedAt");
+
+                    b.ToTable("BambuStateChanges", (string)null);
                 });
 
             modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuTaskImport", b =>
@@ -2421,6 +2463,15 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("PrinterId")
                         .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuStateChange", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Bambu.BambuDevice", null)
+                        .WithMany()
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuTaskImport", b =>
