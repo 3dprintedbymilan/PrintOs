@@ -155,7 +155,8 @@
     "customersSubtitle": "Contact details and order history",
     "ordersSubtitle": "Orders, payments and delivery",
     "markets": "Markets",
-    "marketsSubtitle": "Register, sales and totals per market"
+    "marketsSubtitle": "Register, sales and totals per market",
+    "marginsSubtitle": "Revenue, costs and margin per period"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -1762,6 +1763,65 @@
       "length": "This text is too long.",
       "already": "This day was already closed.",
       "save": "Could not close the day. Check your connection and try again."
+    }
+  },
+  "reports": {
+    "revenue": "Revenue",
+    "cost": "Cost of goods",
+    "grossProfit": "Gross profit",
+    "marginPercent": "Margin",
+    "netProfit": "Net profit",
+    "netMarginPercent": "Net margin",
+    "standCosts": "Stand costs",
+    "standTitle": "After market stand costs",
+    "kpiLabel": "Key figures",
+    "range": "{from} to {to}",
+    "previousRange": "Compared with {from} to {to}",
+    "from": "From",
+    "to": "To",
+    "errors": {
+      "from": "Enter a valid start date.",
+      "to": "Enter an end date on or after the start date."
+    },
+    "period": {
+      "label": "Period",
+      "week": "Week",
+      "month": "Month",
+      "quarter": "Quarter",
+      "year": "Year",
+      "custom": "Custom range"
+    },
+    "channel": {
+      "label": "Channel",
+      "all": "All",
+      "orders": "Orders",
+      "pos": "Market POS"
+    },
+    "deltaPercent": "{percent} vs previous period",
+    "deltaAbsolute": "{change} vs previous period",
+    "deltaPoints": "{points} pts vs previous period",
+    "costIncomplete": "Some sold items have no cost price, so the margin may look better than it is.",
+    "trendTitle": "Revenue and profit trend",
+    "byChannel": "Per channel",
+    "byMarket": "Per market",
+    "byProduct": "Per product",
+    "byVariant": "Per variant",
+    "rowMeta": "{count} sold · {revenue} revenue · {margin} margin | {count} sold · {revenue} revenue · {margin} margin",
+    "rowStand": "Stand costs {cost}, net {net}",
+    "margin": {
+      "title": "Profit margins",
+      "empty": "No sales in this period yet. Confirm an order or ring up a sale at a market and it shows up here.",
+      "allProducts": "All products"
+    },
+    "chart": {
+      "label": "Revenue and gross profit over time",
+      "legend": "Chart legend",
+      "hint": "Tap a bar for the figures.",
+      "point": "{date}: revenue {revenue}, gross profit {profit}",
+      "empty": "No revenue to chart in this period.",
+      "date": "Date",
+      "showTable": "Show as table",
+      "hideTable": "Hide table"
     }
   }
 }

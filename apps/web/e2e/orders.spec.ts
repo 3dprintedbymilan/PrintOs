@@ -240,7 +240,7 @@ test('the detail screen shows progress, totals and moves the order along', async
   await expect(page.getByText('Vase - Large')).toBeVisible()
   await expect(page.getByText('2 × € 20,00')).toBeVisible()
   await expect(page.getByRole('listitem').filter({ hasText: 'Concept' }).first()).toHaveAttribute('aria-current', 'step')
-  await expect(page.getByText('Winst')).toBeVisible()
+  await expect(page.getByText('Winst', { exact: true })).toBeVisible()
 
   await page.getByRole('button', { name: 'Bevestigen' }).click()
 
