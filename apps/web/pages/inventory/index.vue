@@ -78,6 +78,11 @@ onMounted(load)
         {{ $t('inventory.addSpool') }}
       </UiButton>
       <UiListRow
+        to="/inventory/finished"
+        :title="$t('finished.title')"
+        :subtitle="$t('finished.linkSubtitle')"
+      />
+      <UiListRow
         to="/inventory/materials"
         :title="$t('alerts.materialsTitle')"
         :subtitle="$t('alerts.materialsSubtitle')"

@@ -22,6 +22,7 @@ export const primaryDestinations: Destination[] = [
 ]
 
 export const secondaryDestinations: Destination[] = [
+  { to: '/inventory/finished', icon: 'inventory', labelKey: 'finished.title', matches: ['/inventory/finished'] },
   { to: '/printers', icon: 'printers', labelKey: 'business.printers', matches: ['/printers'] },
   { to: '/printers/bambu', icon: 'bambu', labelKey: 'bambu.title', matches: ['/printers/bambu'] },
   { to: '/prints?section=models', icon: 'models', labelKey: 'prints.models', matches: ['/models'] },
