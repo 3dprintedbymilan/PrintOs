@@ -1,35 +1,28 @@
 <script setup lang="ts">
+import { isPrimaryActive, primaryDestinations } from '~/utils/navigation'
+
+defineProps<{ expanded?: boolean }>()
+
 const { t } = useI18n()
 const route = useRoute()
-
-const tabs = computed(() => [
-  { to: '/', icon: 'home', label: t('nav.home') },
-  { to: '/prints', icon: 'prints', label: t('nav.prints'), also: '/models' },
-  { to: '/inventory', icon: 'inventory', label: t('nav.inventory') },
-  { to: '/business', icon: 'business', label: t('nav.business') },
-] as { to: string, icon: 'home' | 'prints' | 'inventory' | 'business', label: string, also?: string }[])
-
-function isAlsoActive(tab: { also?: string }) {
-  return !!tab.also && route.path.startsWith(tab.also)
-}
 </script>
 
 <template>
   <nav
     class="nav"
+    :class="{ expanded }"
     :aria-label="t('nav.label')"
   >
     <NuxtLink
-      v-for="tab in tabs"
+      v-for="tab in primaryDestinations"
       :key="tab.to"
       :to="tab.to"
       class="tab"
-      :class="{ active: isAlsoActive(tab) || (tab.to === '/prints' && route.path.startsWith('/print-jobs')) }"
-      active-class="active"
-      exact-active-class="active"
+      :class="{ active: isPrimaryActive(tab, route.path) }"
+      :aria-current="isPrimaryActive(tab, route.path) ? 'page' : undefined"
     >
       <AppIcon :name="tab.icon" />
-      <span>{{ tab.label }}</span>
+      <span>{{ t(tab.labelKey) }}</span>
     </NuxtLink>
   </nav>
 </template>
@@ -59,4 +52,33 @@ function isAlsoActive(tab: { also?: string }) {
   border-radius: var(--radius-md);
 }
 .tab.active { color: var(--accent-text); }
+
+@media (min-width: 768px) {
+  .nav {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    border-top: 0;
+  }
+  .tab { min-height: 56px; padding: var(--space-2) var(--space-1); }
+  .tab.active { background: var(--accent-soft); }
+  @media (hover: hover) {
+    .tab:hover { background: var(--surface-2); color: var(--text); }
+    .tab.active:hover { color: var(--accent-text); }
+  }
+  .nav.expanded .tab {
+    grid-auto-flow: column;
+    grid-template-columns: 24px 1fr;
+    justify-items: start;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--tap-size);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-md);
+  }
+}
 </style>

@@ -30,7 +30,10 @@ for (const route of ['/', '/prints', '/inventory', '/business']) {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow).toBe(false)
 
-    const navTop = await page.getByRole('navigation', { name: 'Hoofdnavigatie' }).evaluate(el => el.getBoundingClientRect().top)
+    const nav = page.getByRole('navigation', { name: 'Hoofdnavigatie' })
+    const isBottomBar = await nav.evaluate(el => getComputedStyle(el).position === 'fixed')
+    if (!isBottomBar) return
+    const navTop = await nav.evaluate(el => el.getBoundingClientRect().top)
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
     const lastBottom = await page.locator('main').evaluate((el) => {
       const last = el.lastElementChild ?? el

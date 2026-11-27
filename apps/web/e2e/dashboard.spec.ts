@@ -42,7 +42,7 @@ test('dashboard shows KPI tiles, recent prints and quick actions', async ({ page
   await expect(page.getByRole('link', { name: /Benchy/ })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Print toevoegen' })).toHaveAttribute('href', '/print-jobs/new')
   await expect(page.getByRole('link', { name: 'Spool toevoegen' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Kostencalculator' })).toBeVisible()
+  await expect(page.locator('main').getByRole('link', { name: 'Kostencalculator' })).toBeVisible()
 })
 
 test('switching the period reloads the summary', async ({ page }) => {

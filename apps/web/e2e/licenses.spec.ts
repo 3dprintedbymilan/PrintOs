@@ -43,7 +43,7 @@ test('the business tab links to the licenses screen, which lists status chips', 
   await mockApi(page, { 'GET /api/licenses': () => ({ status: 200, json: [valid, soon, expired, personal] }) })
 
   await page.goto('/business')
-  await page.getByRole('link', { name: /Licenties/ }).click()
+  await page.locator('main').getByRole('link', { name: /Licenties/ }).click()
 
   await expect(page).toHaveURL(/\/licenses$/)
   await expect(page.getByRole('link', { name: /Dragon commercial/ })).toContainText('Geldig')
