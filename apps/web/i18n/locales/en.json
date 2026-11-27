@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "name": "PrintOS",
     "tagline": "Manage your 3D printing business, from files to profit."
@@ -601,7 +601,7 @@
     "back": "Back to models",
     "notFound": "This model no longer exists.",
     "version": "Version",
-    "versionLabel": "v{number} Â· {name}",
+    "versionLabel": "v{number} · {name}",
     "edit": "Edit details",
     "save": "Save",
     "cancel": "Cancel",
@@ -748,8 +748,8 @@
     "live": {
       "remaining": "{time} left",
       "layer": "Layer {layer} of {total}",
-      "nozzle": "Nozzle {value} Â°C",
-      "bed": "Bed {value} Â°C"
+      "nozzle": "Nozzle {value} °C",
+      "bed": "Bed {value} °C"
     },
     "now": {
       "title": "What am I printing",
@@ -1036,7 +1036,7 @@
       "intro": "Download everything in your workspace as a ZIP: one JSON file per kind of data, a README describing the fields, and your uploaded files (models, thumbnails, licence proofs). Passwords and access tokens are never included.",
       "passwordHint": "We ask for your password again to protect your data.",
       "action": "Export my data",
-      "running": "Exportingâ€¦",
+      "running": "Exporting…",
       "progress": "Preparing your export. This can take a moment for large libraries.",
       "done": "Download started: {name}"
     },
@@ -1258,7 +1258,7 @@
     "noMatches": "No purchases with this status.",
     "allStatuses": "All statuses",
     "statusFilter": "Status",
-    "rowSubtitle": "{date} Â· {total} Â· {received}/{ordered} spools received",
+    "rowSubtitle": "{date} · {total} · {received}/{ordered} spools received",
     "status": {
       "Ordered": "Ordered",
       "PartiallyReceived": "Partly received",
@@ -1321,7 +1321,7 @@
     "receiveNowOn": "The spools are added to stock right away.",
     "receiveNowOff": "You add the spools to stock later, once they arrive.",
     "lines": "Lines",
-    "lineDetail": "{quantity} Ã— {weight} g Â· {price} per spool",
+    "lineDetail": "{quantity} × {weight} g · {price} per spool",
     "lineReceived": "{received} of {ordered} received",
     "costPerKg": "{price} per kg all-in",
     "receiveTitle": "Receiving",
@@ -1364,7 +1364,7 @@
     "noChange": "No previous price",
     "unchanged": "Unchanged",
     "up": "+{percent}% vs previous",
-    "down": "âˆ’{percent}% vs previous",
+    "down": "−{percent}% vs previous",
     "perKg": "{price}/kg",
     "pointLabel": "{date}, {supplier}, {price} per kg",
     "lastFrom": "Last bought from {supplier} on {date}",
@@ -1808,7 +1808,7 @@
     "byMarket": "Per market",
     "byProduct": "Per product",
     "byVariant": "Per variant",
-    "rowMeta": "{count} sold Â· {revenue} revenue Â· {margin} margin | {count} sold Â· {revenue} revenue Â· {margin} margin",
+    "rowMeta": "{count} sold · {revenue} revenue · {margin} margin | {count} sold · {revenue} revenue · {margin} margin",
     "rowStand": "Stand costs {cost}, net {net}",
     "margin": {
       "title": "Profit margins",
@@ -1841,7 +1841,7 @@
       "variant": "Variant"
     },
     "unitsValue": "{count} sold | {count} sold",
-    "rankMeta": "{revenue} revenue Â· {profit} profit Â· {margin} margin | {revenue} revenue Â· {profit} profit Â· {margin} margin",
+    "rankMeta": "{revenue} revenue · {profit} profit · {margin} margin | {revenue} revenue · {profit} profit · {margin} margin",
     "share": "{percent} of total",
     "slow": {
       "title": "Slow movers",
@@ -1864,7 +1864,7 @@
       "trend": "Download trend (CSV)",
       "bestsellers": "Download bestsellers (CSV)",
       "slow": "Download slow movers (CSV)",
-      "running": "Preparing the fileâ€¦",
+      "running": "Preparing the file…",
       "done": "Downloaded {name}.",
       "failed": "The export failed. Try again."
     }
@@ -1992,10 +1992,10 @@
       "trendLabel": "Print hours over time",
       "trendPoint": "{hours}, {jobs} jobs, {failed} failed",
       "byPrinter": "Per printer",
-      "printerMeta": "Utilisation {utilisation} Â· success {success} Â· waste {waste} Â· {cost} per hour",
+      "printerMeta": "Utilisation {utilisation} · success {success} · waste {waste} · {cost} per hour",
       "byMaterial": "Filament and failures per material",
       "causesHint": "Failure causes are not recorded per job, so failures are shown per material and printer.",
-      "materialMeta": "{jobs} jobs, {failed} failed ({rate}) Â· waste {waste} Â· {lost} g lost in failed prints"
+      "materialMeta": "{jobs} jobs, {failed} failed ({rate}) · waste {waste} · {lost} g lost in failed prints"
     },
     "sales": {
       "title": "Sales analytics",
@@ -2011,14 +2011,14 @@
       "trendLabel": "Revenue over time",
       "trendPoint": "{revenue} from {documents} orders and sales",
       "byChannel": "Per channel",
-      "channelMeta": "{documents} orders Â· average {aov} Â· {share} of revenue Â· discounts {discount}",
+      "channelMeta": "{documents} orders · average {aov} · {share} of revenue · discounts {discount}",
       "byCustomer": "Top customers",
-      "customerMeta": "{documents} orders Â· average {aov} Â· {repeat}",
+      "customerMeta": "{documents} orders · average {aov} · {repeat}",
       "walkIn": "No customer linked",
       "returning": "returning",
       "newCustomer": "new",
       "byProduct": "Top products by revenue",
-      "productMeta": "{units} sold Â· {margin} margin",
+      "productMeta": "{units} sold · {margin} margin",
       "leadTitle": "Lead time confirmed to delivered",
       "leadEmpty": "No orders were delivered in this period.",
       "leadSummary": "Average {average} days, median {median}, longest {longest} (delivered orders: {count}).",
@@ -2046,7 +2046,7 @@
       "filamentTurnover": "Filament turnover",
       "finishedTurnover": "Goods turnover",
       "byMaterial": "Filament per material",
-      "materialMeta": "{onHand} on hand Â· {used} used ({rate} g per day) Â· cover {cover}",
+      "materialMeta": "{onHand} on hand · {used} used ({rate} g per day) · cover {cover}",
       "material": "Material",
       "priceTitle": "Purchase price trend",
       "priceHint": "Average purchase price per kg in this period against the previous one. Impact is the price change times the grams used.",
@@ -2055,7 +2055,7 @@
       "change": "Change",
       "impact": "Impact",
       "byProduct": "Finished goods per product",
-      "finishedMeta": "{onHand} on hand Â· {sold} sold Â· cover {cover}",
+      "finishedMeta": "{onHand} on hand · {sold} sold · cover {cover}",
       "deadTitle": "Dead stock",
       "deadEmpty": "Nothing has been idle for {days} days or more.",
       "deadHint": "Stock that has not moved for {days} days or more.",
@@ -2083,7 +2083,7 @@
       "trendLabel": "Contribution and net profit over time",
       "trendPoint": "Contribution {contribution}, net profit {net}",
       "byCustomer": "Per customer",
-      "rowMeta": "{count} sold Â· revenue {revenue} Â· cost {cost} Â· fees {fees} Â· margin {margin} | {count} sold Â· revenue {revenue} Â· cost {cost} Â· fees {fees} Â· margin {margin}"
+      "rowMeta": "{count} sold · revenue {revenue} · cost {cost} · fees {fees} · margin {margin} | {count} sold · revenue {revenue} · cost {cost} · fees {fees} · margin {margin}"
     }
   },
   "monitor": {
