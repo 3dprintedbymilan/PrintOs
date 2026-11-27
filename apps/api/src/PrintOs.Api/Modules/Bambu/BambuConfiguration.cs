@@ -36,6 +36,8 @@ public sealed class BambuDeviceConfiguration : IEntityTypeConfiguration<BambuDev
         builder.Property(device => device.FilamentColor).HasMaxLength(20);
         builder.Property(device => device.TrayNow).HasMaxLength(10);
         builder.Property(device => device.TraysJson).HasMaxLength(4000).IsRequired();
+        builder.Property(device => device.PrintErrorCode).HasMaxLength(20);
+        builder.Property(device => device.HmsCodesJson).HasMaxLength(2000).IsRequired();
         builder.Property(device => device.NozzleTemperature).HasPrecision(6, 1);
         builder.Property(device => device.BedTemperature).HasPrecision(6, 1);
         builder.HasIndex(device => new { device.WorkspaceId, device.Serial }).IsUnique();

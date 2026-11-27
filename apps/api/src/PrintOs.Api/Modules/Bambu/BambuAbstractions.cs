@@ -28,6 +28,8 @@ public sealed class BambuOptions
 
     public int FlushSeconds { get; set; } = 3;
 
+    public int StateHistoryRetentionDays { get; set; } = 45;
+
     public int InitialBackoffSeconds { get; set; } = 5;
 
     public int MaximumBackoffSeconds { get; set; } = 300;

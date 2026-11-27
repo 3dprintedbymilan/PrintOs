@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "PrintOS",
     "tagline": "Beheer je 3D-printbedrijf, van bestand tot winst."
@@ -319,7 +319,7 @@
     "backToSaved": "Terug naar opgeslagen berekeningen",
     "savedLink": "Opgeslagen berekeningen",
     "savedEmpty": "Nog geen opgeslagen berekeningen. Sla er een op vanuit de calculator.",
-    "needSetup": "Voeg minstens één printer en één spoel toe om te kunnen rekenen.",
+    "needSetup": "Voeg minstens Ã©Ã©n printer en Ã©Ã©n spoel toe om te kunnen rekenen.",
     "fillIn": "Vul de gram en printtijd in om je prijs te zien.",
     "suggestedPrice": "Adviesprijs",
     "profit": "Winst",
@@ -399,7 +399,7 @@
     "noFilament": "Geen filament vastgelegd.",
     "wasteOf": "{grams} g afval",
     "duration": "Duur",
-    "source": "Geïmporteerd uit",
+    "source": "GeÃ¯mporteerd uit",
     "start": "Print starten",
     "finish": "Print afronden",
     "edit": "Print bewerken",
@@ -601,7 +601,7 @@
     "back": "Terug naar modellen",
     "notFound": "Dit model bestaat niet meer.",
     "version": "Versie",
-    "versionLabel": "v{number} · {name}",
+    "versionLabel": "v{number} Â· {name}",
     "edit": "Gegevens bewerken",
     "save": "Opslaan",
     "cancel": "Annuleren",
@@ -675,13 +675,13 @@
     "reconnect": "Opnieuw verbinden",
     "connect": {
       "heading": "Verbind je Bambu Lab-account",
-      "intro": "Plak je toegangstoken één keer. PrintOS vraagt nooit om je Bambu-wachtwoord en leest alleen status en printgeschiedenis. Je printer besturen kan niet.",
+      "intro": "Plak je toegangstoken Ã©Ã©n keer. PrintOS vraagt nooit om je Bambu-wachtwoord en leest alleen status en printgeschiedenis. Je printer besturen kan niet.",
       "guideTitle": "Waar vind ik het toegangstoken?",
       "step1": "Log in op bambulab.com in je browser.",
       "step2": "Open de ontwikkelaarstools van je browser (F12) en ga naar Application of Opslag, dan Cookies.",
       "step3": "Kies https://bambulab.com en kopieer de waarde van de cookie met de naam token.",
       "step4": "Plak die hieronder. Het blijft versleuteld op de server staan en wordt nooit meer getoond.",
-      "guideNote": "Dit is een onofficiële methode en Bambu Lab kan die wijzigen. Het token verloopt na een tijd; plak dan een nieuw token.",
+      "guideNote": "Dit is een onofficiÃ«le methode en Bambu Lab kan die wijzigen. Het token verloopt na een tijd; plak dan een nieuw token.",
       "tokenLabel": "Toegangstoken",
       "tokenHint": "Behandel het als een wachtwoord. Deel het niet.",
       "show": "Token tonen",
@@ -698,7 +698,7 @@
       "chip": "Verbonden",
       "account": "Account: {name}",
       "lastSync": "Laatst gesynchroniseerd: {time}",
-      "flagged": "{count} geïmporteerde print heeft geen filament afgeboekt. Controleer die in je printlog. | {count} geïmporteerde prints hebben geen filament afgeboekt. Controleer ze in je printlog.",
+      "flagged": "{count} geÃ¯mporteerde print heeft geen filament afgeboekt. Controleer die in je printlog. | {count} geÃ¯mporteerde prints hebben geen filament afgeboekt. Controleer ze in je printlog.",
       "refresh": "Nu synchroniseren",
       "retry": "Opnieuw proberen",
       "done": "Verbonden met Bambu Lab.",
@@ -720,7 +720,7 @@
     "disconnect": {
       "button": "Bambu Lab ontkoppelen",
       "title": "Bambu Lab ontkoppelen?",
-      "body": "Het opgeslagen token wordt verwijderd en de live status stopt. Je printers en geïmporteerde prints blijven staan.",
+      "body": "Het opgeslagen token wordt verwijderd en de live status stopt. Je printers en geÃ¯mporteerde prints blijven staan.",
       "confirm": "Ontkoppelen",
       "cancel": "Annuleren",
       "done": "Losgekoppeld van Bambu Lab."
@@ -748,8 +748,8 @@
     "live": {
       "remaining": "Nog {time}",
       "layer": "Laag {layer} van {total}",
-      "nozzle": "Nozzle {value} °C",
-      "bed": "Bed {value} °C"
+      "nozzle": "Nozzle {value} Â°C",
+      "bed": "Bed {value} Â°C"
     },
     "now": {
       "title": "Wat print ik nu",
@@ -936,7 +936,7 @@
       "notes": "Notities"
     },
     "hints": {
-      "name": "Bijvoorbeeld: Benchy CC-BY of Commerciële licentie Printables.",
+      "name": "Bijvoorbeeld: Benchy CC-BY of CommerciÃ«le licentie Printables.",
       "unitsLimit": "Laat leeg als er geen maximum is.",
       "attributionText": "Wordt getoond bij het model zodat je het bij verkoop kunt overnemen.",
       "proofUrl": "Pagina van de maker of het platform waar de voorwaarden staan."
@@ -994,14 +994,14 @@
       "NotCleared": "Rechten niet geverifieerd"
     },
     "listNotCleared": "Rechten ontbreken",
-    "bannerTitle": "Geen geldige commerciële licentie",
-    "bannerBody": "Verkoop deze variant niet zonder commerciële rechten voor: {models}.",
+    "bannerTitle": "Geen geldige commerciÃ«le licentie",
+    "bannerBody": "Verkoop deze variant niet zonder commerciÃ«le rechten voor: {models}.",
     "modelStatus": "{name}: {status}",
-    "clearedTitle": "Commerciële rechten in orde",
-    "clearedBody": "Elk gekoppeld model heeft een geldige commerciële licentie.",
+    "clearedTitle": "CommerciÃ«le rechten in orde",
+    "clearedBody": "Elk gekoppeld model heeft een geldige commerciÃ«le licentie.",
     "expiringSoon": "Een licentie verloopt binnenkort. Verleng die voor ze vervalt.",
     "noModelTitle": "Geen model gekoppeld",
-    "noModelBody": "Koppel een model aan de printregel om de commerciële rechten te controleren.",
+    "noModelBody": "Koppel een model aan de printregel om de commerciÃ«le rechten te controleren.",
     "attributionTitle": "Naamsvermelding verplicht bij elke verkoop",
     "attributionFallback": "Zie de licentie voor de vereiste tekst.",
     "readyBadge": "Klaar voor verkoop",
@@ -1011,7 +1011,7 @@
     "markReadyAtRisk": "Toch markeren als klaar voor verkoop",
     "unmark": "Haal uit verkoop",
     "confirmTitle": "Verkopen zonder geldige rechten?",
-    "confirmBody": "Er is geen geldige commerciële licentie voor {models}. Verkopen kan de licentie van de maker schenden. Je keuze wordt vastgelegd in het auditlog.",
+    "confirmBody": "Er is geen geldige commerciÃ«le licentie voor {models}. Verkopen kan de licentie van de maker schenden. Je keuze wordt vastgelegd in het auditlog.",
     "confirmAction": "Toch klaarzetten",
     "cancel": "Annuleren",
     "errors": {
@@ -1033,10 +1033,10 @@
     },
     "export": {
       "title": "Mijn gegevens exporteren",
-      "intro": "Download alles uit je werkruimte als ZIP: een JSON-bestand per soort gegevens, een README met de velden en je geüploade bestanden (modellen, thumbnails, licentiebewijzen). Wachtwoorden en toegangstokens zitten er nooit in.",
+      "intro": "Download alles uit je werkruimte als ZIP: een JSON-bestand per soort gegevens, een README met de velden en je geÃ¼ploade bestanden (modellen, thumbnails, licentiebewijzen). Wachtwoorden en toegangstokens zitten er nooit in.",
       "passwordHint": "We vragen je wachtwoord opnieuw om je gegevens te beschermen.",
       "action": "Mijn gegevens exporteren",
-      "running": "Bezig met exporteren…",
+      "running": "Bezig met exporterenâ€¦",
       "progress": "Je export wordt voorbereid. Bij grote bibliotheken kan dit even duren.",
       "done": "Download gestart: {name}"
     },
@@ -1048,7 +1048,7 @@
       "warning": "Dit gebeurt direct en kan niet ongedaan worden gemaakt.",
       "consequences": {
         "data": "Alle gegevens in deze werkruimte worden verwijderd: modellen, producten, voorraad, printopdrachten, licenties en het auditlog.",
-        "files": "Alle geüploade bestanden worden verwijderd.",
+        "files": "Alle geÃ¼ploade bestanden worden verwijderd.",
         "bambu": "De Bambu Lab-koppeling en het toegangstoken worden verwijderd.",
         "signedOut": "Iedereen in deze werkruimte wordt afgemeld en de accounts worden verwijderd.",
         "backups": "Eerder gemaakte back-ups verlopen automatisch binnen de bewaartermijn."
@@ -1062,7 +1062,7 @@
       "passwordWrong": "Dat wachtwoord klopt niet.",
       "nameMismatch": "De naam komt niet overeen met de naam van je werkruimte.",
       "workspaceNameWrong": "De naam komt niet overeen met de naam van je werkruimte.",
-      "rateLimited": "Je hebt net al geëxporteerd. Probeer het over een tijdje opnieuw.",
+      "rateLimited": "Je hebt net al geÃ«xporteerd. Probeer het over een tijdje opnieuw.",
       "locked": "Je account is tijdelijk geblokkeerd na te veel pogingen. Probeer het later opnieuw.",
       "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
       "exportFailed": "De export is mislukt. Probeer opnieuw.",
@@ -1223,13 +1223,13 @@
       "backInProduction": "Terug naar in productie"
     },
     "rights": {
-      "title": "Commerciële rechten niet in orde",
+      "title": "CommerciÃ«le rechten niet in orde",
       "body": "Het model is niet gedekt voor verkoop: {models}. Verkopen kan op je eigen risico.",
       "acknowledge": "Ik begrijp het risico en wil dit toch verkopen",
-      "orderWarning": "Een of meer regels bevatten een model zonder bevestigde commerciële rechten.",
+      "orderWarning": "Een of meer regels bevatten een model zonder bevestigde commerciÃ«le rechten.",
       "acknowledged": "Risico erkend",
       "notAcknowledged": "Risico nog niet erkend",
-      "confirmBody": "Een of meer regels bevatten een model zonder bevestigde commerciële rechten. Bevestig alleen als je het risico begrijpt en aanvaardt. Dit wordt vastgelegd in het auditlog.",
+      "confirmBody": "Een of meer regels bevatten een model zonder bevestigde commerciÃ«le rechten. Bevestig alleen als je het risico begrijpt en aanvaardt. Dit wordt vastgelegd in het auditlog.",
       "proceed": "Risico aanvaarden en bevestigen"
     },
     "errors": {
@@ -1258,7 +1258,7 @@
     "noMatches": "Geen inkopen met deze status.",
     "allStatuses": "Alle statussen",
     "statusFilter": "Status",
-    "rowSubtitle": "{date} · {total} · {received}/{ordered} spoelen ontvangen",
+    "rowSubtitle": "{date} Â· {total} Â· {received}/{ordered} spoelen ontvangen",
     "status": {
       "Ordered": "Besteld",
       "PartiallyReceived": "Deels ontvangen",
@@ -1298,9 +1298,9 @@
       "tooLong": "{field} is te lang.",
       "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
       "save": "Opslaan is niet gelukt. Probeer het opnieuw.",
-      "noLines": "Voeg minstens één regel toe.",
+      "noLines": "Voeg minstens Ã©Ã©n regel toe.",
       "receiveQuantity": "Vul een heel getal van 0 tot {max} in.",
-      "receiveNothing": "Vul minstens één spoel in om te ontvangen.",
+      "receiveNothing": "Vul minstens Ã©Ã©n spoel in om te ontvangen.",
       "receive": "Ontvangen is niet gelukt. Er is niets op voorraad gezet; probeer het opnieuw.",
       "cancel": "Annuleren is niet gelukt.",
       "delete": "Verwijderen is niet gelukt.",
@@ -1321,7 +1321,7 @@
     "receiveNowOn": "De spoelen komen meteen op voorraad.",
     "receiveNowOff": "Je zet de spoelen later op voorraad zodra ze binnen zijn.",
     "lines": "Regels",
-    "lineDetail": "{quantity} × {weight} g · {price} per spoel",
+    "lineDetail": "{quantity} Ã— {weight} g Â· {price} per spoel",
     "lineReceived": "{received} van {ordered} ontvangen",
     "costPerKg": "{price} per kg all-in",
     "receiveTitle": "Ontvangst",
@@ -1364,7 +1364,7 @@
     "noChange": "Geen vorige prijs",
     "unchanged": "Ongewijzigd",
     "up": "+{percent}% t.o.v. vorige",
-    "down": "−{percent}% t.o.v. vorige",
+    "down": "âˆ’{percent}% t.o.v. vorige",
     "perKg": "{price}/kg",
     "pointLabel": "{date}, {supplier}, {price} per kg",
     "lastFrom": "Laatst gekocht bij {supplier} op {date}",
@@ -1556,7 +1556,7 @@
       "intro": "Leg de spoel op een weegschaal. Het restant wordt gecorrigeerd en in de historie vastgelegd.",
       "gross": "Gewicht op de weegschaal (gram)",
       "empty": "Gewicht lege spoel (gram)",
-      "emptyHint": "Weeg een lege spoel één keer, we onthouden het voor deze spoel.",
+      "emptyHint": "Weeg een lege spoel Ã©Ã©n keer, we onthouden het voor deze spoel.",
       "emptyKnown": "Onthouden: {grams} g. Laat leeg om dit te gebruiken.",
       "reason": "Notitie (optioneel)",
       "reasonHint": "Laat leeg voor \"Gewogen\".",
@@ -1571,7 +1571,7 @@
     },
     "count": {
       "title": "Voorraad tellen",
-      "linkSubtitle": "Tel spoelen of producten en corrigeer ze in één keer",
+      "linkSubtitle": "Tel spoelen of producten en corrigeer ze in Ã©Ã©n keer",
       "intro": "Vul in wat je geteld hebt. Lege rijen blijven zoals ze zijn. Verschillen worden als correctie geboekt.",
       "mode": "Wat tel je?",
       "filament": "Filament",
@@ -1690,8 +1690,8 @@
     "cartSummary": "{count} artikel | {count} artikelen",
     "review": "Bekijken",
     "cart": "Winkelmandje",
-    "less": "Eén minder",
-    "more": "Eén meer",
+    "less": "EÃ©n minder",
+    "more": "EÃ©n meer",
     "quantity": "Aantal",
     "discount": "Korting",
     "discountKind": "Korting als bedrag of percentage",
@@ -1704,7 +1704,7 @@
     "tendered": "Ontvangen",
     "tenderedHint": "Laat leeg als de klant het exacte bedrag betaalt.",
     "change": "Wisselgeld",
-    "acknowledge": "De commerciële rechten van een of meer producten zijn niet bevestigd. Ik weet dat en verkoop ze toch.",
+    "acknowledge": "De commerciÃ«le rechten van een of meer producten zijn niet bevestigd. Ik weet dat en verkoop ze toch.",
     "back": "Terug",
     "confirm": "Verkoop afronden",
     "doneTitle": "Verkoop voltooid",
@@ -1808,7 +1808,7 @@
     "byMarket": "Per markt",
     "byProduct": "Per product",
     "byVariant": "Per variant",
-    "rowMeta": "{count} verkocht · {revenue} omzet · {margin} marge | {count} verkocht · {revenue} omzet · {margin} marge",
+    "rowMeta": "{count} verkocht Â· {revenue} omzet Â· {margin} marge | {count} verkocht Â· {revenue} omzet Â· {margin} marge",
     "rowStand": "Standkosten {cost}, netto {net}",
     "margin": {
       "title": "Winstmarges",
@@ -1841,7 +1841,7 @@
       "variant": "Variant"
     },
     "unitsValue": "{count} verkocht | {count} verkocht",
-    "rankMeta": "{revenue} omzet · {profit} winst · {margin} marge | {revenue} omzet · {profit} winst · {margin} marge",
+    "rankMeta": "{revenue} omzet Â· {profit} winst Â· {margin} marge | {revenue} omzet Â· {profit} winst Â· {margin} marge",
     "share": "{percent} van het totaal",
     "slow": {
       "title": "Trage verkopers",
@@ -1864,7 +1864,7 @@
       "trend": "Verloop downloaden (CSV)",
       "bestsellers": "Bestsellers downloaden (CSV)",
       "slow": "Trage verkopers downloaden (CSV)",
-      "running": "Bestand voorbereiden…",
+      "running": "Bestand voorbereidenâ€¦",
       "done": "{name} is gedownload.",
       "failed": "De export is mislukt. Probeer opnieuw."
     }
@@ -1992,10 +1992,10 @@
       "trendLabel": "Printuren in de tijd",
       "trendPoint": "{hours}, {jobs} jobs, {failed} mislukt",
       "byPrinter": "Per printer",
-      "printerMeta": "Bezetting {utilisation} · geslaagd {success} · afval {waste} · {cost} per uur",
+      "printerMeta": "Bezetting {utilisation} Â· geslaagd {success} Â· afval {waste} Â· {cost} per uur",
       "byMaterial": "Filament en mislukkingen per materiaal",
       "causesHint": "Oorzaken van mislukkingen worden niet per job vastgelegd, daarom tonen we mislukkingen per materiaal en printer.",
-      "materialMeta": "{jobs} jobs, {failed} mislukt ({rate}) · afval {waste} · {lost} g verloren in mislukte prints"
+      "materialMeta": "{jobs} jobs, {failed} mislukt ({rate}) Â· afval {waste} Â· {lost} g verloren in mislukte prints"
     },
     "sales": {
       "title": "Verkoop-analyse",
@@ -2011,14 +2011,14 @@
       "trendLabel": "Omzet in de tijd",
       "trendPoint": "{revenue} uit {documents} bestellingen en verkopen",
       "byChannel": "Per kanaal",
-      "channelMeta": "{documents} bestellingen · gemiddeld {aov} · {share} van de omzet · kortingen {discount}",
+      "channelMeta": "{documents} bestellingen Â· gemiddeld {aov} Â· {share} van de omzet Â· kortingen {discount}",
       "byCustomer": "Topklanten",
-      "customerMeta": "{documents} bestellingen · gemiddeld {aov} · {repeat}",
+      "customerMeta": "{documents} bestellingen Â· gemiddeld {aov} Â· {repeat}",
       "walkIn": "Geen klant gekoppeld",
       "returning": "terugkerend",
       "newCustomer": "nieuw",
       "byProduct": "Topproducten op omzet",
-      "productMeta": "{units} verkocht · {margin} marge",
+      "productMeta": "{units} verkocht Â· {margin} marge",
       "leadTitle": "Doorlooptijd van bevestigd tot geleverd",
       "leadEmpty": "In deze periode zijn geen bestellingen geleverd.",
       "leadSummary": "Gemiddeld {average} dagen, mediaan {median}, langste {longest} (geleverde bestellingen: {count}).",
@@ -2046,7 +2046,7 @@
       "filamentTurnover": "Omloop filament",
       "finishedTurnover": "Omloop goederen",
       "byMaterial": "Filament per materiaal",
-      "materialMeta": "{onHand} op voorraad · {used} verbruikt ({rate} g per dag) · dekking {cover}",
+      "materialMeta": "{onHand} op voorraad Â· {used} verbruikt ({rate} g per dag) Â· dekking {cover}",
       "material": "Materiaal",
       "priceTitle": "Verloop van de inkoopprijs",
       "priceHint": "Gemiddelde inkoopprijs per kg in deze periode tegenover de vorige. De impact is de prijswijziging maal de verbruikte grammen.",
@@ -2055,7 +2055,7 @@
       "change": "Wijziging",
       "impact": "Impact",
       "byProduct": "Eindproducten per product",
-      "finishedMeta": "{onHand} op voorraad · {sold} verkocht · dekking {cover}",
+      "finishedMeta": "{onHand} op voorraad Â· {sold} verkocht Â· dekking {cover}",
       "deadTitle": "Dode voorraad",
       "deadEmpty": "Er ligt niets {days} dagen of langer stil.",
       "deadHint": "Voorraad die {days} dagen of langer niet bewogen heeft.",
@@ -2083,7 +2083,55 @@
       "trendLabel": "Bijdrage en nettowinst in de tijd",
       "trendPoint": "Bijdrage {contribution}, nettowinst {net}",
       "byCustomer": "Per klant",
-      "rowMeta": "{count} verkocht · omzet {revenue} · kosten {cost} · platformkosten {fees} · marge {margin} | {count} verkocht · omzet {revenue} · kosten {cost} · platformkosten {fees} · marge {margin}"
+      "rowMeta": "{count} verkocht Â· omzet {revenue} Â· kosten {cost} Â· platformkosten {fees} Â· marge {margin} | {count} verkocht Â· omzet {revenue} Â· kosten {cost} Â· platformkosten {fees} Â· marge {margin}"
+    }
+  },
+  "monitor": {
+    "title": "Printermonitor",
+    "open": "Printermonitor",
+    "openHint": "Status, bezetting en gezondheid per printer",
+    "notConnected": "Verbind je Bambu Lab-account om je printers live te volgen.",
+    "refreshFailed": "Vernieuwen mislukt. Je ziet de laatst bekende gegevens.",
+    "unknownState": "onbekend",
+    "offlineNote": "Printer offline. Laatst bekende status: {state}, gezien {age}.",
+    "staleNote": "De gegevens zijn mogelijk verouderd, laatst gezien {age}.",
+    "windowLabel": "Periode voor bezetting",
+    "windows": {
+      "24": "24 uur",
+      "168": "7 dagen",
+      "720": "30 dagen"
+    },
+    "utilization": {
+      "title": "Bezetting",
+      "value": "{percent}% van de tijd aan het printen",
+      "detail": "{printing} printen van {observed} gemeten",
+      "coverage": "Gebaseerd op {percent}% van deze periode, de rest is niet vastgelegd.",
+      "none": "Nog geen gegevens voor deze periode."
+    },
+    "health": {
+      "title": "Gezondheid",
+      "connection": "Verbinding",
+      "online": "Online",
+      "offline": "Offline",
+      "lastSeen": "Laatst gezien",
+      "nozzle": "Nozzle",
+      "bed": "Bed",
+      "filament": "Filament",
+      "emptyTray": "Leeg",
+      "inUse": "in gebruik",
+      "errorCode": "Foutcode {code}",
+      "hms": "HMS-melding {code}",
+      "noErrors": "Geen fouten gemeld."
+    },
+    "timeline": {
+      "title": "Recente statussen",
+      "empty": "Nog geen statuswijzigingen vastgelegd."
+    },
+    "camera": {
+      "title": "Camera",
+      "unavailable": "Camera niet beschikbaar via de cloud",
+      "explain": "Bambu Lab biedt het camerabeeld van de A1 alleen aan op je eigen netwerk. PrintOS draait online en kan dat beeld niet bereiken. Een latere bridge op je thuisnetwerk kan dit mogelijk maken.",
+      "docs": "Lees waarom"
     }
   }
 }

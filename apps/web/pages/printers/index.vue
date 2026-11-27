@@ -115,6 +115,11 @@ onMounted(load)
       </div>
 
       <UiListRow
+        to="/printers/monitor"
+        :title="$t('monitor.open')"
+        :subtitle="$t('monitor.openHint')"
+      />
+      <UiListRow
         to="/printers/bambu"
         :title="$t('bambu.title')"
         :subtitle="bambuSubtitle"

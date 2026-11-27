@@ -22,6 +22,7 @@ public static class BambuEndpoints
         group.MapPost("/devices/{serial}/link", LinkAsync);
         group.MapDelete("/devices/{serial}/link", UnlinkAsync);
         group.MapGet("/status", GetStatusAsync);
+        group.MapGet("/monitor", BambuMonitorEndpoints.GetMonitorAsync);
     }
 
     private static async Task<IResult> GetConnectionAsync(PrintOsDbContext dbContext, CancellationToken cancellationToken) =>
@@ -164,8 +165,10 @@ public static class BambuEndpoints
             return TypedResults.NotFound();
         }
 
+        var previousState = device.State;
         device.PrinterId = null;
         BambuDeviceStateUpdater.MarkOffline(device, DateTimeOffset.UtcNow);
+        BambuStateHistory.Track(dbContext, device, previousState, DateTimeOffset.UtcNow);
         await dbContext.SaveChangesAsync(cancellationToken);
         signal.Request();
         return TypedResults.Ok(await BuildConnectionAsync(dbContext, cancellationToken));
@@ -229,7 +232,7 @@ public static class BambuEndpoints
         return new BambuConnectionResponse(true, connection.Region, StatusName(connection.Status), connection.AccountName, connection.ConnectedAt, connection.LastSyncAt, flagged, devices);
     }
 
-    private static string StatusName(BambuConnectionStatus status) => status switch
+    internal static string StatusName(BambuConnectionStatus status) => status switch
     {
         BambuConnectionStatus.TokenExpired => "tokenExpired",
         BambuConnectionStatus.Unreachable => "unreachable",

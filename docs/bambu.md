@@ -60,3 +60,13 @@ Connection, devices and imports are marked `[NotAudited]`: they hold secrets and
 | GET | `/api/bambu/status` | Live status of linked printers. |
 
 Configuration (`Bambu` section): `WorkerEnabled`, `ReconcileSeconds`, `SyncMinutes`, `FlushSeconds`, `InitialBackoffSeconds`, `MaximumBackoffSeconds`, hosts and `MqttPort`.
+
+## Printer monitor (#49)
+
+Screen: Printers, Printer monitor (`/printers/monitor`, also linked from the Prints tab). `GET /api/bambu/monitor` returns, per linked printer: the last known status (kept while offline, with `online`, `stale` and `lastKnownState`), health (`printErrorCode`, `hmsCodes`, nozzle and bed temperature, filament trays, last seen), utilization for 24 hours, 7 days and 30 days, and the last 12 state changes. The page polls every 10 seconds while visible and keeps showing the last data when a refresh fails.
+
+- **State history**: `BambuStateChanges` (`[NotAudited]`) gets one row whenever a device's state changes (printing, paused, finished, failed, idle, offline). The telemetry worker, device refresh and unlinking write it. Rows older than `Bambu:StateHistoryRetentionDays` (45, minimum 31) are pruned hourly, keeping the newest older row per device as the baseline for the 30-day window.
+- **Utilization** = time in `printing` divided by observed time in the window (offline counts as observed, not printing; time before the first record is not counted and `coveragePercent` says how much of the window was recorded). An open printing or paused interval is only trusted for 10 minutes after the last report, so a stopped worker cannot inflate the figure.
+- **Stale**: no report for 5 minutes, or offline.
+- **Error codes**: `print_error` is shown as `AAAA-BBBB`, each HMS entry as `AAAA-BBBB-CCCC-DDDD` (attr and code as hexadecimal 16-bit halves). The grouping follows the community convention and is not verified against real A1 messages; PrintOS shows the raw code and does not translate it.
+- **Camera**: always the state "Camera not available via cloud" with the reason and a link to [bambu-spike.md](bambu-spike.md). A future bridge can replace that section.

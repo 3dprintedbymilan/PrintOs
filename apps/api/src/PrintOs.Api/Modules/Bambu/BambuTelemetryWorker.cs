@@ -39,6 +39,7 @@ public sealed class BambuTelemetryWorker(
 {
     private readonly ConcurrentDictionary<string, DeviceRunner> runners = new();
     private readonly ConcurrentDictionary<Guid, DateTimeOffset> lastRefreshAttempts = new();
+    private DateTimeOffset lastPrune = DateTimeOffset.MinValue;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -72,6 +73,7 @@ public sealed class BambuTelemetryWorker(
     {
         using var scope = scopeFactory.CreateScope();
         var services = scope.ServiceProvider;
+        await PruneStateHistoryAsync(services, cancellationToken);
         var connections = await WorkspaceContext(services, Guid.Empty).Set<BambuConnection>().IgnoreQueryFilters().AsNoTracking().ToListAsync(cancellationToken);
 
         var wanted = new Dictionary<string, (Guid WorkspaceId, Guid DeviceId, Guid ConnectionId)>();
@@ -129,6 +131,19 @@ public sealed class BambuTelemetryWorker(
             runner.Start(token => RunDeviceAsync(target.WorkspaceId, target.DeviceId, target.ConnectionId, token));
             runners[key] = runner;
         }
+    }
+
+    private async Task PruneStateHistoryAsync(IServiceProvider services, CancellationToken cancellationToken)
+    {
+        var now = DateTimeOffset.UtcNow;
+        if (now - lastPrune < TimeSpan.FromHours(1))
+        {
+            return;
+        }
+
+        lastPrune = now;
+        await using var dbContext = WorkspaceContext(services, Guid.Empty);
+        await BambuStateHistory.PruneAsync(dbContext, TimeSpan.FromDays(Math.Max(31, options.Value.StateHistoryRetentionDays)), now, cancellationToken);
     }
 
     public async Task StopWorkspaceAsync(Guid workspaceId)
@@ -268,7 +283,10 @@ public sealed class BambuTelemetryWorker(
 
         foreach (var report in pending)
         {
-            BambuDeviceStateUpdater.Apply(device, report, DateTimeOffset.UtcNow);
+            var previousState = device.State;
+            var now = DateTimeOffset.UtcNow;
+            BambuDeviceStateUpdater.Apply(device, report, now);
+            BambuStateHistory.Track(dbContext, device, previousState, now);
         }
 
         pending.Clear();
@@ -282,7 +300,10 @@ public sealed class BambuTelemetryWorker(
         var device = await dbContext.Set<BambuDevice>().SingleOrDefaultAsync(candidate => candidate.Id == deviceId);
         if (device is not null)
         {
-            BambuDeviceStateUpdater.MarkOffline(device, DateTimeOffset.UtcNow);
+            var previousState = device.State;
+            var now = DateTimeOffset.UtcNow;
+            BambuDeviceStateUpdater.MarkOffline(device, now);
+            BambuStateHistory.Track(dbContext, device, previousState, now);
             await dbContext.SaveChangesAsync();
         }
     }

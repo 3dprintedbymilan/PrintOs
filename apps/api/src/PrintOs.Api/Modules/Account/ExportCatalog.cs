@@ -21,6 +21,7 @@ public static class ExportCatalog
         [typeof(BambuConnection)] = "Bambu Lab cloud connection. Never exported: see bambu.json (connected yes/no only).",
         [typeof(BambuDevice)] = "Printers discovered in the Bambu Lab account (serial, name, model, last known live status).",
         [typeof(BambuTaskImport)] = "Which Bambu Lab print tasks were already imported as print jobs.",
+        [typeof(BambuStateChange)] = "Recent printer state changes (printing, idle, offline) used for the utilization figures; pruned after about 45 days.",
         [typeof(CostSnapshot)] = "Cost breakdown frozen at the time a print job was completed.",
         [typeof(Supplier)] = "Filament suppliers.",
         [typeof(Material)] = "Filament materials (type, brand, colour).",
