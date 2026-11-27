@@ -1,49 +1,20 @@
 <script setup lang="ts">
-import {
-  addDaysIso,
-  deltaTrend,
-  isIsoDate,
-  isReportChannel,
-  isReportPeriod,
-  reportChannels,
-  reportDate,
-  reportPeriods,
-  reportQuery,
-  reportToday,
-  validateRange,
-} from '~/utils/reports'
-import type { MarginReport, ReportChannel, ReportFilter, ReportPeriodKind } from '~/utils/reports'
+import { deltaTrend, reportDate, reportQuery } from '~/utils/reports'
+import type { MarginReport } from '~/utils/reports'
 
 definePageMeta({ titleKey: 'reports.margin.title' })
 
 const { t, n, d } = useI18n()
 const auth = useAuthStore()
 const route = useRoute()
-
-const today = reportToday()
-const period = ref<ReportPeriodKind>(isReportPeriod(route.query.period) ? route.query.period : 'month')
-const channel = ref<ReportChannel>(isReportChannel(route.query.channel) ? route.query.channel : 'all')
-const from = ref(isIsoDate(route.query.from) ? route.query.from : addDaysIso(today, -29))
-const to = ref(isIsoDate(route.query.to) ? route.query.to : today)
-const productId = ref<string | null>(typeof route.query.productId === 'string' ? route.query.productId : null)
+const { period, channel, from, to, productId, rangeError, filter, baseQuery, validate, syncUrl } = useReportFilter()
 
 const report = ref<MarginReport | null>(null)
 const state = ref<'loading' | 'ready' | 'failed'>('loading')
-const rangeError = ref<'from' | 'to' | null>(null)
 let requestId = 0
 
-const filter = computed<ReportFilter>(() => ({ period: period.value, channel: channel.value, from: from.value, to: to.value, productId: productId.value }))
-const periodOptions = computed(() => reportPeriods.map(value => ({ value, label: t(`reports.period.${value}`) })))
-const channelOptions = computed(() => reportChannels.map(value => ({ value, label: t(`reports.channel.${value}`) })))
-const baseQuery = computed(() => reportQuery({ ...filter.value, productId: null }))
-
 async function load() {
-  rangeError.value = validateRange(filter.value)
-  if (rangeError.value) {
-    await nextTick()
-    document.querySelector<HTMLElement>(`[data-range="${rangeError.value}"] input`)?.focus()
-    return
-  }
+  if (!(await validate())) return
   const current = ++requestId
   if (!report.value) state.value = 'loading'
   try {
@@ -60,7 +31,7 @@ async function load() {
 }
 
 watch([period, channel, from, to], () => {
-  history.replaceState(history.state, '', `${route.path}?${reportQuery(filter.value)}`)
+  syncUrl()
   load()
 })
 
@@ -134,39 +105,13 @@ const channelLabel = (row: { key: string }) => t(`reports.channel.${row.key}`)
       </NuxtLink>
     </p>
 
-    <UiCard class="filters">
-      <UiSelect
-        v-model="period"
-        :label="$t('reports.period.label')"
-        :options="periodOptions"
-      />
-      <div
-        v-if="period === 'custom'"
-        class="range"
-      >
-        <div data-range="from">
-          <UiInput
-            v-model="from"
-            type="date"
-            :label="$t('reports.from')"
-            :error="rangeError === 'from' ? $t('reports.errors.from') : undefined"
-          />
-        </div>
-        <div data-range="to">
-          <UiInput
-            v-model="to"
-            type="date"
-            :label="$t('reports.to')"
-            :error="rangeError === 'to' ? $t('reports.errors.to') : undefined"
-          />
-        </div>
-      </div>
-      <UiSegmentedControl
-        v-model="channel"
-        :label="$t('reports.channel.label')"
-        :options="channelOptions"
-      />
-    </UiCard>
+    <ReportFilters
+      v-model:period="period"
+      v-model:channel="channel"
+      v-model:from="from"
+      v-model:to="to"
+      :range-error="rangeError"
+    />
 
     <StateLoading v-if="state === 'loading'" />
     <StateError
@@ -272,8 +217,6 @@ const channelLabel = (row: { key: string }) => t(`reports.channel.${row.key}`)
 
 <style scoped>
 .stack { display: grid; gap: var(--space-3); }
-.filters { display: grid; gap: var(--space-3); }
-.range { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
 .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
 h2 { margin: 0 0 var(--space-2); font-size: var(--font-size-md); }
 .range-text { margin: 0; color: var(--text); font-size: var(--font-size-sm); font-weight: 600; }

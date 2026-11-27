@@ -38,3 +38,47 @@ public sealed record MarginReportResponse(
     IReadOnlyList<MarginRow> Products,
     IReadOnlyList<MarginRow> Variants);
 
+public sealed record RankedItem(
+    int Rank,
+    string Key,
+    Guid? ProductId,
+    Guid? VariantId,
+    string Label,
+    string? Sku,
+    int Units,
+    decimal Revenue,
+    decimal Profit,
+    decimal? MarginPercent,
+    decimal? UnitsSharePercent,
+    decimal? RevenueSharePercent,
+    decimal? ProfitSharePercent);
+
+public sealed record BestsellerTotals(int Units, decimal Revenue, decimal Profit, int ItemCount);
+
+public sealed record BestsellerReportResponse(
+    ReportPeriodResponse Period,
+    string Currency,
+    string Channel,
+    string Level,
+    BestsellerTotals Totals,
+    IReadOnlyList<RankedItem> ByUnits,
+    IReadOnlyList<RankedItem> ByRevenue,
+    IReadOnlyList<RankedItem> ByProfit);
+
+public sealed record SlowMoverRow(
+    Guid ProductId,
+    Guid VariantId,
+    string Label,
+    string? Sku,
+    int OnHand,
+    decimal StockValue,
+    DateTimeOffset? LastSoldAt,
+    int? DaysSinceLastSale,
+    DateTimeOffset? StockSince);
+
+public sealed record SlowMoverReportResponse(
+    int Days,
+    string Currency,
+    int Count,
+    decimal StockValue,
+    IReadOnlyList<SlowMoverRow> Items);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addDaysIso, chartGeometry, deltaTrend, isIsoDate, niceMax, reportQuery, validateRange } from '../utils/reports'
+import { addDaysIso, chartGeometry, deltaTrend, isIsoDate, isRankingSort, niceMax, rankingShare, reportQuery, shareBarWidth, validateRange } from '../utils/reports'
 import type { MarginTrendPoint, ReportFilter } from '../utils/reports'
 
 const filter = (overrides: Partial<ReportFilter> = {}): ReportFilter => ({ period: 'month', channel: 'all', from: '2026-11-01', to: '2026-11-30', ...overrides })
@@ -66,5 +66,27 @@ describe('chartGeometry', () => {
     expect(chartGeometry([point('2026-11-01', 0, 0)], 200, 100).hasData).toBe(false)
     const negative = chartGeometry([point('2026-11-01', 100, -20)], 200, 100)
     expect(negative.line[0]!.y).toBeGreaterThan(negative.bars[0]!.y + negative.bars[0]!.height)
+  })
+})
+
+describe('ranking helpers', () => {
+  const item = { rank: 1, key: 'a', productId: null, variantId: null, label: 'A', sku: null, units: 3, revenue: 30, profit: 20, marginPercent: 66.7, unitsSharePercent: 60, revenueSharePercent: 12.4, profitSharePercent: null }
+
+  it('picks the share that belongs to the sort order', () => {
+    expect(rankingShare(item, 'units')).toBe(60)
+    expect(rankingShare(item, 'revenue')).toBe(12.4)
+    expect(rankingShare(item, 'profit')).toBeNull()
+  })
+
+  it('keeps a visible sliver for small shares and caps at the full width', () => {
+    expect(shareBarWidth(null)).toBe(0)
+    expect(shareBarWidth(0.2)).toBe(2)
+    expect(shareBarWidth(55.6)).toBe(56)
+    expect(shareBarWidth(140)).toBe(100)
+  })
+
+  it('validates the sort option', () => {
+    expect(isRankingSort('profit')).toBe(true)
+    expect(isRankingSort('name')).toBe(false)
   })
 })

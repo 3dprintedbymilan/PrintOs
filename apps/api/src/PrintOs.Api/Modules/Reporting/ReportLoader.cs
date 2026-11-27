@@ -99,6 +99,53 @@ public static class ReportLoader
         return (facts, marketCosts.Select(market => new MarketCostFact(market.Id, market.Name, market.StartDate, market.StandCost)).ToList());
     }
 
+    public static async Task<List<SlowMoverFact>> LoadSlowMoverFactsAsync(PrintOsDbContext dbContext, CancellationToken cancellationToken)
+    {
+        var levels = await dbContext.Set<FinishedStockLevel>()
+            .Where(level => level.OnHand > 0)
+            .Select(level => new { level.VariantId, level.OnHand, level.AverageUnitCost })
+            .ToListAsync(cancellationToken);
+        if (levels.Count == 0)
+        {
+            return [];
+        }
+
+        var variantIds = levels.Select(level => level.VariantId).ToList();
+        var movementDates = await dbContext.Set<FinishedStockMovement>()
+            .Where(movement => variantIds.Contains(movement.VariantId))
+            .GroupBy(movement => movement.VariantId)
+            .Select(group => new
+            {
+                VariantId = group.Key,
+                LastSoldAt = group.Where(movement => movement.Kind == FinishedStockMovementKind.Sold).Max(movement => (DateTimeOffset?)movement.CreatedAt),
+                StockSince = group.Where(movement => movement.Delta > 0).Min(movement => (DateTimeOffset?)movement.CreatedAt),
+            })
+            .ToDictionaryAsync(row => row.VariantId, cancellationToken);
+        var names = await LoadVariantNamesAsync(dbContext, cancellationToken);
+
+        var facts = new List<SlowMoverFact>();
+        foreach (var level in levels)
+        {
+            if (!names.TryGetValue(level.VariantId, out var name))
+            {
+                continue;
+            }
+
+            var dates = movementDates.GetValueOrDefault(level.VariantId);
+            facts.Add(new SlowMoverFact(
+                name.ProductId,
+                level.VariantId,
+                Label(name),
+                name.Sku,
+                level.OnHand,
+                level.AverageUnitCost,
+                dates?.LastSoldAt,
+                dates?.StockSince));
+        }
+
+        return facts;
+    }
+
     private static async Task<List<SaleFact>> LoadOrderReturnsAsync(
         PrintOsDbContext dbContext,
         DateTimeOffset fromUtc,

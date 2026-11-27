@@ -273,6 +273,102 @@ public class ReportAggregatorTests
     }
 }
 
+public class BestsellerAggregatorTests
+{
+    private static readonly Guid ProductA = Guid.NewGuid();
+    private static readonly Guid ProductB = Guid.NewGuid();
+    private static readonly Guid VariantA1 = Guid.NewGuid();
+    private static readonly Guid VariantA2 = Guid.NewGuid();
+    private static readonly Guid VariantB = Guid.NewGuid();
+
+    private static SaleFact Fact(Guid productId, Guid variantId, string name, int quantity, decimal revenue, decimal cost) =>
+        new(new DateOnly(2026, 11, 2), ReportChannels.Orders, null, null, productId, name, variantId, name + " - V", null, quantity, revenue, cost, true);
+
+    private static readonly SaleFact[] Facts =
+    [
+        Fact(ProductA, VariantA1, "Alpha", 5, 50m, 25m),
+        Fact(ProductA, VariantA2, "Alpha", 3, 30m, 15m),
+        Fact(ProductB, VariantB, "Beta", 2, 100m, 20m),
+    ];
+
+    [Fact]
+    public void Rank_OrdersByUnitsRevenueAndProfitWithShares()
+    {
+        var (units, revenue, profit, totals) = ReportAggregator.Rank(Facts, productLevel: true, 10);
+
+        Assert.Equal("Alpha", units[0].Label);
+        Assert.Equal(8, units[0].Units);
+        Assert.Equal(80m, units[0].UnitsSharePercent);
+        Assert.Equal("Beta", revenue[0].Label);
+        Assert.Equal(1, revenue[0].Rank);
+        Assert.Equal(55.6m, revenue[0].RevenueSharePercent);
+        Assert.Equal("Beta", profit[0].Label);
+        Assert.Equal(80m, profit[0].Profit);
+        Assert.Equal(10, totals.Units);
+        Assert.Equal(180m, totals.Revenue);
+        Assert.Equal(2, totals.ItemCount);
+    }
+
+    [Fact]
+    public void Rank_AtVariantLevelKeepsVariantsApartAndHonoursTheLimit()
+    {
+        var (units, _, _, totals) = ReportAggregator.Rank(Facts, productLevel: false, 2);
+
+        Assert.Equal(2, units.Count);
+        Assert.Equal(VariantA1, units[0].VariantId);
+        Assert.Equal(3, totals.ItemCount);
+    }
+
+    [Fact]
+    public void Rank_SkipsFullyReturnedItems()
+    {
+        SaleFact[] facts = [Fact(ProductA, VariantA1, "Alpha", 1, 10m, 4m), Fact(ProductA, VariantA1, "Alpha", -1, -10m, -4m)];
+
+        var (units, _, _, totals) = ReportAggregator.Rank(facts, productLevel: true, 10);
+
+        Assert.Empty(units);
+        Assert.Equal(0, totals.ItemCount);
+    }
+
+    [Fact]
+    public void Rank_GroupsFreeTextLinesByTheirDescription()
+    {
+        SaleFact[] facts =
+        [
+            new(new DateOnly(2026, 11, 2), ReportChannels.Orders, null, null, null, null, null, "Repair", null, 1, 10m, 0m, false),
+            new(new DateOnly(2026, 11, 3), ReportChannels.Pos, null, null, null, null, null, " repair ", null, 1, 5m, 0m, false),
+        ];
+
+        var (units, _, _, _) = ReportAggregator.Rank(facts, productLevel: true, 10);
+
+        Assert.Single(units);
+        Assert.Equal(2, units[0].Units);
+    }
+
+    [Fact]
+    public void SlowMovers_NeedStockAndNoRecentSale()
+    {
+        var now = new DateTimeOffset(2026, 11, 27, 12, 0, 0, TimeSpan.Zero);
+        SlowMoverFact[] facts =
+        [
+            new(ProductA, VariantA1, "Sold long ago", null, 4, 2.5m, now.AddDays(-60), now.AddDays(-90)),
+            new(ProductA, VariantA2, "Sold yesterday", null, 4, 2.5m, now.AddDays(-1), now.AddDays(-90)),
+            new(ProductB, VariantB, "Never sold, old stock", null, 2, 10m, null, now.AddDays(-45)),
+            new(ProductB, Guid.NewGuid(), "Never sold, new stock", null, 2, 10m, null, now.AddDays(-3)),
+            new(ProductB, Guid.NewGuid(), "Out of stock", null, 0, 10m, now.AddDays(-100), now.AddDays(-200)),
+        ];
+
+        var rows = ReportAggregator.SlowMovers(facts, now, 30);
+
+        Assert.Equal(["Never sold, old stock", "Sold long ago"], rows.Select(row => row.Label).ToArray());
+        Assert.Null(rows[0].DaysSinceLastSale);
+        Assert.Equal(60, rows[1].DaysSinceLastSale);
+        Assert.Equal(20m, rows[0].StockValue);
+        Assert.Equal(10m, rows[1].StockValue);
+    }
+}
+
+
 public class ReportingTests(PostgresApiFactory factory) : IClassFixture<PostgresApiFactory>
 {
     private const string StrongPassword = "Correct-Horse-9";
@@ -465,4 +561,78 @@ public class ReportingTests(PostgresApiFactory factory) : IClassFixture<Postgres
         Assert.Equal(0m, report.Current.Revenue);
         Assert.Empty(report.Products);
     }
+
+    [Fact]
+    public async Task Bestsellers_RankByUnitsRevenueAndProfitWithShares()
+    {
+        using var client = await SignedInClientAsync();
+        var cheap = await SeedVariantAsync(client, "Cheap", 10m, 3.5m);
+        var pricey = await SeedVariantAsync(client, "Pricey", 50m, 10m);
+        await AdjustAsync(client, cheap.Id, 10);
+        await AdjustAsync(client, pricey.Id, 10);
+        await ConfirmedOrderAsync(client, cheap.Id, 3);
+        await ConfirmedOrderAsync(client, pricey.Id, 1);
+
+        var report = await client.GetFromJsonAsync<BestsellerReportResponse>("/api/reports/bestsellers?period=year", Token);
+
+        Assert.Equal("Cheap", report!.ByUnits[0].Label);
+        Assert.Equal(75m, report.ByUnits[0].UnitsSharePercent);
+        Assert.Equal("Pricey", report.ByRevenue[0].Label);
+        Assert.Equal(62.5m, report.ByRevenue[0].RevenueSharePercent);
+        Assert.Equal("Pricey", report.ByProfit[0].Label);
+        Assert.Equal(40m, report.ByProfit[0].Profit);
+        Assert.Equal(4, report.Totals.Units);
+
+        var variants = await client.GetFromJsonAsync<BestsellerReportResponse>("/api/reports/bestsellers?period=year&level=variant&limit=1", Token);
+        Assert.Single(variants!.ByUnits);
+        Assert.NotNull(variants.ByUnits[0].VariantId);
+
+        var posOnly = await client.GetFromJsonAsync<BestsellerReportResponse>("/api/reports/bestsellers?period=year&channel=pos", Token);
+        Assert.Empty(posOnly!.ByUnits);
+    }
+
+    [Fact]
+    public async Task Bestsellers_AndSlowMovers_RequireAuthenticationAndValidateInput()
+    {
+        using var anonymous = factory.CreateClient();
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.GetAsync("/api/reports/bestsellers", Token)).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.GetAsync("/api/reports/slow-movers", Token)).StatusCode);
+
+        using var client = await SignedInClientAsync();
+        foreach (var url in new[] { "/api/reports/bestsellers?level=brand", "/api/reports/bestsellers?limit=0", "/api/reports/bestsellers?limit=500", "/api/reports/slow-movers?days=0", "/api/reports/slow-movers?days=9999" })
+        {
+            Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync(url, Token)).StatusCode);
+        }
+    }
+
+    [Fact]
+    public async Task Bestsellers_NeverShowAnotherWorkspacesSales()
+    {
+        using var owner = await SignedInClientAsync();
+        using var other = await SignedInClientAsync();
+        var variant = await SeedVariantAsync(owner);
+        await AdjustAsync(owner, variant.Id, 5);
+        await ConfirmedOrderAsync(owner, variant.Id, 2);
+
+        var report = await other.GetFromJsonAsync<BestsellerReportResponse>("/api/reports/bestsellers?period=year", Token);
+        var slow = await other.GetFromJsonAsync<SlowMoverReportResponse>("/api/reports/slow-movers?days=1", Token);
+
+        Assert.Empty(report!.ByUnits);
+        Assert.Empty(slow!.Items);
+    }
+
+    [Fact]
+    public async Task SlowMovers_IgnoreFreshStock()
+    {
+        using var client = await SignedInClientAsync();
+        var variant = await SeedVariantAsync(client);
+        await AdjustAsync(client, variant.Id, 5);
+
+        var report = await client.GetFromJsonAsync<SlowMoverReportResponse>("/api/reports/slow-movers", Token);
+
+        Assert.Equal(30, report!.Days);
+        Assert.Empty(report.Items);
+        Assert.Equal(0m, report.StockValue);
+    }
 }
+
