@@ -117,6 +117,14 @@ async function submit() {
       {{ isSignUp ? $t('auth.signUpTitle') : $t('auth.signInTitle') }}
     </h1>
 
+    <p
+      v-if="route.query.deleted === '1'"
+      class="deleted"
+      role="status"
+    >
+      {{ $t('accountData.deletedNotice') }}
+    </p>
+
     <form
       class="form"
       novalidate
@@ -186,4 +194,5 @@ h1:focus { outline: none; }
 .form { display: grid; gap: var(--space-4); }
 .fields { display: grid; gap: var(--space-4); }
 .form-error { margin: 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--danger); border-radius: var(--radius-md); color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); }
+.deleted { margin: 0; color: var(--accent); }
 </style>

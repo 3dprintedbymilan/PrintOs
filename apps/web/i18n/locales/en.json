@@ -902,5 +902,49 @@
       "noModel": "No model",
       "hint": "Link the model so finished units count toward its license limit."
     }
+  },
+  "accountData": {
+    "title": "Account and data",
+    "deletedNotice": "Your account and all its data have been deleted.",
+    "fields": {
+      "password": "Your password"
+    },
+    "export": {
+      "title": "Export my data",
+      "intro": "Download everything in your workspace as a ZIP: one JSON file per kind of data, a README describing the fields, and your uploaded files (models, thumbnails, license proofs). Passwords and access tokens are never included.",
+      "passwordHint": "We ask for your password again to protect your data.",
+      "action": "Export my data",
+      "running": "Exporting…",
+      "progress": "Preparing your export. This can take a moment for large libraries.",
+      "done": "Download started: {name}"
+    },
+    "delete": {
+      "title": "Delete my account",
+      "intro": "Permanently delete your account, workspace and everything in it. This cannot be undone.",
+      "open": "Delete my account",
+      "dialogTitle": "Delete your account?",
+      "warning": "This takes effect immediately and cannot be undone.",
+      "consequences": {
+        "data": "All data in this workspace is deleted: models, products, inventory, print jobs, licenses and the audit log.",
+        "files": "All uploaded files are deleted.",
+        "bambu": "The Bambu Lab connection and its access token are removed.",
+        "signedOut": "Everyone using this workspace is signed out and their accounts are deleted.",
+        "backups": "Backups made earlier age out automatically within the retention period."
+      },
+      "typeName": "Type the workspace name \"{name}\" to confirm",
+      "cancel": "Cancel",
+      "confirm": "Delete everything permanently"
+    },
+    "errors": {
+      "passwordRequired": "Enter your password.",
+      "passwordWrong": "That password is not correct.",
+      "nameMismatch": "The name does not match your workspace name.",
+      "workspaceNameWrong": "The name does not match your workspace name.",
+      "rateLimited": "You exported recently. Please try again in a while.",
+      "locked": "Your account is temporarily locked after too many attempts. Try again later.",
+      "network": "No connection. Check your internet and try again.",
+      "exportFailed": "The export failed. Try again.",
+      "deleteFailed": "Deleting your account failed. Nothing was removed; try again."
+    }
   }
 }

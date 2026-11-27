@@ -1,3 +1,4 @@
+using PrintOs.Api.Modules.Account;
 using PrintOs.Api.Modules.Audit;
 using PrintOs.Api.Modules.Identity;
 
@@ -21,6 +22,7 @@ public static class BambuPrinterStates
 }
 
 [NotAudited]
+[ExportExcluded("Holds the Bambu Lab account and access token; exported only as connected yes/no.")]
 public sealed class BambuConnection : IWorkspaceScoped
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -30,6 +32,7 @@ public sealed class BambuConnection : IWorkspaceScoped
     public string Region { get; set; } = BambuRegions.Global;
 
     [NotAudited]
+    [ExportExcluded("Secret.")]
     public string EncryptedAccessToken { get; set; } = string.Empty;
 
     public string AccountUid { get; set; } = string.Empty;

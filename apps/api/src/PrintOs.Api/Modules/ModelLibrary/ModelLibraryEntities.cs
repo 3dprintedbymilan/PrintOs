@@ -1,3 +1,4 @@
+using PrintOs.Api.Modules.Account;
 using PrintOs.Api.Modules.Identity;
 
 namespace PrintOs.Api.Modules.ModelLibrary;
@@ -16,6 +17,7 @@ public sealed class PrintModel : IWorkspaceScoped
 
     public List<string> Tags { get; set; } = [];
 
+    [StoredFileKey]
     public string? ThumbnailKey { get; set; }
 
     public string? ThumbnailContentType { get; set; }
@@ -41,6 +43,7 @@ public sealed class PrintModelVersion : IWorkspaceScoped
 
     public string Format { get; set; } = string.Empty;
 
+    [StoredFileKey]
     public string StorageKey { get; set; } = string.Empty;
 
     public long SizeBytes { get; set; }

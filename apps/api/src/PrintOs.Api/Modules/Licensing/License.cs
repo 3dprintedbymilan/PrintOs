@@ -1,3 +1,4 @@
+using PrintOs.Api.Modules.Account;
 using PrintOs.Api.Modules.Identity;
 
 namespace PrintOs.Api.Modules.Licensing;
@@ -55,6 +56,7 @@ public sealed class License : IWorkspaceScoped
 
     public string? ProofUrl { get; set; }
 
+    [StoredFileKey]
     public string? ProofFileKey { get; set; }
 
     public string? ProofFileName { get; set; }

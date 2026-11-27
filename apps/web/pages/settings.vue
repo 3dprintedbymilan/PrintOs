@@ -177,6 +177,8 @@ onMounted(load)
         {{ $t('settings.save') }}
       </UiButton>
     </form>
+
+    <AccountDataSection v-if="status === 'ready'" />
   </div>
 </template>
 
