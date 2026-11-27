@@ -394,6 +394,11 @@ public static class PrintJobEndpoints
             return TypedResults.ValidationProblem(errors);
         }
 
+        if (job.PrinterId != request.PrinterId && status == PrintJobStatus.Planned)
+        {
+            job.PrinterPinned = true;
+        }
+
         job.PrinterId = request.PrinterId;
         job.Name = name;
         job.Status = status;

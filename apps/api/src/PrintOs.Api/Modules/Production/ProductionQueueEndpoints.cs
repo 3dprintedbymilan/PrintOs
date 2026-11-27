@@ -100,6 +100,7 @@ public static class ProductionQueueEndpoints
             else
             {
                 job.PrinterId = printerId;
+                job.PrinterPinned = true;
             }
         }
 
@@ -245,6 +246,7 @@ public static class ProductionQueueEndpoints
                     OrderLineId = line.Id,
                     ProductVariantId = line.VariantId,
                     PlannedUnits = parts[part],
+                    PrinterPinned = request.PrinterId is not null,
                 };
                 created.Add(job);
                 dbContext.Set<PrintJob>().Add(job);

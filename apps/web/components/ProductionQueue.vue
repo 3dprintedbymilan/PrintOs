@@ -218,6 +218,12 @@ onMounted(() => load())
           <span class="meta">
             {{ $t('queue.summary', { count: queue.items.length, duration: formatDuration(queue.estimatedMinutes) || '0 min' }, queue.items.length) }}
           </span>
+          <NuxtLink
+            to="/schedule"
+            class="schedule-link"
+          >
+            {{ $t('schedule.open') }}
+          </NuxtLink>
         </header>
         <p
           v-if="queue.withoutEstimate > 0"
@@ -600,6 +606,7 @@ onMounted(() => load())
 .block-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
 .heading { margin: 0; font-size: var(--font-size-lg); }
 .sub { margin: var(--space-2) 0 0; font-size: var(--font-size-md); color: var(--muted); font-weight: 600; }
+.schedule-link { min-height: var(--tap-size); display: inline-flex; align-items: center; color: var(--accent-text); font-weight: 600; }
 .meta, .hint { margin: 0; color: var(--muted); font-size: var(--font-size-sm); }
 .cards { display: grid; gap: var(--space-3); list-style: none; margin: 0; padding: 0; }
 .card { display: grid; gap: var(--space-2); }

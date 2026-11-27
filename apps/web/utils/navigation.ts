@@ -11,7 +11,7 @@ export interface Destination {
 
 export const primaryDestinations: Destination[] = [
   { to: '/', icon: 'home', labelKey: 'nav.home', matches: [] },
-  { to: '/prints', icon: 'prints', labelKey: 'nav.prints', matches: ['/prints', '/print-jobs', '/models'] },
+  { to: '/prints', icon: 'prints', labelKey: 'nav.prints', matches: ['/prints', '/print-jobs', '/models', '/schedule'] },
   { to: '/inventory', icon: 'inventory', labelKey: 'nav.inventory', matches: ['/inventory'] },
   {
     to: '/business',
@@ -28,6 +28,7 @@ export const secondaryDestinations: Destination[] = [
   { to: '/printers', icon: 'printers', labelKey: 'business.printers', matches: ['/printers'] },
   { to: '/printers/bambu', icon: 'bambu', labelKey: 'bambu.title', matches: ['/printers/bambu'] },
   { to: '/prints?section=queue', icon: 'queue', labelKey: 'queue.title', matches: [] },
+  { to: '/schedule', icon: 'queue', labelKey: 'schedule.title', matches: ['/schedule'] },
   { to: '/prints?section=models', icon: 'models', labelKey: 'prints.models', matches: ['/models'] },
   { to: '/licenses', icon: 'licenses', labelKey: 'business.licenses', matches: ['/licenses'] },
   { to: '/orders', icon: 'orders', labelKey: 'business.orders', matches: ['/orders'] },

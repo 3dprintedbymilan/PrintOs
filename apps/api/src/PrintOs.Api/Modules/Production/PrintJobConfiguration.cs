@@ -23,6 +23,7 @@ public sealed class PrintJobConfiguration : IEntityTypeConfiguration<PrintJob>
         builder.HasIndex(job => new { job.WorkspaceId, job.ExternalSource, job.ExternalId })
             .IsUnique()
             .HasFilter("\"ExternalSource\" IS NOT NULL AND \"ExternalId\" IS NOT NULL");
+        builder.Property(job => job.Priority).HasDefaultValue(PrintJobPriority.Normal);
         builder.HasIndex(job => job.OrderLineId);
         builder.HasOne<OrderLine>().WithMany().HasForeignKey(job => job.OrderLineId).OnDelete(DeleteBehavior.SetNull);
         builder.HasOne<Printer>().WithMany().HasForeignKey(job => job.PrinterId).OnDelete(DeleteBehavior.Restrict);

@@ -1868,5 +1868,59 @@
       "done": "Downloaded {name}.",
       "failed": "The export failed. Try again."
     }
+  },
+  "schedule": {
+    "title": "Schedule",
+    "back": "Back to the queue",
+    "open": "View schedule",
+    "horizonLabel": "Period",
+    "horizon": "{days} days",
+    "replan": "Re-plan now",
+    "replanned": "Re-planned: {count} job moved to another printer. | Re-planned: {count} jobs moved to another printer.",
+    "replannedNone": "Re-planned: everything was already in place.",
+    "readOnlyHint": "PrintOS only reads your printers. You start prints yourself on the printer; the schedule is a proposal.",
+    "empty": "Nothing is scheduled. Create jobs in the queue.",
+    "noPrinters": "Add a printer first to be able to schedule.",
+    "laneFree": "Free: nothing scheduled.",
+    "blockedTitle": "Cannot be scheduled",
+    "blockedHint": "Adjust the job or fix the problem and the schedule picks it up by itself.",
+    "reason": {
+      "NoPrinter": "No printer available",
+      "TooLarge": "Does not fit any printer",
+      "FilamentShort": "Not enough filament",
+      "PrinterUnavailable": "Pinned printer unavailable"
+    },
+    "priority": {
+      "0": "Low",
+      "1": "Normal",
+      "2": "High",
+      "3": "Urgent"
+    },
+    "late": "Late",
+    "pinned": "Pinned",
+    "estimated": "estimated at {minutes} min",
+    "auto": "Automatic",
+    "edit": "Adjust",
+    "editLabel": "Adjust {name}",
+    "saved": "{name} updated.",
+    "beyond": "{count} more job is beyond the chosen period. | {count} more jobs are beyond the chosen period.",
+    "fields": {
+      "priority": "Priority",
+      "printer": "Printer",
+      "start": "Fixed start time (optional)",
+      "startHint": "Only with a chosen printer. Leave empty for the first free slot.",
+      "partSize": "Part size (mm, optional)",
+      "partX": "Width",
+      "partY": "Depth",
+      "partZ": "Height",
+      "partSizeHint": "With a size the schedule only picks printers the part fits on."
+    },
+    "errors": {
+      "action": "That did not work. Try again.",
+      "rejected": "The schedule rejected these values. Check them and try again.",
+      "partSize": "Enter width, depth and height (whole numbers from 1 to 2000), or leave all empty.",
+      "start": "Enter a valid date and time.",
+      "startNeedsPrinter": "Choose a printer first for a fixed start time."
+    }
   }
 }

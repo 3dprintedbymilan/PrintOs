@@ -11,6 +11,14 @@ public enum PrintJobStatus
     Cancelled = 4,
 }
 
+public static class PrintJobPriority
+{
+    public const int Low = 0;
+    public const int Normal = 1;
+    public const int High = 2;
+    public const int Urgent = 3;
+}
+
 public sealed class PrintJob : IWorkspaceScoped
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -48,6 +56,18 @@ public sealed class PrintJob : IWorkspaceScoped
     public int? QueuePosition { get; set; }
 
     public Guid? RequeuedFromId { get; set; }
+
+    public int Priority { get; set; } = PrintJobPriority.Normal;
+
+    public bool PrinterPinned { get; set; }
+
+    public DateTimeOffset? PinnedStartAt { get; set; }
+
+    public int? PartXMillimetres { get; set; }
+
+    public int? PartYMillimetres { get; set; }
+
+    public int? PartZMillimetres { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
