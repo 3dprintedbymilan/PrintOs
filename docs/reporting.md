@@ -51,3 +51,42 @@ Returns `period`, `currency`, `current` / `previous` figures, `delta`, `granular
 ## Screens
 
 Business > Reports (`/reports`) is the hub: period and channel selector, KPI tiles with comparison, revenue/profit trend chart (hand-rolled SVG, legend, hover/tap read-out and a table view), top products with drill-down (`/reports/margin?productId=`), links to the detail screens (`/reports/margin`, `/reports/bestsellers`) and the CSV downloads. Filters live in the URL query so a view can be shared and survives a reload.
+
+## Advanced analytics (#55)
+
+Four analytics reports extend the hub: `/reports/production`, `/reports/sales`, `/reports/inventory`, `/reports/profitability`. They share the period selection above (current and previous period, `period`, `date`, `from`, `to`), return JSON from `GET /api/reports/analytics/<name>` and CSV from `GET /api/reports/analytics/<name>/export?part=` (same format rules as the CSV export section). The pure maths is in `ProductionAnalytics`, `SalesAnalytics`, `InventoryAnalytics` and `ProfitabilityAnalytics` (unit tested); `AnalyticsLoader` only turns rows into facts. Sales and profit figures use the frozen order/sale line snapshots, never current prices.
+
+### Production (`/analytics/production?hoursPerDay=24`; parts `printers|materials|trend`)
+
+- Counted jobs: status Done, Failed or Cancelled, dated by `FinishedAt`, else `StartedAt`, else `CreatedAt`. Print hours, filament and cost only count Done and Failed jobs (the machine ran); cancelled jobs are only counted.
+- Actual minutes = `FinishedAt - StartedAt`, else the logged `DurationMinutes`. Estimate = the variant's Print BOM minutes x units (`FinishedUnits`, else `PlannedUnits`, else 1); only Done jobs with both values feed "duration vs estimate": `variance% = (sum actual - sum estimate) / sum estimate`.
+- `successRate = done / (done + failed)`. `waste% = wasteGrams / grams` (waste is part of the grams). Filament cost = grams x the spool's purchase cost per gram.
+- `utilisation = printHours / (printers x days x hoursPerDay)` (per printer: one printer). A job's hours are booked on its date. Printers counted: non-archived printers plus any with jobs.
+- `costPerPrintHour = (filamentCost + depreciationPerHour x hours + powerWatts/1000 x hours x electricityPrice) / hours`. Jobs do not freeze rates, so depreciation and the electricity price are the current ones.
+- Failure causes are not stored per job; failures are reported per material (a job with several materials counts for each) and per printer.
+
+### Sales (`/analytics/sales?channel=`; parts `channels|customers|products|timing|trend`)
+
+- Documents are counted orders (by `OrderedAt`) and completed POS sales (by `BusinessDate`). Revenue is the document `TotalAmount`; returns are not netted here (the product ranking and margin report do net them).
+- `averageOrderValue = revenue / documents`. Discount of a document = list value (`qty x listUnitPrice`, falling back to the unit price) minus its total, never negative; `discount% = discount / (revenue + discount)`.
+- A customer is "repeat" when they have 2+ documents in the period or any counted document before it. `repeatRate = repeat / customers`. Documents without a customer are listed as "no customer linked".
+- Lead time: orders delivered in the period, `DeliveredAt - ConfirmedAt` in days (average, median, longest, buckets same day, 1-3, 4-7, 8-14, over 14).
+- Market timing: POS sales by weekday (Monday = 1) and hour of `SoldAt`, in UTC.
+- Products: top 10 by revenue (same ranking as the bestsellers report), customers: top 10 (all in the CSV).
+
+### Inventory (`/analytics/inventory?deadDays=90`; parts `materials|finished|dead`)
+
+- Stock values are as of now: filament = remaining grams x spool cost per gram (non-archived spools); finished goods = on hand x average unit cost.
+- Usage per material = `Consumption` movements in the period; `usagePerDay = grams / days`; `daysOfCover = onHand / usagePerDay`; `turnover = cost of grams used in the period / current stock value`. Finished goods: cover = on hand / (units sold per day), turnover = frozen cost of goods sold / stock value.
+- Purchase price trend: average landed price per kg of non-cancelled purchases in the period vs the previous period; `impact = (current - previous) per kg x kg used in the period`.
+- Dead stock: non-archived spools with grams left and no consumption for `deadDays` (never used counts from their creation), plus finished goods that did not sell for `deadDays` (the slow-movers rule). Dead stock value is their sum.
+
+### Profitability (`/analytics/profitability?channel=&productId=`; parts `breakdown|components|trend`)
+
+- `contribution = revenue - cost of goods - fees`; `netProfit = contribution - stand costs` (stand costs only for the POS/all view without a product filter, never allocated to products). Margin rows exist per channel, product and customer.
+- Cost components: the frozen unit cost of each sold line is split over material, electricity, machine, labour, packaging and extras in the proportions of the variant's latest saved cost snapshot at the sale date (the earliest one when the sale predates all). Sold items without a snapshot show as "not itemised"; save a cost snapshot to itemise them. The split always adds up to the frozen cost of goods.
+- Fees = revenue x the snapshot's frozen `feePercent` (0 without a snapshot).
+
+### Screens
+
+All four screens have the period selector (plus the channel selector for sales and profitability), KPI tiles with comparison, hand-rolled SVG charts with a legend, keyboard and tap read-out and a "show as table" alternative, loading, empty and error states, drill-downs (printer, customer, product margin/profit, spool, finished-stock variant) and one CSV button per part. Chart colours come from the `--chart-*` tokens (light and dark values).

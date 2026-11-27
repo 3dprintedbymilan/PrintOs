@@ -20,6 +20,7 @@ public static class ReportEndpoints
         group.MapGet("/margin/export", ExportMarginAsync);
         group.MapGet("/bestsellers/export", ExportBestsellersAsync);
         group.MapGet("/slow-movers/export", ExportSlowMoversAsync);
+        group.MapAnalyticsEndpoints();
     }
 
     public static ReportQuery? ParseQuery(
