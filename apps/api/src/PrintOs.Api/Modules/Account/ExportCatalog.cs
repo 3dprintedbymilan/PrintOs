@@ -6,6 +6,7 @@ using PrintOs.Api.Modules.Inventory;
 using PrintOs.Api.Modules.Licensing;
 using PrintOs.Api.Modules.Markets;
 using PrintOs.Api.Modules.ModelLibrary;
+using PrintOs.Api.Modules.Notifications;
 using PrintOs.Api.Modules.Production;
 using PrintOs.Api.Modules.Products;
 using PrintOs.Api.Modules.Sales;
@@ -50,5 +51,9 @@ public static class ExportCatalog
         [typeof(MarketDayClosing)] = "Immutable daily closing records of a market: totals by payment method, expected and counted cash, difference and notes.",
         [typeof(MarketSaleLine)] = "Lines of a market sale with the price and cost frozen at the time of the sale.",
         [typeof(VariantCostSnapshot)] = "Calculated cost and margin snapshots of variants.",
+        [typeof(Notification)] = "In-app notifications per user with read state and the email delivery status.",
+        [typeof(NotificationPreference)] = "Notification preferences per user: which notification types arrive in the app or by email.",
+        [typeof(NotificationSettings)] = "Notification quiet hours per user.",
+        [typeof(NotificationState)] = "Internal alert state used to notify only when something changes (for example a material that entered low stock).",
     };
 }

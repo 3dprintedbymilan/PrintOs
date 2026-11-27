@@ -16,6 +16,7 @@
     "test:journey": "playwright test -c playwright.journey.config.ts"
   },
   "dependencies": {
+    "@microsoft/signalr": "^10.0.0",
     "@nuxtjs/i18n": "10.7.0",
     "@pinia/nuxt": "1.0.3",
     "@vite-pwa/nuxt": "2.0.4",

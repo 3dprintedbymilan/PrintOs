@@ -17,7 +17,7 @@ export const primaryDestinations: Destination[] = [
     to: '/business',
     icon: 'business',
     labelKey: 'nav.business',
-    matches: ['/business', '/settings', '/printers', '/products', '/calculator', '/audit', '/licenses', '/orders', '/customers', '/markets', '/reports'],
+    matches: ['/business', '/settings', '/notification-settings', '/printers', '/products', '/calculator', '/audit', '/licenses', '/orders', '/customers', '/markets', '/reports'],
   },
 ]
 

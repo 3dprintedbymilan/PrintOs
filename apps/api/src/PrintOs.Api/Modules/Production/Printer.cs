@@ -30,6 +30,12 @@ public sealed class Printer : IWorkspaceScoped
 
     public DateTimeOffset? ArchivedAt { get; set; }
 
+    public int? MaintenanceEveryHours { get; set; }
+
+    public int? MaintenanceEveryDays { get; set; }
+
+    public DateTimeOffset? LastMaintenanceAt { get; set; }
+
     public decimal DepreciationPerHour => LifetimeHours > 0 ? Math.Round(PurchaseCost / LifetimeHours, 4) : 0m;
 }
 
