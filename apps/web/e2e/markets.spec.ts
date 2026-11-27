@@ -106,6 +106,7 @@ test('the Business page links to markets and a new market is validated and creat
     },
     [`GET /api/markets/${marketId}`]: () => ({ status: 200, json: market }),
     [`GET /api/markets/${marketId}/summary`]: () => ({ status: 200, json: summary }),
+    [`GET /api/markets/${marketId}/closings`]: () => ({ status: 200, json: [] }),
     [`GET /api/markets/${marketId}/sales`]: () => ({ status: 200, json: [sale()] }),
   })
 
@@ -262,6 +263,7 @@ test('the market overview shows totals and a sale can be voided with a reason', 
   await mockApi(page, {
     [`GET /api/markets/${marketId}`]: () => ({ status: 200, json: market }),
     [`GET /api/markets/${marketId}/summary`]: () => ({ status: 200, json: summary }),
+    [`GET /api/markets/${marketId}/closings`]: () => ({ status: 200, json: [] }),
     [`GET /api/markets/${marketId}/sales`]: () => ({ status: 200, json: [sale(voided ? { status: 'Voided', voidReason: 'Klant twijfelde' } : {})] }),
     'POST /api/market-sales/sale-1/void': (body) => {
       voidBody = body as Record<string, unknown>
@@ -305,4 +307,77 @@ test('the register fits a phone without horizontal scrolling', async ({ page }) 
   const tile = await main.getByRole('button', { name: /Vaas Groot/ }).boundingBox()
   expect(tile!.height).toBeGreaterThanOrEqual(44)
   await expect(main.getByRole('button', { name: /1 artikel/ })).toBeVisible()
+})
+
+const closing = {
+  id: 'c1',
+  marketId,
+  marketName: 'Kerstmarkt Gent',
+  date: '2026-12-05',
+  currency: 'EUR',
+  saleCount: 1,
+  voidedCount: 0,
+  itemCount: 1,
+  subtotal: 20,
+  discounts: 0,
+  revenue: 20,
+  cost: 3.5,
+  grossProfit: 16.5,
+  cashTotal: 20,
+  cardTotal: 0,
+  otherTotal: 0,
+  openingFloat: 50,
+  expectedCash: 70,
+  countedCash: 68,
+  difference: -2,
+  standCost: 45,
+  notes: null,
+  closedAt: '2026-12-05T18:00:00Z',
+  items: summary.items,
+}
+
+test('closing a day compares counted with expected cash and then shows the report', async ({ page }) => {
+  let closed = false
+  let posted: Record<string, unknown> | null = null
+  await mockApi(page, {
+    [`GET /api/markets/${marketId}`]: () => ({ status: 200, json: market }),
+    [`GET /api/markets/${marketId}/summary`]: () => ({ status: 200, json: summary }),
+    [`GET /api/markets/${marketId}/closings/2026-12-05`]: () => (closed ? { status: 200, json: closing } : { status: 404 }),
+    [`POST /api/markets/${marketId}/closings`]: (body) => {
+      posted = body as Record<string, unknown>
+      closed = true
+      return { status: 201, json: closing }
+    },
+  })
+
+  await page.goto(`/markets/${marketId}/closing/2026-12-05`)
+
+  const main = page.getByRole('main')
+  await expect(main.getByRole('heading', { name: 'Kerstmarkt Gent' })).toBeVisible()
+  await main.getByRole('button', { name: 'Dag afsluiten' }).click()
+  await expect(main.getByText('Vul de getelde cash in.')).toBeVisible()
+
+  await main.getByLabel('Wisselgeld bij start').fill('50')
+  await main.getByLabel('Getelde cash', { exact: true }).fill('68')
+  await expect(main.getByRole('status').first()).toContainText('Verwachte cash')
+  await expect(main.getByRole('status').first()).toContainText('-')
+  await main.getByRole('button', { name: 'Dag afsluiten' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Dag afsluiten' }).click()
+
+  await expect(main.getByText('Verschil')).toBeVisible()
+  await expect(main.getByRole('button', { name: 'Afdrukken' })).toBeVisible()
+  expect(posted).toEqual({ date: '2026-12-05', openingFloat: 50, countedCash: 68, notes: null })
+})
+
+test('a closed day links to its report from the market overview', async ({ page }) => {
+  await mockApi(page, {
+    [`GET /api/markets/${marketId}`]: () => ({ status: 200, json: market }),
+    [`GET /api/markets/${marketId}/summary`]: () => ({ status: 200, json: summary }),
+    [`GET /api/markets/${marketId}/sales`]: () => ({ status: 200, json: [sale()] }),
+    [`GET /api/markets/${marketId}/closings`]: () => ({ status: 200, json: [closing] }),
+  })
+
+  await page.goto(`/markets/${marketId}`)
+
+  await expect(page.getByRole('main').getByRole('link', { name: /Rapport bekijken/ })).toBeVisible()
 })

@@ -52,3 +52,12 @@ All require a workspace; other workspaces' data is 404.
 - Profit of a sale = `TotalAmount - TotalCost` (stand cost is a market-level cost, not allocated to sales: report it from `Markets.StandCost`).
 - Stock accounting stays in `FinishedStockMovements` (`Sold` and `Returned` with `MarketSaleId`).
 - The "brought vs sold" view is the finished-stock ledger plus the market summary; there is no separate packing list.
+
+## Daily closing (#41)
+
+`MarketDayClosings`: one immutable record per market and business date (unique). It is a snapshot taken at closing time from the day's completed sales: `SaleCount`, `VoidedCount`, `ItemCount`, `Subtotal`, `Discounts`, `Revenue`, `Cost`, `CashTotal` / `CardTotal` / `OtherTotal` (by payment method), `OpeningFloat` (cash in the till at the start, entered by the seller), `ExpectedCash = OpeningFloat + CashTotal`, `CountedCash` (entered), `Difference = CountedCash - ExpectedCash` (negative = short), `StandCost` (market stand cost at that time, informational; not split per day), `Notes`, `ClosedAt`. There is no update or delete endpoint.
+
+- `POST /api/markets/{id}/closings` `{ date, openingFloat?, countedCash, notes? }` creates it (201). 409 when the day is already closed, 400 for a future date or invalid amounts.
+- `GET /api/markets/{id}/closings` lists closings; `GET /api/markets/{id}/closings/{yyyy-MM-dd}` returns one with the items sold that day (the closing report).
+- Locking: once a day is closed, checkout with that `BusinessDate` and voiding a sale of that day answer 409. Other days of the market are unaffected. A queued offline sale that reaches the server after the closing is refused (the register shows it as refused).
+- Reports should use the closing for cash reconciliation and the sales tables for everything else; both agree at the moment of closing.

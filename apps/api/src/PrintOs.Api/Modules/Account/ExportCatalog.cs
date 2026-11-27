@@ -46,6 +46,7 @@ public static class ExportCatalog
         [typeof(StockReservation)] = "Finished goods reserved for order lines.",
         [typeof(Market)] = "Markets and events where you sell: dates, location, stand cost, notes and open/closed status.",
         [typeof(MarketSale)] = "Market (point of sale) sales: receipt number, payment method, totals with the cost snapshot, amount tendered and change, void status.",
+        [typeof(MarketDayClosing)] = "Immutable daily closing records of a market: totals by payment method, expected and counted cash, difference and notes.",
         [typeof(MarketSaleLine)] = "Lines of a market sale with the price and cost frozen at the time of the sale.",
         [typeof(VariantCostSnapshot)] = "Calculated cost and margin snapshots of variants.",
     };

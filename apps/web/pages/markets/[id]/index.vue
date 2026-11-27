@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Market, MarketSale, MarketSummary } from '~/utils/markets'
-import { averageSale, formatDateRange, marketTone } from '~/utils/markets'
+import { averageSale, formatDateRange, localDateKey, marketTone } from '~/utils/markets'
+import { closingDays } from '~/utils/marketClosing'
+import type { MarketClosing } from '~/utils/marketClosing'
 import { parseApiError } from '~/utils/apiError'
 
 definePageMeta({ titleKey: 'markets.detailTitle' })
@@ -14,6 +16,7 @@ const id = String(route.params.id)
 const market = ref<Market | null>(null)
 const summary = ref<MarketSummary | null>(null)
 const sales = ref<MarketSale[]>([])
+const closings = ref<MarketClosing[]>([])
 const status = ref<'loading' | 'ready' | 'failed'>('loading')
 const busy = ref(false)
 const actionError = ref('')
@@ -26,16 +29,19 @@ const voidError = ref('')
 const money = (amount: number) => n(amount, { style: 'currency', currency: market.value?.currency ?? 'EUR' })
 const dateText = (value: string) => d(new Date(`${value}T12:00:00`), { dateStyle: 'medium' })
 const timeText = (value: string) => d(new Date(value), { timeStyle: 'short' })
+const days = computed(() => summary.value ? closingDays(summary.value.days, closings.value, localDateKey(new Date())) : [])
 const waiting = computed(() => posQueue.queue.value.filter(entry => entry.marketId === id))
 
 async function load() {
   status.value = 'loading'
   try {
-    const [found, totals, list] = await Promise.all([
+    const [found, totals, list, closed] = await Promise.all([
       auth.authorizedFetch<Market>(`/api/markets/${id}`),
       auth.authorizedFetch<MarketSummary>(`/api/markets/${id}/summary`),
       auth.authorizedFetch<MarketSale[]>(`/api/markets/${id}/sales`),
+      auth.authorizedFetch<MarketClosing[]>(`/api/markets/${id}/closings`),
     ])
+    closings.value = closed
     market.value = found
     summary.value = totals
     sales.value = list
@@ -217,6 +223,26 @@ onMounted(() => {
         {{ summary.costComplete ? $t('markets.grossProfit', { amount: money(summary.grossProfit) }) : $t('markets.grossProfitPartial', { amount: money(summary.grossProfit) }) }}
       </p>
 
+      <section class="block">
+        <h3>{{ $t('closing.sectionTitle') }}</h3>
+        <ul class="rows">
+          <li
+            v-for="day in days"
+            :key="day.date"
+          >
+            <NuxtLink
+              :to="`/markets/${id}/closing/${day.date}`"
+              class="dayrow"
+            >
+              <span>{{ dateText(day.date) }} · {{ $t('markets.salesCount', { count: day.saleCount }, day.saleCount) }}</span>
+              <UiStatusChip :status="day.closed ? 'success' : 'neutral'">
+                {{ day.closed ? $t('closing.viewReport') : $t('closing.closeDay') }}
+              </UiStatusChip>
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
+
       <StateEmpty
         v-if="sales.length === 0"
         :message="$t('markets.noSales')"
@@ -362,6 +388,8 @@ h3 { margin: 0 0 var(--space-2); color: var(--muted); font-size: var(--font-size
 .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
 .rows, .sales, .lines { display: grid; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
 .rows li { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+.rows li:has(.dayrow) { padding: 0; }
+.dayrow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); width: 100%; min-height: 56px; padding: var(--space-3) var(--space-4); color: var(--text); text-decoration: none; }
 .sales > li { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
 details { display: grid; }
 summary { display: flex; align-items: center; gap: var(--space-2); min-height: 56px; padding: var(--space-2) var(--space-4); cursor: pointer; list-style: none; }
