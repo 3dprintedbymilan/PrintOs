@@ -139,7 +139,6 @@
     "title": "Business and operations",
     "orders": "Orders",
     "calculator": "Cost calculator",
-    "margins": "Profit margins",
     "licenses": "Licences",
     "settings": "Settings",
     "settingsSubtitle": "Business name, rates and language",
@@ -157,8 +156,9 @@
     "markets": "Markets",
     "marketsSubtitle": "Register, sales and totals per market",
     "marginsSubtitle": "Revenue, costs and margin per period",
-    "bestsellers": "Bestsellers",
-    "bestsellersSubtitle": "Top products and slow movers"
+    "bestsellersSubtitle": "Top products and slow movers",
+    "reports": "Reports",
+    "reportsSubtitle": "Revenue, margins, bestsellers and CSV exports"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -1853,6 +1853,20 @@
       "onHand": "{count} in stock | {count} in stock",
       "never": "never sold",
       "daysAgo": "sold {days} day ago | sold {days} days ago"
+    },
+    "title": "Reports",
+    "topProducts": "Top products by profit",
+    "detailLinks": "Detailed reports",
+    "export": {
+      "title": "Export to CSV",
+      "hint": "Downloads the figures for the period above. Numbers use a dot as decimal separator.",
+      "margin": "Download margin report (CSV)",
+      "trend": "Download trend (CSV)",
+      "bestsellers": "Download bestsellers (CSV)",
+      "slow": "Download slow movers (CSV)",
+      "running": "Preparing the file…",
+      "done": "Downloaded {name}.",
+      "failed": "The export failed. Try again."
     }
   }
 }

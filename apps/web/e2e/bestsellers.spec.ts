@@ -52,8 +52,7 @@ test('bestsellers rank by units, revenue and profit with shares, and list slow m
     'GET /api/reports/slow-movers': () => ({ status: 200, json: slow }),
   })
 
-  await page.goto('/business')
-  await page.getByRole('main').getByRole('link', { name: /Bestsellers/ }).click()
+  await page.goto('/reports/bestsellers')
 
   const main = page.getByRole('main')
   await expect(page.getByRole('heading', { level: 1, name: 'Bestsellers' })).toBeVisible()

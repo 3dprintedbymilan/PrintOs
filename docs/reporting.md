@@ -40,3 +40,14 @@ Returns `period`, `currency`, `current` / `previous` figures, `delta`, `granular
 `GET /api/reports/bestsellers?period=&date=&from=&to=&channel=&productId=&level=product|variant&limit=` (limit 1-50, default 10). Uses the same facts as the margin report, restricted to the selected period. Returns `totals` (units, revenue, gross profit, item count) and three rankings, `byUnits`, `byRevenue`, `byProfit`, each item with `rank`, units, revenue, profit, margin % and its share of the total (`unitsSharePercent`, `revenueSharePercent`, `profitSharePercent`; null when the total is not positive). Items with net units of 0 or less (fully returned) are left out. Ties are broken by units, then name. Product level groups variants together; free-text lines are grouped by their description (case-insensitive).
 
 `GET /api/reports/slow-movers?days=30` (1-730): variants with finished stock on hand (`FinishedStockLevels.OnHand > 0`) whose last `Sold` movement is at least N days ago. A variant that never sold counts from the first stock increase, so freshly produced stock is not "slow". Sorted never-sold first, then longest since the last sale, then stock value (`OnHand * AverageUnitCost`).
+
+## CSV export (#45)
+
+- `GET /api/reports/margin/export` (same query as the margin report; `part=breakdown` default, or `part=trend`), `GET /api/reports/bestsellers/export` (same query plus `sort=units|revenue|profit`, up to 50 rows), `GET /api/reports/slow-movers/export?days=`.
+- Format: UTF-8 with BOM (so Excel opens it correctly), CRLF line endings, comma separated, snake_case header. Numbers are locale-agnostic: invariant culture, dot decimal separator, no thousands separator, money with 2 decimals, percentages with 1. Text cells are quoted when they contain a comma, quote or newline (quotes doubled), and cells starting with `=`, `+`, `-`, `@` or a tab get a leading apostrophe so spreadsheets do not run them as formulas.
+- The margin breakdown has one row per scope (`total`, `channel`, `market`, `product`, `variant`) with units, revenue, cost, gross profit, margin %, stand costs, net profit and `cost_complete`.
+- File names: `margin-<from>_<to>.csv`, `margin-trend-<from>_<to>.csv`, `bestsellers-<from>_<to>.csv`, `slow-movers-<days>d.csv`. Same validation and authorization as the JSON reports.
+
+## Screens
+
+Business > Reports (`/reports`) is the hub: period and channel selector, KPI tiles with comparison, revenue/profit trend chart (hand-rolled SVG, legend, hover/tap read-out and a table view), top products with drill-down (`/reports/margin?productId=`), links to the detail screens (`/reports/margin`, `/reports/bestsellers`) and the CSV downloads. Filters live in the URL query so a view can be shared and survives a reload.

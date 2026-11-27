@@ -61,14 +61,9 @@ onMounted(() => {
       :subtitle="$t('business.licensesSubtitle')"
     />
     <UiListRow
-      to="/reports/margin"
-      :title="$t('business.margins')"
-      :subtitle="$t('business.marginsSubtitle')"
-    />
-    <UiListRow
-      to="/reports/bestsellers"
-      :title="$t('business.bestsellers')"
-      :subtitle="$t('business.bestsellersSubtitle')"
+      to="/reports"
+      :title="$t('business.reports')"
+      :subtitle="$t('business.reportsSubtitle')"
     />
     <UiCard class="settings">
       <p>{{ $t('theme.label') }}</p>

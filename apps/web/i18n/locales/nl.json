@@ -139,7 +139,6 @@
     "title": "Bedrijf en operaties",
     "orders": "Bestellingen",
     "calculator": "Kostencalculator",
-    "margins": "Winstmarges",
     "licenses": "Licenties",
     "settings": "Instellingen",
     "settingsSubtitle": "Bedrijfsnaam, tarieven en taal",
@@ -157,8 +156,9 @@
     "markets": "Markten",
     "marketsSubtitle": "Kassa, verkopen en totalen per markt",
     "marginsSubtitle": "Omzet, kosten en marge per periode",
-    "bestsellers": "Bestsellers",
-    "bestsellersSubtitle": "Topproducten en trage verkopers"
+    "bestsellersSubtitle": "Topproducten en trage verkopers",
+    "reports": "Rapporten",
+    "reportsSubtitle": "Omzet, marges, bestsellers en CSV-export"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -1853,6 +1853,20 @@
       "onHand": "{count} op voorraad | {count} op voorraad",
       "never": "nooit verkocht",
       "daysAgo": "{days} dag geleden verkocht | {days} dagen geleden verkocht"
+    },
+    "title": "Rapporten",
+    "topProducts": "Topproducten op winst",
+    "detailLinks": "Gedetailleerde rapporten",
+    "export": {
+      "title": "Exporteren naar CSV",
+      "hint": "Downloadt de cijfers van de periode hierboven. Getallen gebruiken een punt als decimaalteken.",
+      "margin": "Margerapport downloaden (CSV)",
+      "trend": "Verloop downloaden (CSV)",
+      "bestsellers": "Bestsellers downloaden (CSV)",
+      "slow": "Trage verkopers downloaden (CSV)",
+      "running": "Bestand voorbereiden…",
+      "done": "{name} is gedownload.",
+      "failed": "De export is mislukt. Probeer opnieuw."
     }
   }
 }

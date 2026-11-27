@@ -197,6 +197,45 @@ test('the MVP journey works end to end against the real API', async ({ page }, t
     await expect(page.getByRole('link', { name: /Benchy journey/ })).toBeVisible()
   })
 
+  await test.step('an order and a market sale show up in the margin report and its CSV export', async () => {
+    const apiBase = process.env.JOURNEY_API_BASE ?? 'http://localhost:5000'
+    const token = await page.evaluate(() => (JSON.parse(localStorage.getItem('printos_session') ?? '{}') as { accessToken?: string }).accessToken)
+    const headers = { Authorization: `Bearer ${token}` }
+    const api = page.request
+
+    const products = await (await api.get(`${apiBase}/api/products`, { headers })).json() as { id: string, name: string }[]
+    const productId = products.find(product => product.name === productName)!.id
+    const product = await (await api.get(`${apiBase}/api/products/${productId}`, { headers })).json() as { variants: { id: string }[] }
+    const variantId = product.variants[0]!.id
+
+    expect((await api.post(`${apiBase}/api/finished-stock/${variantId}/adjustments`, { headers, data: { delta: 5, reason: 'Journey stock' } })).ok()).toBe(true)
+
+    const order = await api.post(`${apiBase}/api/orders`, { headers, data: { lines: [{ variantId, quantity: 2 }], acknowledgeRisk: true } })
+    expect(order.status()).toBe(201)
+    const orderId = (await order.json() as { id: string }).id
+    const confirmed = await api.post(`${apiBase}/api/orders/${orderId}/status`, { headers, data: { status: 'Confirmed', acknowledgeRisk: true } })
+    expect(confirmed.ok()).toBe(true)
+
+    const market = await api.post(`${apiBase}/api/markets`, { headers, data: { name: 'Journey markt', startDate: new Date().toISOString().slice(0, 10), standCost: 0 } })
+    expect(market.status()).toBe(201)
+    const marketId = (await market.json() as { id: string }).id
+    const sale = await api.post(`${apiBase}/api/markets/${marketId}/sales`, {
+      headers,
+      data: { idempotencyKey: `journey-${Date.now()}`, lines: [{ variantId, quantity: 1 }], paymentMethod: 'cash', acknowledgeRisk: true },
+    })
+    expect(sale.status()).toBe(201)
+
+    await page.goto('/reports/margin?period=year')
+    await expect(page.getByRole('heading', { level: 1, name: 'Winstmarges' })).toBeVisible()
+    const kpis = page.getByRole('group', { name: 'Kerncijfers' })
+    await expect(kpis).toContainText('45,00')
+    await expect(page.getByRole('main').getByRole('link', { name: productName })).toBeVisible()
+
+    const download = page.waitForEvent('download')
+    await page.getByRole('button', { name: 'Margerapport downloaden (CSV)' }).click()
+    expect((await download).suggestedFilename()).toMatch(/^margin-\d{4}-01-01_\d{4}-12-31\.csv$/)
+  })
+
   await test.step('the Bambu Lab connection screen is reachable and connects through the fake client', async () => {
     await page.goto('/printers/bambu')
     await expect(page.getByRole('heading', { name: 'Verbind je Bambu Lab-account' })).toBeVisible()

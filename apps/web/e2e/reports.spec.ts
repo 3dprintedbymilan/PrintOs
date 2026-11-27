@@ -36,6 +36,9 @@ test('the margin report shows figures, comparison, stand costs and breakdowns', 
   await mockApi(page, { 'GET /api/reports/margin': () => ({ status: 200, json: report }) })
 
   await page.goto('/business')
+  await page.getByRole('main').getByRole('link', { name: /Rapporten/ }).click()
+  await expect(page.getByRole('heading', { level: 1, name: 'Rapporten' })).toBeVisible()
+  await expect(page.getByRole('main').getByText('Topproducten op winst')).toBeVisible()
   await page.getByRole('main').getByRole('link', { name: /Winstmarges/ }).click()
 
   const main = page.getByRole('main')
@@ -91,4 +94,42 @@ test('an empty period, a failing API and the product drill-down', async ({ page 
   await page.getByRole('main').getByRole('link', { name: 'Vaas' }).click()
   await expect(page).toHaveURL(new RegExp(`productId=${productId}`))
   await expect(page.getByRole('main').getByText('Per variant')).toBeVisible()
+})
+
+test('the reports hub links to detail reports and downloads CSV exports', async ({ page }) => {
+  const requested: string[] = []
+  await mockApi(page, {
+    'GET /api/reports/margin': () => ({ status: 200, json: report }),
+    'GET /api/reports/margin/export': () => ({ status: 200, json: {} }),
+    'GET /api/reports/slow-movers/export': () => ({ status: 200, json: {} }),
+  })
+  page.on('request', (request) => {
+    if (request.url().includes('/export')) requested.push(request.url())
+  })
+
+  await page.goto('/reports')
+  const main = page.getByRole('main')
+  await expect(main.getByRole('link', { name: /Bestsellers/ })).toBeVisible()
+
+  const download = page.waitForEvent('download')
+  await main.getByRole('button', { name: 'Margerapport downloaden (CSV)' }).click()
+  expect((await download).suggestedFilename()).toBe('margin-2026-11-01_2026-11-30.csv')
+  await expect(main.getByRole('status').filter({ hasText: 'is gedownload' })).toBeVisible()
+  expect(requested.some(url => url.includes('/api/reports/margin/export?period=month'))).toBe(true)
+
+  await main.getByRole('button', { name: 'Verloop downloaden (CSV)' }).click()
+  await expect.poll(() => requested.some(url => url.includes('part=trend'))).toBe(true)
+})
+
+test('a failing export shows an error and the hub drills down to a product', async ({ page }) => {
+  await mockApi(page, { 'GET /api/reports/margin': () => ({ status: 200, json: report }) })
+
+  await page.goto('/reports?period=year')
+  const main = page.getByRole('main')
+  await main.getByRole('button', { name: 'Bestsellers downloaden (CSV)' }).click()
+  await expect(main.getByRole('alert')).toContainText('De export is mislukt')
+
+  await main.getByRole('link', { name: 'Vaas' }).click()
+  await expect(page).toHaveURL(new RegExp(`/reports/margin\\?period=year&productId=${productId}`))
+  await expect(main.getByText('Per variant')).toBeVisible()
 })

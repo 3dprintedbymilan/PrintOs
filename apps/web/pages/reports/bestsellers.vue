@@ -162,6 +162,12 @@ function lastSold(days: number | null) {
           </li>
         </ol>
       </UiCard>
+      <ReportExportButton
+        v-if="items.length > 0"
+        :path="`/api/reports/bestsellers/export?${reportQuery(filter)}&level=${level}&sort=${sort}`"
+        :file-name="`bestsellers-${report.period.from}_${report.period.to}.csv`"
+        :label="$t('reports.export.bestsellers')"
+      />
     </template>
 
     <UiCard>
@@ -187,6 +193,11 @@ function lastSold(days: number | null) {
           {{ $t('reports.slow.empty', { days: slow.days }) }}
         </p>
         <template v-else>
+          <ReportExportButton
+            :path="`/api/reports/slow-movers/export?days=${days}`"
+            :file-name="`slow-movers-${days}d.csv`"
+            :label="$t('reports.export.slow')"
+          />
           <p class="summary">
             {{ $t('reports.slow.summary', { value: money(slow.stockValue, slow.currency) }, slow.count) }}
           </p>

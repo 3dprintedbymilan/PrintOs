@@ -368,6 +368,51 @@ public class BestsellerAggregatorTests
     }
 }
 
+﻿
+public class ReportCsvTests
+{
+    [Theory]
+    [InlineData("plain", "plain")]
+    [InlineData("a,b", "\"a,b\"")]
+    [InlineData("say \"hi\"", "\"say \"\"hi\"\"\"")]
+    [InlineData("two\nlines", "\"two\nlines\"")]
+    public void Escape_QuotesOnlyWhenNeeded(string value, string expected) => Assert.Equal(expected, ReportCsv.Escape(value));
+
+    [Theory]
+    [InlineData("=SUM(A1)", "'=SUM(A1)")]
+    [InlineData("+1", "'+1")]
+    [InlineData("-cmd", "'-cmd")]
+    [InlineData("@user", "'@user")]
+    [InlineData("Vase", "Vase")]
+    [InlineData(null, "")]
+    public void Text_NeutralisesSpreadsheetFormulas(string? value, string expected) => Assert.Equal(expected, ReportCsv.Text(value));
+
+    [Fact]
+    public void Number_UsesADotAndNoThousandsSeparatorWhateverTheCulture()
+    {
+        var previous = System.Globalization.CultureInfo.CurrentCulture;
+        System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("nl-BE");
+        try
+        {
+            Assert.Equal("1234567.50", ReportCsv.Number(1234567.5m));
+            Assert.Equal("-3.30", ReportCsv.Number(-3.3m));
+            Assert.Equal("12.3", ReportCsv.Number(12.34m, 1));
+            Assert.Equal(string.Empty, ReportCsv.Number(null));
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = previous;
+        }
+    }
+
+    [Fact]
+    public void Build_WritesABomHeaderAndCrLfRows()
+    {
+        var text = System.Text.Encoding.UTF8.GetString(ReportCsv.Build(["a", "b,c"], [["1", ReportCsv.Text("x\"y")]]));
+
+        Assert.StartsWith("﻿a,\"b,c\"\r\n1,\"x\"\"y\"\r\n", text);
+    }
+}
 
 public class ReportingTests(PostgresApiFactory factory) : IClassFixture<PostgresApiFactory>
 {
@@ -634,5 +679,57 @@ public class ReportingTests(PostgresApiFactory factory) : IClassFixture<Postgres
         Assert.Empty(report.Items);
         Assert.Equal(0m, report.StockValue);
     }
-}
 
+    [Fact]
+    public async Task Exports_ReturnEscapedLocaleAgnosticCsv()
+    {
+        using var client = await SignedInClientAsync();
+        var variant = await SeedVariantAsync(client, "=Vase, \"big\"", 20m, 3.5m);
+        await AdjustAsync(client, variant.Id, 5);
+        await ConfirmedOrderAsync(client, variant.Id, 2);
+
+        var margin = await client.GetAsync("/api/reports/margin/export?period=year", Token);
+        var text = await margin.Content.ReadAsStringAsync(Token);
+
+        Assert.Equal(HttpStatusCode.OK, margin.StatusCode);
+        Assert.Equal("text/csv", margin.Content.Headers.ContentType!.MediaType);
+        Assert.StartsWith("margin-", margin.Content.Headers.ContentDisposition!.FileName!.Trim('"'));
+        Assert.Contains("scope,name,sku,units,revenue,cost,gross_profit", text);
+        Assert.Contains("total,Total,,2,40.00,7.00,33.00,82.5,0.00,33.00,yes", text);
+        Assert.Contains("\"'=Vase, \"\"big\"\"\"", text);
+
+        var trend = await client.GetStringAsync("/api/reports/margin/export?period=week&part=trend", Token);
+        Assert.StartsWith("﻿period_start,revenue,cost,gross_profit,margin_percent", trend);
+
+        var best = await client.GetStringAsync("/api/reports/bestsellers/export?period=year&sort=revenue", Token);
+        Assert.Contains("1,\"'=Vase, \"\"big\"\"\",", best);
+        Assert.Contains(",2,40.00,33.00,82.5,100.0,100.0,100.0", best);
+
+        var slow = await client.GetAsync("/api/reports/slow-movers/export?days=30", Token);
+        Assert.Equal(HttpStatusCode.OK, slow.StatusCode);
+        Assert.Contains("name,sku,on_hand,stock_value", await slow.Content.ReadAsStringAsync(Token));
+    }
+
+    [Fact]
+    public async Task Exports_RequireAuthenticationValidateInputAndStayInTheWorkspace()
+    {
+        using var anonymous = factory.CreateClient();
+        foreach (var url in new[] { "/api/reports/margin/export", "/api/reports/bestsellers/export", "/api/reports/slow-movers/export" })
+        {
+            Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.GetAsync(url, Token)).StatusCode);
+        }
+
+        using var owner = await SignedInClientAsync();
+        using var other = await SignedInClientAsync();
+        var variant = await SeedVariantAsync(owner, "Secret");
+        await AdjustAsync(owner, variant.Id, 5);
+        await ConfirmedOrderAsync(owner, variant.Id, 1);
+
+        Assert.DoesNotContain("Secret", await other.GetStringAsync("/api/reports/margin/export?period=year", Token));
+        Assert.DoesNotContain("Secret", await other.GetStringAsync("/api/reports/bestsellers/export?period=year", Token));
+        foreach (var url in new[] { "/api/reports/margin/export?part=x", "/api/reports/bestsellers/export?sort=name", "/api/reports/bestsellers/export?level=brand", "/api/reports/slow-movers/export?days=0", "/api/reports/margin/export?period=custom" })
+        {
+            Assert.Equal(HttpStatusCode.BadRequest, (await owner.GetAsync(url, Token)).StatusCode);
+        }
+    }
+}
