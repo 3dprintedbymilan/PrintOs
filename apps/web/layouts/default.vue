@@ -10,6 +10,9 @@ const title = computed(() => {
 
 const pushed = computed(() => expanded.value && wide.value)
 
+const notifications = useNotifications()
+onMounted(() => notifications.start())
+
 useHead({ title: computed(() => `${title.value} · ${t('app.name')}`) })
 
 function skipToContent(event: Event) {
@@ -40,6 +43,7 @@ function skipToContent(event: Event) {
         >P</span>
         <span>{{ $t('app.name') }}</span>
       </span>
+      <NotificationBell class="mobile-bell" />
       <slot name="actions" />
     </header>
     <main
@@ -71,6 +75,8 @@ function skipToContent(event: Event) {
 }
 .skip:focus-visible { transform: none; }
 .top { display: flex; align-items: center; justify-content: space-between; max-width: 560px; margin: 0 auto; padding: var(--space-4); }
+.top { gap: var(--space-3); }
+.mobile-bell { margin-left: auto; }
 .brand { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 700; }
 .logo { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--accent); color: var(--accent-contrast); font-weight: 800; }
 .content { display: grid; gap: var(--space-4); max-width: 560px; margin: 0 auto; padding: 0 var(--space-4) calc(88px + env(safe-area-inset-bottom)); }
@@ -81,6 +87,7 @@ h1:focus { outline: none; }
   .shell { padding-left: var(--nav-rail-width); transition: padding-left 0.2s ease-out; }
   .shell.pushed { padding-left: var(--nav-wide-width); }
   .brand { display: none; }
+  .mobile-bell { display: none; }
   .top { max-width: var(--content-max); padding: var(--space-5) var(--space-5) 0; }
   .top.bare { display: none; }
   .content {

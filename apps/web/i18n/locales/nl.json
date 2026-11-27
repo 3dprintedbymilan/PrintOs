@@ -2133,5 +2133,121 @@
       "explain": "Bambu Lab biedt het camerabeeld van de A1 alleen aan op je eigen netwerk. PrintOS draait online en kan dat beeld niet bereiken. Een latere bridge op je thuisnetwerk kan dit mogelijk maken.",
       "docs": "Lees waarom"
     }
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "bell": "Meldingen",
+    "bellUnread": "Meldingen, {count} ongelezen | Meldingen, {count} ongelezen",
+    "settingsLink": "Voorkeuren",
+    "markAllRead": "Alles als gelezen markeren",
+    "filterLabel": "Filter",
+    "filters": {
+      "all": "Alle",
+      "unread": "Ongelezen"
+    },
+    "empty": "Nog geen meldingen. Zodra er iets gebeurt dat je moet weten, zie je het hier.",
+    "emptyUnread": "Alles gelezen.",
+    "unreadMark": "Ongelezen:",
+    "open": "Openen",
+    "markRead": "Gelezen",
+    "markedRead": "Als gelezen gemarkeerd.",
+    "allRead": "Alles als gelezen gemarkeerd.",
+    "remove": "Verwijderen",
+    "removed": "Melding verwijderd.",
+    "loadMore": "Meer laden",
+    "errors": {
+      "action": "Dat lukte niet. Probeer het opnieuw."
+    },
+    "types": {
+      "LowStock": {
+        "label": "Voorraad bijna op",
+        "text": "{material} is bijna op: nog {grams} g."
+      },
+      "ReorderSoon": {
+        "label": "Bijbestellen",
+        "text": "Tijd om {material} bij te bestellen: nog {grams} g."
+      },
+      "PrintFailed": {
+        "label": "Print mislukt",
+        "text": "De print {job} op {printer} is mislukt."
+      },
+      "PrintFinished": {
+        "label": "Print klaar",
+        "text": "De print {job} op {printer} is klaar."
+      },
+      "PrinterOffline": {
+        "label": "Printer offline",
+        "text": "{printer} is al {minutes} min offline."
+      },
+      "MaintenanceDue": {
+        "label": "Onderhoud",
+        "text": "{printer} heeft onderhoud nodig ({hours} printuren sinds het laatste onderhoud)."
+      },
+      "LicenseExpiring": {
+        "label": "Licentie",
+        "text": "De licentie {license} loopt af op {date}.",
+        "textExpired": "De licentie {license} is verlopen op {date}."
+      },
+      "OrderDueSoon": {
+        "label": "Bestelling bijna te laat",
+        "text": "Bestelling #{number} moet af zijn op {date}."
+      },
+      "OrderOverdue": {
+        "label": "Bestelling te laat",
+        "text": "Bestelling #{number} had af moeten zijn op {date}."
+      }
+    }
+  },
+  "notificationSettings": {
+    "title": "Meldingen",
+    "rowSubtitle": "Wat je wanneer en waar te zien krijgt",
+    "back": "Terug naar de meldingen",
+    "save": "Voorkeuren opslaan",
+    "saved": "Voorkeuren opgeslagen.",
+    "inApp": "In de app",
+    "email": "E-mail",
+    "channels": {
+      "title": "Kanalen",
+      "inApp": "In de app: altijd beschikbaar, met een teller in de navigatie.",
+      "realtimeOn": "Live bijwerken: verbonden.",
+      "realtimeOff": "Live bijwerken: niet verbonden, de app controleert elke 30 seconden.",
+      "emailOn": "E-mail: de server kan e-mail versturen.",
+      "emailOff": "E-mail: niet ingesteld op deze server.",
+      "push": "Pushmeldingen: nog niet beschikbaar."
+    },
+    "types": {
+      "title": "Per soort melding",
+      "hint": "Kies per soort waar je de melding wilt zien."
+    },
+    "quiet": {
+      "title": "Stille uren",
+      "hint": "In de stille uren sturen we geen e-mail. Meldingen in de app blijven altijd binnenkomen; e-mail volgt na de stille uren.",
+      "enable": "Stille uren gebruiken",
+      "start": "Van",
+      "end": "Tot"
+    },
+    "errors": {
+      "time": "Vul een tijd in als uu:mm.",
+      "rejected": "De server weigerde deze waarden. Controleer ze en probeer opnieuw.",
+      "save": "Opslaan lukte niet. Probeer het opnieuw."
+    }
+  },
+  "maintenance": {
+    "title": "Onderhoud",
+    "hint": "Je krijgt een melding wanneer een van beide grenzen bereikt is. Laat leeg om geen herinnering te krijgen.",
+    "everyHours": "Elke (printuren)",
+    "everyDays": "Elke (dagen)",
+    "since": "Sinds {date}: {hours} printuren.",
+    "due": "Onderhoud nodig",
+    "save": "Opslaan",
+    "saved": "Onderhoudsinstelling opgeslagen.",
+    "markDone": "Onderhoud gedaan",
+    "doneSaved": "Onderhoud genoteerd. De teller begint opnieuw.",
+    "errors": {
+      "hours": "Geef een heel aantal uren van 1 tot 100000, of laat leeg.",
+      "days": "Geef een heel aantal dagen van 1 tot 3650, of laat leeg.",
+      "rejected": "De server weigerde deze waarden.",
+      "save": "Dat lukte niet. Probeer het opnieuw."
+    }
   }
 }

@@ -2133,5 +2133,121 @@
       "explain": "Bambu Lab only serves the A1 camera on your own network. PrintOS runs online and cannot reach it. A later bridge on your home network could make this possible.",
       "docs": "Read why"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell": "Notifications",
+    "bellUnread": "Notifications, {count} unread | Notifications, {count} unread",
+    "settingsLink": "Preferences",
+    "markAllRead": "Mark all as read",
+    "filterLabel": "Filter",
+    "filters": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "empty": "No notifications yet. When something needs your attention you will see it here.",
+    "emptyUnread": "Everything is read.",
+    "unreadMark": "Unread:",
+    "open": "Open",
+    "markRead": "Mark read",
+    "markedRead": "Marked as read.",
+    "allRead": "Marked everything as read.",
+    "remove": "Delete",
+    "removed": "Notification deleted.",
+    "loadMore": "Load more",
+    "errors": {
+      "action": "That did not work. Try again."
+    },
+    "types": {
+      "LowStock": {
+        "label": "Low stock",
+        "text": "{material} is running low: {grams} g left."
+      },
+      "ReorderSoon": {
+        "label": "Reorder",
+        "text": "Time to reorder {material}: {grams} g left."
+      },
+      "PrintFailed": {
+        "label": "Print failed",
+        "text": "The print {job} on {printer} failed."
+      },
+      "PrintFinished": {
+        "label": "Print finished",
+        "text": "The print {job} on {printer} is finished."
+      },
+      "PrinterOffline": {
+        "label": "Printer offline",
+        "text": "{printer} has been offline for {minutes} min."
+      },
+      "MaintenanceDue": {
+        "label": "Maintenance",
+        "text": "{printer} needs maintenance ({hours} print hours since the last one)."
+      },
+      "LicenseExpiring": {
+        "label": "License",
+        "text": "The license {license} expires on {date}.",
+        "textExpired": "The license {license} expired on {date}."
+      },
+      "OrderDueSoon": {
+        "label": "Order almost due",
+        "text": "Order #{number} is due on {date}."
+      },
+      "OrderOverdue": {
+        "label": "Order overdue",
+        "text": "Order #{number} was due on {date}."
+      }
+    }
+  },
+  "notificationSettings": {
+    "title": "Notifications",
+    "rowSubtitle": "What you see, when and where",
+    "back": "Back to notifications",
+    "save": "Save preferences",
+    "saved": "Preferences saved.",
+    "inApp": "In the app",
+    "email": "Email",
+    "channels": {
+      "title": "Channels",
+      "inApp": "In the app: always available, with a counter in the navigation.",
+      "realtimeOn": "Live updates: connected.",
+      "realtimeOff": "Live updates: not connected, the app checks every 30 seconds.",
+      "emailOn": "Email: the server can send email.",
+      "emailOff": "Email: not set up on this server.",
+      "push": "Push notifications: not available yet."
+    },
+    "types": {
+      "title": "Per type",
+      "hint": "Choose per type where you want to see the notification."
+    },
+    "quiet": {
+      "title": "Quiet hours",
+      "hint": "No email is sent during quiet hours. In-app notifications always arrive; email follows after the quiet hours.",
+      "enable": "Use quiet hours",
+      "start": "From",
+      "end": "Until"
+    },
+    "errors": {
+      "time": "Enter a time as hh:mm.",
+      "rejected": "The server rejected these values. Check them and try again.",
+      "save": "Saving failed. Try again."
+    }
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "hint": "You get a notification when either limit is reached. Leave empty for no reminder.",
+    "everyHours": "Every (print hours)",
+    "everyDays": "Every (days)",
+    "since": "Since {date}: {hours} print hours.",
+    "due": "Maintenance due",
+    "save": "Save",
+    "saved": "Maintenance setting saved.",
+    "markDone": "Maintenance done",
+    "doneSaved": "Maintenance recorded. The counter starts again.",
+    "errors": {
+      "hours": "Enter a whole number of hours from 1 to 100000, or leave empty.",
+      "days": "Enter a whole number of days from 1 to 3650, or leave empty.",
+      "rejected": "The server rejected these values.",
+      "save": "That did not work. Try again."
+    }
   }
 }

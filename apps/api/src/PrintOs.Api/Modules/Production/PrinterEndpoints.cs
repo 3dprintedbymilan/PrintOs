@@ -19,6 +19,7 @@ public static class PrinterEndpoints
         group.MapPut("/{id:guid}", UpdateAsync);
         group.MapPost("/{id:guid}/archive", (Guid id, PrintOsDbContext dbContext) => SetArchivedAsync(id, true, dbContext));
         group.MapPost("/{id:guid}/restore", (Guid id, PrintOsDbContext dbContext) => SetArchivedAsync(id, false, dbContext));
+        group.MapMaintenanceEndpoints();
     }
 
     private static readonly PrinterRequest DefaultPrinter = new(

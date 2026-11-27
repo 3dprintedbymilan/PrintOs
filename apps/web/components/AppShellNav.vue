@@ -38,6 +38,10 @@ function onKeydown(event: KeyboardEvent) {
 
     <AppBottomNav :expanded="expanded" />
 
+    <div class="rail-bell">
+      <NotificationBell class="in-rail" />
+    </div>
+
     <nav
       class="more"
       :aria-label="t('nav.moreLabel')"
@@ -79,7 +83,7 @@ function onKeydown(event: KeyboardEvent) {
 
 <style scoped>
 .sidebar { display: contents; }
-.brand, .more, .toggle { display: none; }
+.brand, .more, .toggle, .rail-bell { display: none; }
 
 @media (min-width: 768px) {
   .sidebar {
@@ -105,6 +109,10 @@ function onKeydown(event: KeyboardEvent) {
   .brand-name { display: none; }
   .sidebar.expanded .brand-name { display: inline; }
   .logo { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: var(--accent); color: var(--accent-contrast); font-weight: 800; }
+
+  .rail-bell { display: flex; }
+  .sidebar.expanded .rail-bell :deep(.bell) { justify-content: flex-start; width: 100%; }
+  .sidebar.expanded .rail-bell :deep(.label) { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
 
   .more { display: grid; gap: var(--space-1); padding-top: var(--space-4); border-top: 1px solid var(--border); }
   .more-title { display: none; margin: 0 0 var(--space-1); padding-inline: var(--space-3); color: var(--muted); font-size: var(--font-size-sm); font-weight: 600; }

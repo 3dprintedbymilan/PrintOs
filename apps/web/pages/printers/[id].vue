@@ -202,6 +202,11 @@ onMounted(load)
         {{ archived ? $t('printers.restore') : $t('printers.archive') }}
       </UiButton>
     </form>
+
+    <PrinterMaintenanceCard
+      v-if="!isNew && status === 'ready'"
+      :printer-id="id"
+    />
   </div>
 </template>
 

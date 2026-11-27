@@ -178,6 +178,13 @@ onMounted(load)
       </UiButton>
     </form>
 
+    <UiListRow
+      v-if="status === 'ready'"
+      to="/notification-settings"
+      :title="$t('notificationSettings.title')"
+      :subtitle="$t('notificationSettings.rowSubtitle')"
+    />
+
     <AccountDataSection v-if="status === 'ready'" />
   </div>
 </template>
