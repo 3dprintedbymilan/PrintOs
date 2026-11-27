@@ -2085,5 +2085,53 @@
       "byCustomer": "Per customer",
       "rowMeta": "{count} sold · revenue {revenue} · cost {cost} · fees {fees} · margin {margin} | {count} sold · revenue {revenue} · cost {cost} · fees {fees} · margin {margin}"
     }
+  },
+  "monitor": {
+    "title": "Printer monitor",
+    "open": "Printer monitor",
+    "openHint": "Status, utilization and health per printer",
+    "notConnected": "Connect your Bambu Lab account to follow your printers live.",
+    "refreshFailed": "Refreshing failed. You are seeing the last known data.",
+    "unknownState": "unknown",
+    "offlineNote": "Printer offline. Last known state: {state}, seen {age}.",
+    "staleNote": "This data may be out of date, last seen {age}.",
+    "windowLabel": "Utilization period",
+    "windows": {
+      "24": "24 hours",
+      "168": "7 days",
+      "720": "30 days"
+    },
+    "utilization": {
+      "title": "Utilization",
+      "value": "{percent}% of the time printing",
+      "detail": "{printing} printing of {observed} observed",
+      "coverage": "Based on {percent}% of this period, the rest was not recorded.",
+      "none": "No data for this period yet."
+    },
+    "health": {
+      "title": "Health",
+      "connection": "Connection",
+      "online": "Online",
+      "offline": "Offline",
+      "lastSeen": "Last seen",
+      "nozzle": "Nozzle",
+      "bed": "Bed",
+      "filament": "Filament",
+      "emptyTray": "Empty",
+      "inUse": "in use",
+      "errorCode": "Error code {code}",
+      "hms": "HMS message {code}",
+      "noErrors": "No errors reported."
+    },
+    "timeline": {
+      "title": "Recent states",
+      "empty": "No state changes recorded yet."
+    },
+    "camera": {
+      "title": "Camera",
+      "unavailable": "Camera not available via cloud",
+      "explain": "Bambu Lab only serves the A1 camera on your own network. PrintOS runs online and cannot reach it. A later bridge on your home network could make this possible.",
+      "docs": "Read why"
+    }
   }
 }

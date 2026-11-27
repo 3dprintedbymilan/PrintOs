@@ -26,6 +26,7 @@ export const secondaryDestinations: Destination[] = [
   { to: '/inventory/count', icon: 'inventory', labelKey: 'stockTools.count.title', matches: ['/inventory/count'] },
   { to: '/inventory/reservations', icon: 'inventory', labelKey: 'stockTools.reservations.title', matches: ['/inventory/reservations'] },
   { to: '/printers', icon: 'printers', labelKey: 'business.printers', matches: ['/printers'] },
+  { to: '/printers/monitor', icon: 'printers', labelKey: 'monitor.title', matches: ['/printers/monitor'] },
   { to: '/printers/bambu', icon: 'bambu', labelKey: 'bambu.title', matches: ['/printers/bambu'] },
   { to: '/prints?section=queue', icon: 'queue', labelKey: 'queue.title', matches: [] },
   { to: '/schedule', icon: 'queue', labelKey: 'schedule.title', matches: ['/schedule'] },

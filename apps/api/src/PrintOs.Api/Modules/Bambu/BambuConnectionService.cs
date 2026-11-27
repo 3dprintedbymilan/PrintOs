@@ -99,6 +99,7 @@ public sealed class BambuConnectionService(
                 existing.Add(device);
             }
 
+            var previousState = device.State;
             device.Name = Truncate(cloudDevice.Name, 200);
             device.Model = Truncate(cloudDevice.Model, 100);
             device.UpdatedAt = now;
@@ -113,6 +114,8 @@ public sealed class BambuConnectionService(
                 device.Online = true;
                 device.State = BambuPrinterStates.Idle;
             }
+
+            BambuStateHistory.Track(dbContext, device, previousState, now);
         }
 
         foreach (var gone in existing.Where(device => device.PrinterId is null && bound.All(cloudDevice => cloudDevice.Serial != device.Serial)))

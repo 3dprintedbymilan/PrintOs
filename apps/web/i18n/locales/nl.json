@@ -2085,5 +2085,53 @@
       "byCustomer": "Per klant",
       "rowMeta": "{count} verkocht · omzet {revenue} · kosten {cost} · platformkosten {fees} · marge {margin} | {count} verkocht · omzet {revenue} · kosten {cost} · platformkosten {fees} · marge {margin}"
     }
+  },
+  "monitor": {
+    "title": "Printermonitor",
+    "open": "Printermonitor",
+    "openHint": "Status, bezetting en gezondheid per printer",
+    "notConnected": "Verbind je Bambu Lab-account om je printers live te volgen.",
+    "refreshFailed": "Vernieuwen mislukt. Je ziet de laatst bekende gegevens.",
+    "unknownState": "onbekend",
+    "offlineNote": "Printer offline. Laatst bekende status: {state}, gezien {age}.",
+    "staleNote": "De gegevens zijn mogelijk verouderd, laatst gezien {age}.",
+    "windowLabel": "Periode voor bezetting",
+    "windows": {
+      "24": "24 uur",
+      "168": "7 dagen",
+      "720": "30 dagen"
+    },
+    "utilization": {
+      "title": "Bezetting",
+      "value": "{percent}% van de tijd aan het printen",
+      "detail": "{printing} printen van {observed} gemeten",
+      "coverage": "Gebaseerd op {percent}% van deze periode, de rest is niet vastgelegd.",
+      "none": "Nog geen gegevens voor deze periode."
+    },
+    "health": {
+      "title": "Gezondheid",
+      "connection": "Verbinding",
+      "online": "Online",
+      "offline": "Offline",
+      "lastSeen": "Laatst gezien",
+      "nozzle": "Nozzle",
+      "bed": "Bed",
+      "filament": "Filament",
+      "emptyTray": "Leeg",
+      "inUse": "in gebruik",
+      "errorCode": "Foutcode {code}",
+      "hms": "HMS-melding {code}",
+      "noErrors": "Geen fouten gemeld."
+    },
+    "timeline": {
+      "title": "Recente statussen",
+      "empty": "Nog geen statuswijzigingen vastgelegd."
+    },
+    "camera": {
+      "title": "Camera",
+      "unavailable": "Camera niet beschikbaar via de cloud",
+      "explain": "Bambu Lab biedt het camerabeeld van de A1 alleen aan op je eigen netwerk. PrintOS draait online en kan dat beeld niet bereiken. Een latere bridge op je thuisnetwerk kan dit mogelijk maken.",
+      "docs": "Lees waarom"
+    }
   }
 }

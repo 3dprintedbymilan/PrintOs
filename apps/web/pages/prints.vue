@@ -22,6 +22,12 @@ watch(() => route.query.section, (value) => { section.value = sectionOf(value) }
         { value: 'models', label: t('prints.models') },
       ]"
     />
+    <UiListRow
+      v-if="section === 'printing'"
+      to="/printers/monitor"
+      :title="t('monitor.open')"
+      :subtitle="t('monitor.openHint')"
+    />
     <PrintLog v-if="section === 'printing'" />
     <ProductionQueue v-else-if="section === 'queue'" />
     <ModelLibrary v-else />

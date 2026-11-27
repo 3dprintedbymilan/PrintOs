@@ -15,7 +15,9 @@ public sealed record BambuReport(
     decimal? BedTemperature,
     string? JobName,
     string? TrayNow,
-    IReadOnlyList<BambuTray>? Trays);
+    IReadOnlyList<BambuTray>? Trays,
+    string? PrintErrorCode = null,
+    IReadOnlyList<string>? HmsCodes = null);
 
 public static class BambuReportParser
 {
@@ -56,7 +58,9 @@ public static class BambuReportParser
                 ReadDecimal(print, "bed_temper"),
                 jobName,
                 ReadString(print, "tray_now") ?? ReadNestedString(print, "ams", "tray_now"),
-                ReadTrays(print));
+                ReadTrays(print),
+                ReadErrorCode(print),
+                ReadHmsCodes(print));
         }
     }
 
@@ -86,6 +90,39 @@ public static class BambuReportParser
 
         return "#" + hex[..6].ToUpperInvariant();
     }
+
+    private static string? ReadErrorCode(JsonElement print)
+    {
+        if (!print.TryGetProperty("print_error", out var value) || value.ValueKind != JsonValueKind.Number || !value.TryGetInt64(out var code))
+        {
+            return null;
+        }
+
+        return code <= 0 || code > uint.MaxValue ? string.Empty : FormatCode((uint)code);
+    }
+
+    private static IReadOnlyList<string>? ReadHmsCodes(JsonElement print)
+    {
+        if (!print.TryGetProperty("hms", out var hms) || hms.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        var codes = new List<string>();
+        foreach (var entry in hms.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.Object
+                && entry.TryGetProperty("attr", out var attribute) && attribute.TryGetUInt32(out var attributeValue)
+                && entry.TryGetProperty("code", out var code) && code.TryGetUInt32(out var codeValue))
+            {
+                codes.Add($"{FormatCode(attributeValue)}-{FormatCode(codeValue)}");
+            }
+        }
+
+        return codes.Take(10).ToList();
+    }
+
+    private static string FormatCode(uint value) => $"{value >> 16:X4}-{value & 0xFFFF:X4}";
 
     private static IReadOnlyList<BambuTray>? ReadTrays(JsonElement print)
     {
@@ -219,9 +256,31 @@ public static class BambuDeviceStateUpdater
             device.TrayNow = report.TrayNow;
         }
 
+        if (report.PrintErrorCode is not null)
+        {
+            device.PrintErrorCode = report.PrintErrorCode.Length == 0 ? null : report.PrintErrorCode;
+        }
+
+        if (report.HmsCodes is not null)
+        {
+            device.HmsCodesJson = JsonSerializer.Serialize(report.HmsCodes);
+        }
+
         var current = ReadStoredTrays(device).FirstOrDefault(tray => tray.Id == device.TrayNow);
         device.FilamentType = current?.Type is { Length: > 0 } type ? type : null;
         device.FilamentColor = current?.Color;
+    }
+
+    public static List<string> ReadStoredHmsCodes(BambuDevice device)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<List<string>>(device.HmsCodesJson) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
     }
 
     public static void MarkOffline(BambuDevice device, DateTimeOffset now)

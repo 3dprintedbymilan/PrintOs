@@ -91,6 +91,10 @@ public sealed class BambuDevice : IWorkspaceScoped
 
     public string TraysJson { get; set; } = "[]";
 
+    public string? PrintErrorCode { get; set; }
+
+    public string HmsCodesJson { get; set; } = "[]";
+
     public DateTimeOffset? LastSeenAt { get; set; }
 
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;

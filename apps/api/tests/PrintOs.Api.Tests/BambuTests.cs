@@ -99,7 +99,7 @@ public sealed class FakeBambuTelemetrySource : IBambuTelemetrySource
     }
 }
 
-public sealed class BambuTests(PostgresApiFactory factory) : IClassFixture<PostgresApiFactory>
+public sealed partial class BambuTests(PostgresApiFactory factory) : IClassFixture<PostgresApiFactory>
 {
     private const string StrongPassword = "Correct-Horse-9";
     private const string FakeToken = "fake-access-token-for-tests";
