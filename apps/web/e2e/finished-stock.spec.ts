@@ -164,6 +164,7 @@ test('the order detail shows reservations and offers reserving anyway when stock
   const posts: unknown[] = []
   await mockApi(page, {
     [`GET /api/orders/${orderId}`]: () => ({ status: 200, json: order }),
+    [`GET /api/production/orders/${orderId}`]: () => ({ status: 200, json: { orderId, ordered: 4, produced: 0, queued: 0, percent: 0, complete: false, failedJobs: 0, lines: [] } }),
     [`GET /api/orders/${orderId}/reservations`]: () => ({ status: 200, json: { orderId, canReserve: true, lines: [reservationLine] } }),
     [`POST /api/orders/${orderId}/reservations`]: (body) => {
       posts.push(body)
