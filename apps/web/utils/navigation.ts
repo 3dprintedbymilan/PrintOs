@@ -1,6 +1,6 @@
 export type NavIconName
   = | 'home' | 'prints' | 'inventory' | 'business'
-    | 'printers' | 'bambu' | 'models' | 'licenses' | 'products' | 'calculator' | 'settings' | 'audit' | 'customers' | 'orders' | 'queue' | 'markets'
+    | 'printers' | 'bambu' | 'models' | 'licenses' | 'products' | 'calculator' | 'settings' | 'audit' | 'customers' | 'orders' | 'queue' | 'markets' | 'reports'
 
 export interface Destination {
   to: string
@@ -17,7 +17,7 @@ export const primaryDestinations: Destination[] = [
     to: '/business',
     icon: 'business',
     labelKey: 'nav.business',
-    matches: ['/business', '/settings', '/printers', '/products', '/calculator', '/audit', '/licenses', '/orders', '/customers', '/markets'],
+    matches: ['/business', '/settings', '/printers', '/products', '/calculator', '/audit', '/licenses', '/orders', '/customers', '/markets', '/reports'],
   },
 ]
 
@@ -32,6 +32,7 @@ export const secondaryDestinations: Destination[] = [
   { to: '/licenses', icon: 'licenses', labelKey: 'business.licenses', matches: ['/licenses'] },
   { to: '/orders', icon: 'orders', labelKey: 'business.orders', matches: ['/orders'] },
   { to: '/markets', icon: 'markets', labelKey: 'markets.title', matches: ['/markets'] },
+  { to: '/reports/margin', icon: 'reports', labelKey: 'business.margins', matches: ['/reports'] },
   { to: '/customers', icon: 'customers', labelKey: 'business.customers', matches: ['/customers'] },
   { to: '/products', icon: 'products', labelKey: 'business.products', matches: ['/products'] },
   { to: '/calculator', icon: 'calculator', labelKey: 'business.calculator', matches: ['/calculator'] },

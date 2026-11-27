@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({ titleKey: 'business.title' })
-const { t } = useI18n()
 const auth = useAuthStore()
 
 async function signOut() {
@@ -12,9 +11,6 @@ onMounted(() => {
   if (auth.isSignedIn && !auth.workspace) auth.loadWorkspace().catch(() => undefined)
 })
 
-const sections = computed(() => [
-  { key: 'margins', title: t('business.margins') },
-])
 </script>
 
 <template>
@@ -65,9 +61,9 @@ const sections = computed(() => [
       :subtitle="$t('business.licensesSubtitle')"
     />
     <UiListRow
-      v-for="section in sections"
-      :key="section.key"
-      :title="section.title"
+      to="/reports/margin"
+      :title="$t('business.margins')"
+      :subtitle="$t('business.marginsSubtitle')"
     />
     <UiCard class="settings">
       <p>{{ $t('theme.label') }}</p>

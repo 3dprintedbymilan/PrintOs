@@ -155,7 +155,8 @@
     "customersSubtitle": "Contactgegevens en bestelgeschiedenis",
     "ordersSubtitle": "Bestellingen, betalingen en levering",
     "markets": "Markten",
-    "marketsSubtitle": "Kassa, verkopen en totalen per markt"
+    "marketsSubtitle": "Kassa, verkopen en totalen per markt",
+    "marginsSubtitle": "Omzet, kosten en marge per periode"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -1762,6 +1763,65 @@
       "length": "Deze tekst is te lang.",
       "already": "Deze dag was al afgesloten.",
       "save": "De dag kon niet worden afgesloten. Controleer je verbinding en probeer opnieuw."
+    }
+  },
+  "reports": {
+    "revenue": "Omzet",
+    "cost": "Kostprijs verkocht",
+    "grossProfit": "Brutowinst",
+    "marginPercent": "Marge",
+    "netProfit": "Nettowinst",
+    "netMarginPercent": "Nettomarge",
+    "standCosts": "Standkosten",
+    "standTitle": "Na standkosten van markten",
+    "kpiLabel": "Kerncijfers",
+    "range": "{from} tot {to}",
+    "previousRange": "Vergeleken met {from} tot {to}",
+    "from": "Van",
+    "to": "Tot",
+    "errors": {
+      "from": "Vul een geldige begindatum in.",
+      "to": "Vul een einddatum in op of na de begindatum."
+    },
+    "period": {
+      "label": "Periode",
+      "week": "Week",
+      "month": "Maand",
+      "quarter": "Kwartaal",
+      "year": "Jaar",
+      "custom": "Eigen bereik"
+    },
+    "channel": {
+      "label": "Kanaal",
+      "all": "Alles",
+      "orders": "Bestellingen",
+      "pos": "Markt-kassa"
+    },
+    "deltaPercent": "{percent} t.o.v. vorige periode",
+    "deltaAbsolute": "{change} t.o.v. vorige periode",
+    "deltaPoints": "{points} pt t.o.v. vorige periode",
+    "costIncomplete": "Voor sommige verkochte artikelen ontbreekt de kostprijs, waardoor de marge mooier lijkt dan ze is.",
+    "trendTitle": "Verloop van omzet en winst",
+    "byChannel": "Per kanaal",
+    "byMarket": "Per markt",
+    "byProduct": "Per product",
+    "byVariant": "Per variant",
+    "rowMeta": "{count} verkocht · {revenue} omzet · {margin} marge | {count} verkocht · {revenue} omzet · {margin} marge",
+    "rowStand": "Standkosten {cost}, netto {net}",
+    "margin": {
+      "title": "Winstmarges",
+      "empty": "Nog geen verkopen in deze periode. Bevestig een bestelling of verkoop iets op een markt en het verschijnt hier.",
+      "allProducts": "Alle producten"
+    },
+    "chart": {
+      "label": "Omzet en brutowinst in de tijd",
+      "legend": "Legenda van de grafiek",
+      "hint": "Tik op een balk voor de cijfers.",
+      "point": "{date}: omzet {revenue}, brutowinst {profit}",
+      "empty": "Geen omzet om te tonen in deze periode.",
+      "date": "Datum",
+      "showTable": "Toon als tabel",
+      "hideTable": "Verberg tabel"
     }
   }
 }
