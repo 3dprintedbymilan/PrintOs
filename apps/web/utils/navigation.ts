@@ -1,6 +1,6 @@
 export type NavIconName
   = | 'home' | 'prints' | 'inventory' | 'business'
-    | 'printers' | 'bambu' | 'models' | 'licenses' | 'products' | 'calculator' | 'settings' | 'audit' | 'customers' | 'orders'
+    | 'printers' | 'bambu' | 'models' | 'licenses' | 'products' | 'calculator' | 'settings' | 'audit' | 'customers' | 'orders' | 'queue'
 
 export interface Destination {
   to: string
@@ -25,6 +25,7 @@ export const secondaryDestinations: Destination[] = [
   { to: '/inventory/finished', icon: 'inventory', labelKey: 'finished.title', matches: ['/inventory/finished'] },
   { to: '/printers', icon: 'printers', labelKey: 'business.printers', matches: ['/printers'] },
   { to: '/printers/bambu', icon: 'bambu', labelKey: 'bambu.title', matches: ['/printers/bambu'] },
+  { to: '/prints?section=queue', icon: 'queue', labelKey: 'queue.title', matches: [] },
   { to: '/prints?section=models', icon: 'models', labelKey: 'prints.models', matches: ['/models'] },
   { to: '/licenses', icon: 'licenses', labelKey: 'business.licenses', matches: ['/licenses'] },
   { to: '/orders', icon: 'orders', labelKey: 'business.orders', matches: ['/orders'] },
@@ -45,7 +46,10 @@ export function isPrimaryActive(destination: Destination, path: string) {
 }
 
 export function activeSecondary(path: string, query: Record<string, unknown> = {}) {
-  if (path === '/prints') return query.section === 'models' ? '/prints?section=models' : null
+  if (path === '/prints') {
+    if (query.section === 'models') return '/prints?section=models'
+    return query.section === 'queue' ? '/prints?section=queue' : null
+  }
   let best: Destination | null = null
   let bestLength = -1
   for (const destination of secondaryDestinations) {

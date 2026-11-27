@@ -12,5 +12,6 @@ public sealed class ProductionModule : IModule
     {
         endpoints.MapPrinterEndpoints();
         endpoints.MapPrintJobEndpoints();
+        endpoints.MapProductionQueueEndpoints();
     }
 }

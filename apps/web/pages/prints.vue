@@ -2,7 +2,13 @@
 definePageMeta({ titleKey: 'prints.title' })
 const { t } = useI18n()
 const route = useRoute()
-const section = ref(route.query.section === 'models' ? 'models' : 'printing')
+
+function sectionOf(query: unknown) {
+  return query === 'models' || query === 'queue' ? query : 'printing'
+}
+
+const section = ref<string>(sectionOf(route.query.section))
+watch(() => route.query.section, (value) => { section.value = sectionOf(value) })
 </script>
 
 <template>
@@ -10,9 +16,14 @@ const section = ref(route.query.section === 'models' ? 'models' : 'printing')
     <UiSegmentedControl
       v-model="section"
       :label="t('prints.title')"
-      :options="[{ value: 'printing', label: t('prints.printing') }, { value: 'models', label: t('prints.models') }]"
+      :options="[
+        { value: 'printing', label: t('prints.printing') },
+        { value: 'queue', label: t('queue.title') },
+        { value: 'models', label: t('prints.models') },
+      ]"
     />
     <PrintLog v-if="section === 'printing'" />
+    <ProductionQueue v-else-if="section === 'queue'" />
     <ModelLibrary v-else />
   </div>
 </template>

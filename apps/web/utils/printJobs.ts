@@ -32,6 +32,14 @@ export interface PrintJob {
   wasteGrams: number
   createdAt: string
   filaments: PrintJobFilament[]
+  orderLineId?: string | null
+  orderId?: string | null
+  orderNumber?: number | null
+  orderLineDescription?: string | null
+  plannedUnits?: number | null
+  queuePosition?: number | null
+  requeuedFromId?: string | null
+  requeued?: boolean
 }
 
 export type StatusTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral'

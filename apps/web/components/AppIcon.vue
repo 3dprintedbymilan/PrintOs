@@ -123,6 +123,10 @@ defineProps<{ name: NavIconName | 'menu' | 'chevron-left' | 'chevron-right' }>()
       />
       <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
     </template>
+    <template v-else-if="name === 'queue'">
+      <path d="M5 6h14M5 12h14M5 18h9" />
+      <path d="M17 15l3 3-3 3" />
+    </template>
     <template v-else-if="name === 'chevron-left'">
       <path d="M14 6l-6 6 6 6" />
     </template>

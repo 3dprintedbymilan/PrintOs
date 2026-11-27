@@ -1144,10 +1144,22 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
+                    b.Property<Guid?>("OrderLineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("PlannedUnits")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("PrinterId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("ProductVariantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("QueuePosition")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("RequeuedFromId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("StartedAt")
@@ -1162,6 +1174,8 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderLineId");
 
                     b.HasIndex("PrinterId");
 
@@ -2082,6 +2096,11 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("PrintOs.Api.Modules.Production.PrintJob", b =>
                 {
+                    b.HasOne("PrintOs.Api.Modules.Sales.OrderLine", null)
+                        .WithMany()
+                        .HasForeignKey("OrderLineId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("PrintOs.Api.Modules.Production.Printer", null)
                         .WithMany()
                         .HasForeignKey("PrinterId")

@@ -424,6 +424,13 @@ onMounted(load)
           </ol>
         </UiCard>
 
+        <OrderProductionCard
+          v-if="order.status !== 'Draft' && order.status !== 'Cancelled'"
+          :order-id="order.id"
+          :status="order.status"
+          :number="order.number"
+        />
+
         <div
           v-if="order.hasRightsWarning"
           class="rights"

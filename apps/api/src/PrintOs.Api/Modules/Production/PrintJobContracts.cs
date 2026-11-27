@@ -15,7 +15,9 @@ public sealed record PrintJobRequest(
     string? ExternalId,
     List<PrintJobFilamentRequest>? Filaments,
     Guid? ModelId = null,
-    Guid? ProductVariantId = null);
+    Guid? ProductVariantId = null,
+    Guid? OrderLineId = null,
+    int? PlannedUnits = null);
 
 public sealed record FinishPrintJobRequest(
     string Status,
@@ -52,4 +54,12 @@ public sealed record PrintJobResponse(
     int TotalGrams,
     int WasteGrams,
     DateTimeOffset CreatedAt,
-    List<PrintJobFilamentResponse> Filaments);
+    List<PrintJobFilamentResponse> Filaments,
+    Guid? OrderLineId = null,
+    Guid? OrderId = null,
+    int? OrderNumber = null,
+    string? OrderLineDescription = null,
+    int? PlannedUnits = null,
+    int? QueuePosition = null,
+    Guid? RequeuedFromId = null,
+    bool Requeued = false);

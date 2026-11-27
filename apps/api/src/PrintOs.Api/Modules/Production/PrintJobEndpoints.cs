@@ -5,6 +5,7 @@ using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
 using PrintOs.Api.Modules.ModelLibrary;
 using PrintOs.Api.Modules.Products;
+using PrintOs.Api.Modules.Sales;
 
 namespace PrintOs.Api.Modules.Production;
 
@@ -132,6 +133,7 @@ public static class PrintJobEndpoints
 
         dbContext.Set<PrintJob>().Add(job);
         await dbContext.SaveChangesAsync();
+        await ProductionQueueRules.SyncOrderStatusForLineAsync(dbContext, job.OrderLineId);
         return TypedResults.Created($"/api/print-jobs/{job.Id}", (await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
@@ -143,6 +145,7 @@ public static class PrintJobEndpoints
             return TypedResults.NotFound();
         }
 
+        var previousLineId = job.OrderLineId;
         var problem = await ApplyAsync(job, request, dbContext, currentWorkspace);
         if (problem is not null)
         {
@@ -150,6 +153,12 @@ public static class PrintJobEndpoints
         }
 
         await dbContext.SaveChangesAsync();
+        await ProductionQueueRules.SyncOrderStatusForLineAsync(dbContext, job.OrderLineId);
+        if (previousLineId != job.OrderLineId)
+        {
+            await ProductionQueueRules.SyncOrderStatusForLineAsync(dbContext, previousLineId);
+        }
+
         return TypedResults.Ok((await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
@@ -169,6 +178,7 @@ public static class PrintJobEndpoints
         job.Status = PrintJobStatus.Printing;
         job.StartedAt ??= DateTimeOffset.UtcNow;
         await dbContext.SaveChangesAsync();
+        await ProductionQueueRules.SyncOrderStatusForLineAsync(dbContext, job.OrderLineId);
         return TypedResults.Ok((await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
@@ -200,7 +210,7 @@ public static class PrintJobEndpoints
             request.FinishedAt,
             request.DurationMinutes,
             request.Notes ?? job.Notes,
-            request.FinishedUnits,
+            request.FinishedUnits ?? (status == PrintJobStatus.Done ? job.PlannedUnits : null),
             job.ExternalSource,
             job.ExternalId,
             filaments,
@@ -214,6 +224,7 @@ public static class PrintJobEndpoints
         }
 
         await dbContext.SaveChangesAsync();
+        await ProductionQueueRules.SyncOrderStatusForLineAsync(dbContext, job.OrderLineId);
         return TypedResults.Ok((await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
@@ -234,6 +245,7 @@ public static class PrintJobEndpoints
 
         dbContext.Set<PrintJob>().Remove(job);
         await dbContext.SaveChangesAsync();
+        await ProductionQueueRules.SyncOrderStatusForLineAsync(dbContext, job.OrderLineId);
         return TypedResults.NoContent();
     }
 
@@ -291,6 +303,16 @@ public static class PrintJobEndpoints
         if (request.ProductVariantId is { } variantId && !await dbContext.Set<ProductVariant>().AnyAsync(variant => variant.Id == variantId))
         {
             errors["productVariantId"] = ["Choose an existing product variant."];
+        }
+
+        if (request.OrderLineId is { } orderLineId && !await dbContext.Set<OrderLine>().AnyAsync(line => line.Id == orderLineId))
+        {
+            errors["orderLineId"] = ["Choose an existing order line."];
+        }
+
+        if (request.PlannedUnits is < 1 or > ProductionQueueRules.MaximumUnits)
+        {
+            errors["plannedUnits"] = [$"The planned units must be between 1 and {ProductionQueueRules.MaximumUnits}."];
         }
 
         var finishedAt = request.FinishedAt;
@@ -384,6 +406,15 @@ public static class PrintJobEndpoints
         job.ExternalId = externalId;
         job.ModelId = request.ModelId;
         job.ProductVariantId = request.ProductVariantId;
+        if (request.OrderLineId is { } linkedLine)
+        {
+            job.OrderLineId = linkedLine;
+        }
+
+        if (request.PlannedUnits is { } plannedUnits)
+        {
+            job.PlannedUnits = plannedUnits;
+        }
 
         var desired = job.ConsumesStock
             ? lines.ToDictionary(line => line.SpoolId, line => line.Grams)
@@ -463,7 +494,7 @@ public static class PrintJobEndpoints
 
     private static string Truncate(string value) => value.Length <= 300 ? value : value[..300];
 
-    private static async Task<List<PrintJobResponse>> ToResponsesAsync(PrintOsDbContext dbContext, IReadOnlyList<PrintJob> jobs)
+    internal static async Task<List<PrintJobResponse>> ToResponsesAsync(PrintOsDbContext dbContext, IReadOnlyList<PrintJob> jobs)
     {
         var printerIds = jobs.Select(job => job.PrinterId).Distinct().ToList();
         var printers = await dbContext.Set<Printer>().Where(printer => printerIds.Contains(printer.Id)).ToDictionaryAsync(printer => printer.Id, printer => printer.Name);
@@ -474,7 +505,14 @@ public static class PrintJobEndpoints
             select new { spool.Id, MaterialName = material.Name, spool.ColorName, spool.ColorHex })
             .ToDictionaryAsync(row => row.Id);
 
-        return jobs.Select(job => new PrintJobResponse(
+        var orders = await ProductionQueueRules.LoadOrderInfoAsync(dbContext, jobs.Where(job => job.OrderLineId != null).Select(job => job.OrderLineId!.Value).Distinct().ToList());
+        var jobIds = jobs.Select(job => job.Id).ToList();
+        var requeuedIds = (await dbContext.Set<PrintJob>().Where(job => job.RequeuedFromId != null && jobIds.Contains(job.RequeuedFromId.Value)).Select(job => job.RequeuedFromId!.Value).ToListAsync()).ToHashSet();
+
+        return jobs.Select(job =>
+        {
+            var info = job.OrderLineId is { } linkedId ? orders.GetValueOrDefault(linkedId) : null;
+            return new PrintJobResponse(
             job.Id,
             job.PrinterId,
             printers.GetValueOrDefault(job.PrinterId, string.Empty),
@@ -498,6 +536,15 @@ public static class PrintJobEndpoints
                 spools[line.SpoolId].ColorName,
                 spools[line.SpoolId].ColorHex,
                 line.Grams,
-                line.WasteGrams)).ToList())).ToList();
+                line.WasteGrams)).ToList(),
+            job.OrderLineId,
+            info?.OrderId,
+            info?.Number,
+            info?.LineDescription,
+            job.PlannedUnits,
+            job.QueuePosition,
+            job.RequeuedFromId,
+            requeuedIds.Contains(job.Id));
+        }).ToList();
     }
 }
