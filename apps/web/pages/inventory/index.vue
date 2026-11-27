@@ -83,6 +83,16 @@ onMounted(load)
         :subtitle="$t('finished.linkSubtitle')"
       />
       <UiListRow
+        to="/inventory/count"
+        :title="$t('stockTools.count.title')"
+        :subtitle="$t('stockTools.count.linkSubtitle')"
+      />
+      <UiListRow
+        to="/inventory/reservations"
+        :title="$t('stockTools.reservations.title')"
+        :subtitle="$t('stockTools.reservations.linkSubtitle')"
+      />
+      <UiListRow
         to="/inventory/materials"
         :title="$t('alerts.materialsTitle')"
         :subtitle="$t('alerts.materialsSubtitle')"

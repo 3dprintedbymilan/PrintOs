@@ -50,6 +50,8 @@ public sealed class FilamentSpool : IWorkspaceScoped
 
     public int RemainingWeightGrams { get; set; }
 
+    public int? EmptySpoolGrams { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset? ArchivedAt { get; set; }

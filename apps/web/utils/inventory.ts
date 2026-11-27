@@ -13,6 +13,7 @@ export interface Spool {
   initialWeightGrams: number
   remainingWeightGrams: number
   isArchived: boolean
+  emptySpoolGrams?: number | null
 }
 
 export interface Material {

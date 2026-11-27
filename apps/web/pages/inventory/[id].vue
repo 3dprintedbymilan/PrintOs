@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { remainingPercent, validateAdjustment } from '~/utils/inventory'
 import type { Movement, Spool } from '~/utils/inventory'
+import { remainingFromGross, signedNumber, validateWeigh } from '~/utils/stockCount'
 
 definePageMeta({ titleKey: 'inventory.spoolTitle' })
 
@@ -21,6 +22,51 @@ const reasonError = ref('')
 const saving = ref(false)
 const message = ref('')
 const saveError = ref('')
+
+const weighGross = ref('')
+const weighEmpty = ref('')
+const weighReason = ref('')
+const weighErrors = reactive({ gross: '', empty: '' })
+const weighing = ref(false)
+const weighMessage = ref('')
+const weighFailure = ref('')
+
+const weighPreview = computed(() => {
+  const { payload } = validateWeigh({ gross: weighGross.value, empty: weighEmpty.value, reason: '' }, spool.value?.emptySpoolGrams ?? null)
+  if (!payload || !spool.value) return null
+  const remaining = remainingFromGross(payload.grossWeightGrams, payload.emptySpoolGrams)
+  return { remaining, delta: remaining - spool.value.remainingWeightGrams }
+})
+
+async function weigh() {
+  weighMessage.value = ''
+  weighFailure.value = ''
+  const { payload, errors } = validateWeigh({ gross: weighGross.value, empty: weighEmpty.value, reason: weighReason.value }, spool.value?.emptySpoolGrams ?? null)
+  weighErrors.gross = errors.gross ? t(`stockTools.weigh.errors.${errors.gross}`) : ''
+  weighErrors.empty = errors.empty ? t('stockTools.weigh.errors.empty') : ''
+  if (!payload) {
+    await nextTick()
+    document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+    return
+  }
+
+  weighing.value = true
+  try {
+    spool.value = await auth.authorizedFetch<Spool>(`/api/spools/${id}/weigh`, { method: 'POST', body: payload })
+    movements.value = await auth.authorizedFetch<Movement[]>(`/api/spools/${id}/movements`)
+    weighGross.value = ''
+    weighEmpty.value = ''
+    weighReason.value = ''
+    weighMessage.value = t('stockTools.weigh.saved', { grams: n(spool.value.remainingWeightGrams) })
+  }
+  catch (error) {
+    const parsed = parseApiError(error)
+    weighFailure.value = parsed.kind === 'network' ? t('inventory.errors.network') : t('inventory.errors.save')
+  }
+  finally {
+    weighing.value = false
+  }
+}
 
 const directionOptions = computed(() => [
   { value: 'remove', label: t('inventory.remove') },
@@ -171,6 +217,65 @@ onMounted(load)
             :loading="saving"
           >
             {{ $t('inventory.saveAdjustment') }}
+          </UiButton>
+        </UiCard>
+      </form>
+
+      <form
+        class="form"
+        novalidate
+        @submit.prevent="weigh"
+      >
+        <UiCard class="group">
+          <h2 class="heading">
+            {{ $t('stockTools.weigh.title') }}
+          </h2>
+          <p class="meta">
+            {{ $t('stockTools.weigh.intro') }}
+          </p>
+          <UiInput
+            v-model="weighGross"
+            :label="$t('stockTools.weigh.gross')"
+            :error="weighErrors.gross"
+            inputmode="numeric"
+          />
+          <UiInput
+            v-model="weighEmpty"
+            :label="$t('stockTools.weigh.empty')"
+            :hint="spool.emptySpoolGrams ? $t('stockTools.weigh.emptyKnown', { grams: n(spool.emptySpoolGrams) }) : $t('stockTools.weigh.emptyHint')"
+            :error="weighErrors.empty"
+            inputmode="numeric"
+          />
+          <UiInput
+            v-model="weighReason"
+            :label="$t('stockTools.weigh.reason')"
+            :hint="$t('stockTools.weigh.reasonHint')"
+          />
+          <p
+            v-if="weighPreview"
+            class="meta"
+          >
+            {{ $t('stockTools.weigh.preview', { grams: n(weighPreview.remaining), delta: signedNumber(weighPreview.delta) }) }}
+          </p>
+          <p
+            class="status"
+            role="status"
+          >
+            {{ weighMessage }}
+          </p>
+          <p
+            v-if="weighFailure"
+            class="error"
+            role="alert"
+          >
+            {{ weighFailure }}
+          </p>
+          <UiButton
+            type="submit"
+            block
+            :loading="weighing"
+          >
+            {{ $t('stockTools.weigh.save') }}
           </UiButton>
         </UiCard>
       </form>

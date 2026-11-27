@@ -1545,5 +1545,63 @@
       "duration": "Enter whole minutes between 1 and 525600.",
       "rejected": "The server rejected these values."
     }
+  },
+  "stockTools": {
+    "weigh": {
+      "title": "Weigh spool",
+      "intro": "Put the spool on a scale. The remaining filament is corrected and written to the history.",
+      "gross": "Weight on the scale (grams)",
+      "empty": "Empty spool weight (grams)",
+      "emptyHint": "Weigh an empty spool once, we remember it for this spool.",
+      "emptyKnown": "Remembered: {grams} g. Leave empty to use it.",
+      "reason": "Note (optional)",
+      "reasonHint": "Leave empty for \"Weighed\".",
+      "preview": "Remaining after weighing: {grams} g ({delta} g)",
+      "save": "Save weight",
+      "saved": "Weighed: {grams} g left.",
+      "errors": {
+        "gross": "Enter a whole number of grams between 1 and 100000.",
+        "lighter": "That is lighter than the empty spool.",
+        "empty": "Enter the empty spool weight, 0 to 2000 grams."
+      }
+    },
+    "count": {
+      "title": "Stock take",
+      "linkSubtitle": "Count spools or products and correct them in one go",
+      "intro": "Fill in what you counted. Rows you leave empty stay as they are. Differences are booked as adjustments.",
+      "mode": "What do you count?",
+      "filament": "Filament",
+      "finished": "Finished goods",
+      "emptyFilament": "No spools to count yet.",
+      "emptyFinished": "No products to count yet.",
+      "currentGrams": "{count} g in stock",
+      "currentUnits": "{count} on hand",
+      "counted": "Counted",
+      "countedFor": "Counted amount for {name}",
+      "reason": "Reason",
+      "defaultReason": "Stock take",
+      "save": "Book {count} corrections",
+      "saved": "{count} corrections booked.",
+      "errors": {
+        "reason": "Give a reason.",
+        "number": "Enter a whole number, 0 or more.",
+        "line": "This count cannot be booked.",
+        "network": "No connection. Check your internet and try again.",
+        "save": "Saving failed. Nothing was changed, try again."
+      }
+    },
+    "reservations": {
+      "title": "Reservations",
+      "linkSubtitle": "Which stock is reserved for which order",
+      "kpi": {
+        "units": "Reserved units",
+        "orders": "Orders",
+        "short": "Short"
+      },
+      "empty": "Nothing is reserved. Reserve stock from an order.",
+      "search": "Search order, customer or product",
+      "onlyShort": "Only shortages ({count})",
+      "noMatches": "No reservations match your search."
+    }
   }
 }

@@ -19,6 +19,8 @@ public static partial class InventoryEndpoints
         materials.MapPost("", CreateMaterialAsync);
         materials.MapPut("/{id:guid}/thresholds", UpdateThresholdsAsync);
 
+        endpoints.MapAdvancedInventoryEndpoints();
+
         endpoints.MapGet("/api/inventory/alerts", ListAlertsAsync)
             .WithTags("Inventory")
             .RequireAuthorization(AuthPolicies.RequireWorkspace);
@@ -125,7 +127,8 @@ public static partial class InventoryEndpoints
                 row.Spool.CostPerGram,
                 row.Spool.InitialWeightGrams,
                 row.Spool.RemainingWeightGrams,
-                row.Spool.ArchivedAt is not null))
+                row.Spool.ArchivedAt is not null,
+                row.Spool.EmptySpoolGrams))
             .OrderBy(spool => spool.IsArchived).ThenBy(spool => spool.MaterialName).ThenBy(spool => spool.ColorName)
             .ToList();
     }

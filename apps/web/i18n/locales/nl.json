@@ -1545,5 +1545,63 @@
       "duration": "Geef hele minuten tussen 1 en 525600.",
       "rejected": "De server weigerde deze waarden."
     }
+  },
+  "stockTools": {
+    "weigh": {
+      "title": "Spoel wegen",
+      "intro": "Leg de spoel op een weegschaal. Het restant wordt gecorrigeerd en in de historie vastgelegd.",
+      "gross": "Gewicht op de weegschaal (gram)",
+      "empty": "Gewicht lege spoel (gram)",
+      "emptyHint": "Weeg een lege spoel één keer, we onthouden het voor deze spoel.",
+      "emptyKnown": "Onthouden: {grams} g. Laat leeg om dit te gebruiken.",
+      "reason": "Notitie (optioneel)",
+      "reasonHint": "Laat leeg voor \"Gewogen\".",
+      "preview": "Restant na wegen: {grams} g ({delta} g)",
+      "save": "Gewicht opslaan",
+      "saved": "Gewogen: {grams} g over.",
+      "errors": {
+        "gross": "Vul een geheel aantal gram in tussen 1 en 100000.",
+        "lighter": "Dat is lichter dan de lege spoel.",
+        "empty": "Vul het gewicht van de lege spoel in, 0 tot 2000 gram."
+      }
+    },
+    "count": {
+      "title": "Voorraad tellen",
+      "linkSubtitle": "Tel spoelen of producten en corrigeer ze in één keer",
+      "intro": "Vul in wat je geteld hebt. Lege rijen blijven zoals ze zijn. Verschillen worden als correctie geboekt.",
+      "mode": "Wat tel je?",
+      "filament": "Filament",
+      "finished": "Afgewerkte producten",
+      "emptyFilament": "Nog geen spoelen om te tellen.",
+      "emptyFinished": "Nog geen producten om te tellen.",
+      "currentGrams": "{count} g op voorraad",
+      "currentUnits": "{count} op voorraad",
+      "counted": "Geteld",
+      "countedFor": "Geteld aantal voor {name}",
+      "reason": "Reden",
+      "defaultReason": "Voorraadtelling",
+      "save": "{count} correcties boeken",
+      "saved": "{count} correcties geboekt.",
+      "errors": {
+        "reason": "Geef een reden op.",
+        "number": "Vul een geheel getal in, 0 of meer.",
+        "line": "Deze telling kan niet geboekt worden.",
+        "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
+        "save": "Opslaan mislukt. Er is niets gewijzigd, probeer opnieuw."
+      }
+    },
+    "reservations": {
+      "title": "Reserveringen",
+      "linkSubtitle": "Welke voorraad voor welke bestelling gereserveerd is",
+      "kpi": {
+        "units": "Gereserveerd",
+        "orders": "Bestellingen",
+        "short": "Tekort"
+      },
+      "empty": "Er is niets gereserveerd. Reserveer voorraad vanuit een bestelling.",
+      "search": "Zoek bestelling, klant of product",
+      "onlyShort": "Alleen tekorten ({count})",
+      "noMatches": "Geen reserveringen gevonden."
+    }
   }
 }

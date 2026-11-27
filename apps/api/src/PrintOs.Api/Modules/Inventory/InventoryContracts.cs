@@ -32,7 +32,8 @@ public sealed record SpoolResponse(
     decimal CostPerGram,
     int InitialWeightGrams,
     int RemainingWeightGrams,
-    bool IsArchived);
+    bool IsArchived,
+    int? EmptySpoolGrams = null);
 
 public sealed record StockAdjustmentRequest(int DeltaGrams, string Reason);
 
