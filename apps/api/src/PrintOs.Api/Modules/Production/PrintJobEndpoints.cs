@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PrintOs.Api.Infrastructure.Persistence;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
+using PrintOs.Api.Modules.ModelLibrary;
 
 namespace PrintOs.Api.Modules.Production;
 
@@ -196,7 +197,8 @@ public static class PrintJobEndpoints
             request.FinishedUnits,
             job.ExternalSource,
             job.ExternalId,
-            filaments);
+            filaments,
+            job.ModelId);
 
         var problem = await ApplyAsync(job, merged, dbContext);
         if (problem is not null)
@@ -266,6 +268,11 @@ public static class PrintJobEndpoints
                  && await dbContext.Set<PrintJob>().AnyAsync(other => other.Id != job.Id && other.ExternalSource == externalSource && other.ExternalId == externalId))
         {
             errors["externalId"] = ["A job with this external source and id already exists."];
+        }
+
+        if (request.ModelId is { } modelId && !await dbContext.Set<PrintModel>().AnyAsync(model => model.Id == modelId))
+        {
+            errors["modelId"] = ["Choose an existing model."];
         }
 
         var finishedAt = request.FinishedAt;
@@ -357,6 +364,7 @@ public static class PrintJobEndpoints
         job.FinishedUnits = request.FinishedUnits;
         job.ExternalSource = externalSource;
         job.ExternalId = externalId;
+        job.ModelId = request.ModelId;
 
         var desired = job.ConsumesStock
             ? lines.ToDictionary(line => line.SpoolId, line => line.Grams)

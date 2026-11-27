@@ -864,5 +864,43 @@
       "proofDownload": "The proof file could not be downloaded.",
       "storage": "File storage is unavailable. Try again later."
     }
+  },
+  "rights": {
+    "status": {
+      "NoModel": "No model linked",
+      "Cleared": "Rights verified",
+      "NotCleared": "Rights not verified"
+    },
+    "listNotCleared": "Rights missing",
+    "bannerTitle": "No valid commercial license",
+    "bannerBody": "Do not sell this variant without commercial rights for: {models}.",
+    "modelStatus": "{name}: {status}",
+    "clearedTitle": "Commercial rights verified",
+    "clearedBody": "Every linked model has a valid commercial license.",
+    "expiringSoon": "A license expires soon. Renew it before it lapses.",
+    "noModelTitle": "No model linked",
+    "noModelBody": "Link a model to the print line to check the commercial rights.",
+    "attributionTitle": "Attribution required with every sale",
+    "attributionFallback": "See the license for the required text.",
+    "readyBadge": "Ready for sale",
+    "readyAtRisk": "Ready for sale, at your own risk",
+    "staleWarning": "Marked for sale, but the rights are no longer verified. Remove it from sale or fix the license.",
+    "markReady": "Mark ready for sale",
+    "markReadyAtRisk": "Mark ready for sale anyway",
+    "unmark": "Remove from sale",
+    "confirmTitle": "Sell without valid rights?",
+    "confirmBody": "There is no valid commercial license for {models}. Selling may infringe the maker's license. The choice is recorded in the audit log.",
+    "confirmAction": "Mark ready anyway",
+    "cancel": "Cancel",
+    "errors": {
+      "save": "The sale status could not be saved. Try again.",
+      "network": "No connection to the server. Check your connection and try again.",
+      "stale": "The rights changed in the meantime. Review the warning and try again."
+    },
+    "printJob": {
+      "model": "Model (optional)",
+      "noModel": "No model",
+      "hint": "Link the model so finished units count toward its license limit."
+    }
   }
 }

@@ -24,7 +24,9 @@ public sealed record ProductSummaryResponse(
     int VariantCount,
     decimal? LowestPrice,
     decimal? HighestPrice,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    string CommercialRightsStatus = "NoModel",
+    int NotClearedVariantCount = 0);
 
 public sealed record VariantRequest(string Name, string? Sku, decimal Price, decimal? TargetMarginPercent, decimal? FeePercent);
 
@@ -79,7 +81,12 @@ public sealed record VariantResponse(
     decimal TargetMarginPercent,
     decimal FeePercent,
     List<BomLineResponse> BomLines,
-    VariantCostResponse Cost);
+    VariantCostResponse Cost,
+    bool ReadyForSale,
+    bool SaleRiskAcknowledged,
+    CommercialRightsResponse CommercialRights);
+
+public sealed record VariantSaleStatusRequest(bool ReadyForSale, bool? AcknowledgeRisk);
 
 public sealed record ProductResponse(
     Guid Id,
@@ -89,7 +96,8 @@ public sealed record ProductResponse(
     bool IsArchived,
     DateTimeOffset CreatedAt,
     string Currency,
-    List<VariantResponse> Variants);
+    List<VariantResponse> Variants,
+    string CommercialRightsStatus = "NoModel");
 
 public sealed record VariantCostSnapshotResponse(
     Guid Id,

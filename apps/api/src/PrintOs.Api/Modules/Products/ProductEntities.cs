@@ -38,6 +38,10 @@ public sealed class ProductVariant : IWorkspaceScoped
 
     public decimal FeePercent { get; set; }
 
+    public bool ReadyForSale { get; set; }
+
+    public DateTimeOffset? SaleRiskAcknowledgedAt { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
 

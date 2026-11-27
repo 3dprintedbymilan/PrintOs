@@ -13,7 +13,8 @@ public sealed record PrintJobRequest(
     int? FinishedUnits,
     string? ExternalSource,
     string? ExternalId,
-    List<PrintJobFilamentRequest>? Filaments);
+    List<PrintJobFilamentRequest>? Filaments,
+    Guid? ModelId = null);
 
 public sealed record FinishPrintJobRequest(
     string Status,

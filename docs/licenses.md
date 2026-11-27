@@ -36,3 +36,12 @@ No schema change is needed for #24.
 ## Endpoints
 
 `GET/POST /api/licenses`, `GET/PUT/DELETE /api/licenses/{id}`, `POST/DELETE /api/licenses/{id}/proof`, `GET /api/licenses/{id}/proof-url`, `PUT /api/models/{id}/license`, `GET /api/models/{id}/commercial-use`. All require a workspace; other workspaces' data returns 404. Changes are covered by the audit log.
+
+## Commercial rights per product (#24)
+
+`CommercialRightsRules` (Modules/Products) derives a verdict per variant from the models on its BOM print lines, using `LicenseAssessor`. Worst case wins: any model whose assessment does not allow commercial sale makes the variant `NotCleared`; no linked model is `NoModel` (neutral); otherwise `Cleared` (with `expiringSoon` as a hint). Attribution requirements are aggregated per variant and per product.
+
+- Variant responses carry `readyForSale`, `saleRiskAcknowledged` and `commercialRights`; product responses and the list carry `commercialRightsStatus` (worst variant).
+- `GET /api/products/{id}/commercial-rights` and `GET /api/products/{id}/variants/{variantId}/commercial-rights`.
+- `PUT /api/products/{id}/variants/{variantId}/sale-status` body `{ readyForSale, acknowledgeRisk }`. Marking a `NotCleared` variant ready returns 400 with an error keyed `commercialRights` unless `acknowledgeRisk` is true; the acknowledgement is stored in `SaleRiskAcknowledgedAt` and appears in the audit log. The UI asks for confirmation before sending it.
+- Print jobs accept an optional `modelId` (must belong to the workspace) so finished units count toward license limits.

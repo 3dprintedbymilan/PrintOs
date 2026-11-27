@@ -11,6 +11,36 @@ export interface ProductSummary {
   lowestPrice: number | null
   highestPrice: number | null
   createdAt: string
+  commercialRightsStatus?: RightsStatus
+  notClearedVariantCount?: number
+}
+
+export type RightsStatus = 'NoModel' | 'Cleared' | 'NotCleared'
+
+export interface RightsModel {
+  modelId: string
+  modelName: string
+  licenseName: string | null
+  licenseStatus: string
+  allowsCommercialSale: boolean
+  attributionRequired: boolean
+  daysUntilExpiry: number | null
+}
+
+export interface RightsAttribution {
+  modelId: string
+  modelName: string
+  licenseName: string | null
+  text: string | null
+}
+
+export interface CommercialRights {
+  status: RightsStatus
+  isCleared: boolean
+  expiringSoon: boolean
+  blockingModelCount: number
+  models: RightsModel[]
+  attributions: RightsAttribution[]
 }
 
 export type BomKind = 'filament' | 'print' | 'labour' | 'packaging' | 'extra'
@@ -67,6 +97,9 @@ export interface Variant {
   feePercent: number
   bomLines: BomLine[]
   cost: VariantCost
+  readyForSale?: boolean
+  saleRiskAcknowledged?: boolean
+  commercialRights?: CommercialRights
 }
 
 export interface Product {
@@ -78,6 +111,7 @@ export interface Product {
   createdAt: string
   currency: string
   variants: Variant[]
+  commercialRightsStatus?: RightsStatus
 }
 
 export interface VariantCostSnapshot {
@@ -326,4 +360,29 @@ export function marginTone(marginPercent: number | null): MarginTone {
 export function priceRange(product: Pick<ProductSummary, 'lowestPrice' | 'highestPrice'>): { low: number, high: number } | null {
   if (product.lowestPrice === null || product.highestPrice === null) return null
   return { low: product.lowestPrice, high: product.highestPrice }
+}
+
+export type RightsTone = 'success' | 'warning' | 'danger' | 'neutral'
+
+export function rightsTone(status: RightsStatus | undefined): RightsTone {
+  if (status === 'Cleared') return 'success'
+  if (status === 'NotCleared') return 'danger'
+  return 'neutral'
+}
+
+export function isNotCleared(rights: CommercialRights | undefined): boolean {
+  return rights?.status === 'NotCleared'
+}
+
+export function blockingModels(rights: CommercialRights | undefined): RightsModel[] {
+  return rights?.models.filter(model => !model.allowsCommercialSale) ?? []
+}
+
+export function saleToggleAction(variant: Pick<Variant, 'readyForSale' | 'commercialRights'>): 'markReady' | 'markReadyAtRisk' | 'unmark' {
+  if (variant.readyForSale) return 'unmark'
+  return isNotCleared(variant.commercialRights) ? 'markReadyAtRisk' : 'markReady'
+}
+
+export function saleRiskBody(readyForSale: boolean, acknowledged: boolean): { readyForSale: boolean, acknowledgeRisk: boolean } {
+  return { readyForSale, acknowledgeRisk: readyForSale && acknowledged }
 }

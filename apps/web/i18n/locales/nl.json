@@ -864,5 +864,43 @@
       "proofDownload": "Het bewijsbestand kon niet worden gedownload.",
       "storage": "Bestandsopslag is niet beschikbaar. Probeer het later opnieuw."
     }
+  },
+  "rights": {
+    "status": {
+      "NoModel": "Geen model gekoppeld",
+      "Cleared": "Rechten in orde",
+      "NotCleared": "Rechten niet geverifieerd"
+    },
+    "listNotCleared": "Rechten ontbreken",
+    "bannerTitle": "Geen geldige commerciële licentie",
+    "bannerBody": "Verkoop deze variant niet zonder commerciële rechten voor: {models}.",
+    "modelStatus": "{name}: {status}",
+    "clearedTitle": "Commerciële rechten in orde",
+    "clearedBody": "Elk gekoppeld model heeft een geldige commerciële licentie.",
+    "expiringSoon": "Een licentie verloopt binnenkort. Verleng die voor ze vervalt.",
+    "noModelTitle": "Geen model gekoppeld",
+    "noModelBody": "Koppel een model aan de printregel om de commerciële rechten te controleren.",
+    "attributionTitle": "Bronvermelding verplicht bij elke verkoop",
+    "attributionFallback": "Zie de licentie voor de vereiste tekst.",
+    "readyBadge": "Klaar voor verkoop",
+    "readyAtRisk": "Klaar voor verkoop, op eigen risico",
+    "staleWarning": "Gemarkeerd voor verkoop, maar de rechten zijn niet meer in orde. Haal de variant uit verkoop of herstel de licentie.",
+    "markReady": "Markeer als klaar voor verkoop",
+    "markReadyAtRisk": "Toch markeren als klaar voor verkoop",
+    "unmark": "Haal uit verkoop",
+    "confirmTitle": "Verkopen zonder geldige rechten?",
+    "confirmBody": "Er is geen geldige commerciële licentie voor {models}. Verkopen kan de licentie van de maker schenden. Je keuze wordt vastgelegd in het auditlog.",
+    "confirmAction": "Toch klaarzetten",
+    "cancel": "Annuleren",
+    "errors": {
+      "save": "De verkoopstatus kon niet worden opgeslagen. Probeer het opnieuw.",
+      "network": "Geen verbinding met de server. Controleer je verbinding en probeer het opnieuw.",
+      "stale": "De rechten zijn intussen gewijzigd. Bekijk de waarschuwing en probeer het opnieuw."
+    },
+    "printJob": {
+      "model": "Model (optioneel)",
+      "noModel": "Geen model",
+      "hint": "Koppel het model zodat afgewerkte stuks meetellen voor de limiet van de licentie."
+    }
   }
 }
