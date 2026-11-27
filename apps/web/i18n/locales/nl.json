@@ -146,7 +146,9 @@
     "auditSubtitle": "Wie wat wanneer heeft gewijzigd",
     "products": "Producten",
     "productsSubtitle": "Varianten, stuklijsten, kostprijs en marge",
-    "licensesSubtitle": "Rechten per model: voorwaarden, verloop en bewijs"
+    "licensesSubtitle": "Rechten per model: voorwaarden, verloop en bewijs",
+    "customers": "Klanten",
+    "customersSubtitle": "Contactgegevens en bestelgeschiedenis"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -1053,6 +1055,41 @@
       "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
       "exportFailed": "De export is mislukt. Probeer opnieuw.",
       "deleteFailed": "Account verwijderen is mislukt. Er is niets verwijderd; probeer opnieuw."
+    }
+  },
+  "customers": {
+    "title": "Klanten",
+    "formTitle": "Klant",
+    "back": "Terug naar klanten",
+    "addTitle": "Klant toevoegen",
+    "editTitle": "Klant bewerken",
+    "add": "Klant toevoegen",
+    "save": "Klant opslaan",
+    "archive": "Klant archiveren",
+    "restore": "Klant terugzetten",
+    "archived": "Gearchiveerd",
+    "showArchived": "Toon gearchiveerde klanten",
+    "empty": "Nog geen klanten. Voeg je eerste toe.",
+    "noResults": "Geen klanten gevonden.",
+    "search": "Zoeken",
+    "searchPlaceholder": "Naam, e-mail of telefoon",
+    "fields": {
+      "name": "Naam",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "address": "Adres",
+      "vatNumber": "BTW-nummer",
+      "notes": "Notities"
+    },
+    "hints": {
+      "address": "Straat, nummer, postcode en plaats.",
+      "vatNumber": "Optioneel, voor zakelijke klanten."
+    },
+    "errors": {
+      "required": "Vul {field} in.",
+      "email": "Vul een geldig e-mailadres in.",
+      "tooLong": "{field} is te lang.",
+      "save": "Opslaan is niet gelukt. Probeer het opnieuw."
     }
   }
 }
