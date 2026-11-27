@@ -18,6 +18,7 @@ TestResults/
 
 # Playwright
 playwright-report/
+playwright-report-journey/
 test-results/
 
 # Env and secrets
