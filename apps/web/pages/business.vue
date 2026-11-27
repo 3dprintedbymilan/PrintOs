@@ -33,6 +33,11 @@ const sections = computed(() => [
       :subtitle="$t('business.printersSubtitle')"
     />
     <UiListRow
+      to="/products"
+      :title="$t('business.products')"
+      :subtitle="$t('business.productsSubtitle')"
+    />
+    <UiListRow
       to="/calculator"
       :title="$t('business.calculator')"
       :subtitle="$t('business.calculatorSubtitle')"
