@@ -15,7 +15,6 @@ onMounted(() => {
 const sections = computed(() => [
   { key: 'orders', title: t('business.orders') },
   { key: 'margins', title: t('business.margins') },
-  { key: 'licenses', title: t('business.licenses') },
   { key: 'marketStock', title: t('business.marketStock') },
 ])
 </script>
@@ -46,6 +45,11 @@ const sections = computed(() => [
       to="/audit"
       :title="$t('business.audit')"
       :subtitle="$t('business.auditSubtitle')"
+    />
+    <UiListRow
+      to="/licenses"
+      :title="$t('business.licenses')"
+      :subtitle="$t('business.licensesSubtitle')"
     />
     <UiListRow
       v-for="section in sections"

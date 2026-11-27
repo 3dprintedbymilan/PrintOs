@@ -6,6 +6,7 @@ public enum SignedFileKind
 {
     ModelVersion,
     Thumbnail,
+    LicenseProof,
 }
 
 public sealed record SignedFileClaim(SignedFileKind Kind, Guid WorkspaceId, Guid Id);

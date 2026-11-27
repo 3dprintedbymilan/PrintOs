@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PrintOs.Api.Modules.Identity;
+using PrintOs.Api.Modules.Licensing;
 
 namespace PrintOs.Api.Modules.ModelLibrary;
 
@@ -17,6 +18,8 @@ public sealed class PrintModelConfiguration : IEntityTypeConfiguration<PrintMode
         builder.Property(model => model.ThumbnailKey).HasMaxLength(300);
         builder.Property(model => model.ThumbnailContentType).HasMaxLength(50);
         builder.HasIndex(model => new { model.WorkspaceId, model.CreatedAt });
+        builder.HasIndex(model => model.LicenseId);
+        builder.HasOne<License>().WithMany().HasForeignKey(model => model.LicenseId).OnDelete(DeleteBehavior.SetNull);
         builder.HasOne<Workspace>().WithMany().HasForeignKey(model => model.WorkspaceId).OnDelete(DeleteBehavior.Cascade);
     }
 }

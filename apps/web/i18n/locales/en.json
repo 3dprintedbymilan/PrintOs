@@ -101,7 +101,8 @@
     "audit": "Audit log",
     "auditSubtitle": "Who changed what and when",
     "products": "Products",
-    "productsSubtitle": "Variants, bills of materials, cost and margin"
+    "productsSubtitle": "Variants, bills of materials, cost and margin",
+    "licensesSubtitle": "Rights per model: terms, expiry and proof"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -702,5 +703,122 @@
     "removeProduct": "Delete product",
     "confirmRemoveProduct": "This deletes the product with all its variants and bills of materials. This cannot be undone.",
     "confirmRemoveProductAction": "Yes, delete product"
+  },
+  "licenses": {
+    "title": "Licenses",
+    "back": "Back to licenses",
+    "backToDetail": "Back to license",
+    "addTitle": "Add license",
+    "editTitle": "Edit license",
+    "detailTitle": "License",
+    "add": "Add license",
+    "edit": "Edit",
+    "save": "Save license",
+    "cancel": "Cancel",
+    "delete": "Delete license",
+    "deleteTitle": "Delete license?",
+    "deleteBody": "\"{name}\" will be deleted, including its proof file. {count} linked models stay but will no longer have a license.",
+    "deleteConfirm": "Yes, delete",
+    "empty": "No licenses yet. Record the terms under which you may print and sell a model.",
+    "notFound": "This license no longer exists.",
+    "attention": "{count} license needs attention | {count} licenses need attention",
+    "yes": "Yes",
+    "no": "No",
+    "commercialAllowed": "Selling is allowed",
+    "commercialBlocked": "Not cleared for sale",
+    "attributionNeeded": "Attribution required",
+    "limitNear": "Close to your limit: {remaining} units left.",
+    "unitsUsage": "{used} of {limit} units used",
+    "linkedModels": "Linked models",
+    "noModels": "No models linked to this license yet.",
+    "status": {
+      "Valid": "Valid",
+      "ExpiringSoon": "Expiring soon",
+      "Expired": "Expired",
+      "PersonalOnly": "Personal only",
+      "LimitReached": "Limit reached",
+      "NotYetValid": "Not yet valid",
+      "NoLicense": "No license"
+    },
+    "type": {
+      "Personal": "Personal use",
+      "Commercial": "Commercial",
+      "CommercialWithLimits": "Commercial with limits"
+    },
+    "typeHint": {
+      "Personal": "For your own use only: you may not sell prints of it.",
+      "Commercial": "You may sell prints of this model.",
+      "CommercialWithLimits": "Selling is allowed, but with a maximum number of units or other restrictions."
+    },
+    "source": {
+      "OwnDesign": "Own design",
+      "MakerWorld": "MakerWorld",
+      "Printables": "Printables",
+      "Thingiverse": "Thingiverse",
+      "Other": "Other source"
+    },
+    "fields": {
+      "name": "Name",
+      "source": "Source",
+      "type": "License type",
+      "unitsLimit": "Maximum units",
+      "validFrom": "Valid from",
+      "validUntil": "Valid until",
+      "attributionRequired": "Attribution required",
+      "attributionText": "Attribution text",
+      "proofUrl": "Link to license or proof",
+      "notes": "Notes"
+    },
+    "hints": {
+      "name": "For example: Benchy CC-BY or Printables commercial license.",
+      "unitsLimit": "Leave empty if there is no maximum.",
+      "attributionText": "Shown with the model so you can copy it when selling.",
+      "proofUrl": "The creator or platform page where the terms are stated."
+    },
+    "expiry": {
+      "none": "Does not expire",
+      "future": "Expires in {days} days",
+      "today": "Expires today",
+      "past": "Expired {days} days ago"
+    },
+    "proof": {
+      "title": "Proof",
+      "none": "No proof added yet.",
+      "upload": "Add proof file",
+      "replace": "Replace proof file",
+      "download": "Download file",
+      "remove": "Remove file",
+      "uploading": "Uploading...",
+      "hint": "PDF or image (PNG, JPEG, WebP), at most {max}."
+    },
+    "proofSaved": "Proof file saved.",
+    "proofRemoved": "Proof file removed.",
+    "picker": {
+      "title": "License",
+      "label": "License of this model",
+      "none": "No license",
+      "hint": "Link a license to see whether you may sell this model.",
+      "linked": "License linked.",
+      "unlinked": "License unlinked.",
+      "open": "View license",
+      "create": "New license",
+      "error": "The license could not be saved. Try again.",
+      "loadFailed": "The licenses could not be loaded.",
+      "retry": "Try again"
+    },
+    "errors": {
+      "required": "{field} is required (at most 100 characters).",
+      "number": "{field} must be a whole number of 1 or more.",
+      "dateOrder": "{field} cannot be before the start date.",
+      "url": "{field} must be a valid web address (http or https).",
+      "save": "The license could not be saved. Check the fields and try again.",
+      "delete": "The license could not be deleted.",
+      "proofType": "Choose a PDF, PNG, JPEG or WebP file.",
+      "proofEmpty": "This file is empty.",
+      "proofSize": "The file is larger than {max}.",
+      "proofUpload": "The proof file could not be saved.",
+      "proofDownload": "The proof file could not be downloaded.",
+      "storage": "File storage is unavailable. Try again later."
+    }
   }
 }

@@ -20,6 +20,8 @@ public sealed class PrintModel : IWorkspaceScoped
 
     public string? ThumbnailContentType { get; set; }
 
+    public Guid? LicenseId { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;

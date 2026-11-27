@@ -101,7 +101,8 @@
     "audit": "Auditlog",
     "auditSubtitle": "Wie wat wanneer heeft gewijzigd",
     "products": "Producten",
-    "productsSubtitle": "Varianten, stuklijsten, kostprijs en marge"
+    "productsSubtitle": "Varianten, stuklijsten, kostprijs en marge",
+    "licensesSubtitle": "Rechten per model: voorwaarden, verloop en bewijs"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -702,5 +703,122 @@
     "removeProduct": "Product verwijderen",
     "confirmRemoveProduct": "Dit verwijdert het product met alle varianten en stuklijsten. Dit kan niet ongedaan worden.",
     "confirmRemoveProductAction": "Ja, product verwijderen"
+  },
+  "licenses": {
+    "title": "Licenties",
+    "back": "Terug naar licenties",
+    "backToDetail": "Terug naar licentie",
+    "addTitle": "Licentie toevoegen",
+    "editTitle": "Licentie bewerken",
+    "detailTitle": "Licentie",
+    "add": "Licentie toevoegen",
+    "edit": "Bewerken",
+    "save": "Licentie opslaan",
+    "cancel": "Annuleren",
+    "delete": "Licentie verwijderen",
+    "deleteTitle": "Licentie verwijderen?",
+    "deleteBody": "\"{name}\" wordt verwijderd, inclusief het bewijsbestand. {count} gekoppelde modellen blijven bestaan maar hebben dan geen licentie meer.",
+    "deleteConfirm": "Ja, verwijderen",
+    "empty": "Nog geen licenties. Leg vast onder welke voorwaarden je een model mag printen en verkopen.",
+    "notFound": "Deze licentie bestaat niet meer.",
+    "attention": "{count} licentie heeft aandacht nodig | {count} licenties hebben aandacht nodig",
+    "yes": "Ja",
+    "no": "Nee",
+    "commercialAllowed": "Verkoop is toegestaan",
+    "commercialBlocked": "Niet voor verkoop geschikt",
+    "attributionNeeded": "Naamsvermelding verplicht",
+    "limitNear": "Bijna aan je limiet: nog {remaining} stuks.",
+    "unitsUsage": "{used} van {limit} stuks gebruikt",
+    "linkedModels": "Gekoppelde modellen",
+    "noModels": "Nog geen modellen aan deze licentie gekoppeld.",
+    "status": {
+      "Valid": "Geldig",
+      "ExpiringSoon": "Verloopt binnenkort",
+      "Expired": "Verlopen",
+      "PersonalOnly": "Alleen persoonlijk",
+      "LimitReached": "Limiet bereikt",
+      "NotYetValid": "Nog niet geldig",
+      "NoLicense": "Geen licentie"
+    },
+    "type": {
+      "Personal": "Persoonlijk gebruik",
+      "Commercial": "Commercieel",
+      "CommercialWithLimits": "Commercieel met limiet"
+    },
+    "typeHint": {
+      "Personal": "Alleen voor eigen gebruik: je mag er niets van verkopen.",
+      "Commercial": "Je mag prints van dit model verkopen.",
+      "CommercialWithLimits": "Verkoop is toegestaan, maar met een maximum aantal stuks of andere beperkingen."
+    },
+    "source": {
+      "OwnDesign": "Eigen ontwerp",
+      "MakerWorld": "MakerWorld",
+      "Printables": "Printables",
+      "Thingiverse": "Thingiverse",
+      "Other": "Andere bron"
+    },
+    "fields": {
+      "name": "Naam",
+      "source": "Bron",
+      "type": "Type licentie",
+      "unitsLimit": "Maximum aantal stuks",
+      "validFrom": "Geldig vanaf",
+      "validUntil": "Geldig tot",
+      "attributionRequired": "Naamsvermelding verplicht",
+      "attributionText": "Tekst voor naamsvermelding",
+      "proofUrl": "Link naar licentie of bewijs",
+      "notes": "Notities"
+    },
+    "hints": {
+      "name": "Bijvoorbeeld: Benchy CC-BY of Commerciële licentie Printables.",
+      "unitsLimit": "Laat leeg als er geen maximum is.",
+      "attributionText": "Wordt getoond bij het model zodat je het bij verkoop kunt overnemen.",
+      "proofUrl": "Pagina van de maker of het platform waar de voorwaarden staan."
+    },
+    "expiry": {
+      "none": "Verloopt niet",
+      "future": "Verloopt over {days} dagen",
+      "today": "Verloopt vandaag",
+      "past": "Verlopen {days} dagen geleden"
+    },
+    "proof": {
+      "title": "Bewijs",
+      "none": "Nog geen bewijs toegevoegd.",
+      "upload": "Bewijsbestand toevoegen",
+      "replace": "Bewijsbestand vervangen",
+      "download": "Bestand downloaden",
+      "remove": "Bestand verwijderen",
+      "uploading": "Bezig met uploaden...",
+      "hint": "PDF of afbeelding (PNG, JPEG, WebP), maximaal {max}."
+    },
+    "proofSaved": "Bewijsbestand opgeslagen.",
+    "proofRemoved": "Bewijsbestand verwijderd.",
+    "picker": {
+      "title": "Licentie",
+      "label": "Licentie van dit model",
+      "none": "Geen licentie",
+      "hint": "Koppel een licentie om te zien of je dit model mag verkopen.",
+      "linked": "Licentie gekoppeld.",
+      "unlinked": "Licentie losgekoppeld.",
+      "open": "Licentie bekijken",
+      "create": "Nieuwe licentie",
+      "error": "De licentie kon niet worden opgeslagen. Probeer het opnieuw.",
+      "loadFailed": "De licenties konden niet worden geladen.",
+      "retry": "Opnieuw proberen"
+    },
+    "errors": {
+      "required": "{field} is verplicht (maximaal 100 tekens).",
+      "number": "{field} moet een geheel getal van 1 of meer zijn.",
+      "dateOrder": "{field} mag niet voor de startdatum liggen.",
+      "url": "{field} moet een geldig webadres zijn (http of https).",
+      "save": "De licentie kon niet worden opgeslagen. Controleer de velden en probeer het opnieuw.",
+      "delete": "De licentie kon niet worden verwijderd.",
+      "proofType": "Kies een PDF, PNG, JPEG of WebP bestand.",
+      "proofEmpty": "Dit bestand is leeg.",
+      "proofSize": "Het bestand is groter dan {max}.",
+      "proofUpload": "Het bewijsbestand kon niet worden opgeslagen.",
+      "proofDownload": "Het bewijsbestand kon niet worden gedownload.",
+      "storage": "Bestandsopslag is niet beschikbaar. Probeer het later opnieuw."
+    }
   }
 }

@@ -395,6 +395,12 @@ onMounted(load)
         </UiCard>
       </form>
 
+      <ModelLicenseCard
+        :model-id="model.id"
+        :license="model.license"
+        @updated="model = $event"
+      />
+
       <UiCard class="group">
         <h2 class="heading">
           {{ $t('models.profile.title') }}
