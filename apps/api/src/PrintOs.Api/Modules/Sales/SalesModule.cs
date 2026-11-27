@@ -11,5 +11,6 @@ public sealed class SalesModule : IModule
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapCustomerEndpoints();
+        endpoints.MapOrderEndpoints();
     }
 }

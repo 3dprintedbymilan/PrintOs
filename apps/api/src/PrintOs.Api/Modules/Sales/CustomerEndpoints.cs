@@ -84,6 +84,11 @@ public static class CustomerEndpoints
             return TypedResults.NotFound();
         }
 
+        if (await dbContext.Set<Order>().AnyAsync(order => order.CustomerId == id))
+        {
+            return TypedResults.Problem("This customer has orders and cannot be deleted. Archive the customer instead.", statusCode: StatusCodes.Status409Conflict);
+        }
+
         dbContext.Set<Customer>().Remove(customer);
         await dbContext.SaveChangesAsync();
         return TypedResults.NoContent();
