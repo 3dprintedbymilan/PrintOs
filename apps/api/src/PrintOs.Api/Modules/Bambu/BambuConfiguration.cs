@@ -38,6 +38,10 @@ public sealed class BambuDeviceConfiguration : IEntityTypeConfiguration<BambuDev
         builder.Property(device => device.TraysJson).HasMaxLength(4000).IsRequired();
         builder.Property(device => device.PrintErrorCode).HasMaxLength(20);
         builder.Property(device => device.HmsCodesJson).HasMaxLength(2000).IsRequired();
+        builder.Property(device => device.ActiveTaskId).HasMaxLength(200);
+        builder.Property(device => device.ActiveJobName).HasMaxLength(300);
+        builder.Property(device => device.ActiveTraysJson).HasMaxLength(4000).IsRequired();
+        builder.Property(device => device.LastCompletedTaskId).HasMaxLength(200);
         builder.Property(device => device.NozzleTemperature).HasPrecision(6, 1);
         builder.Property(device => device.BedTemperature).HasPrecision(6, 1);
         builder.HasIndex(device => new { device.WorkspaceId, device.Serial }).IsUnique();
@@ -55,6 +59,7 @@ public sealed class BambuTaskImportConfiguration : IEntityTypeConfiguration<Bamb
         builder.HasKey(import => import.Id);
         builder.Property(import => import.TaskId).HasMaxLength(200).IsRequired();
         builder.Property(import => import.Flag).HasMaxLength(40);
+        builder.Property(import => import.Source).HasMaxLength(20).IsRequired().HasDefaultValue(BambuImportSources.Sync);
         builder.HasIndex(import => new { import.WorkspaceId, import.TaskId }).IsUnique();
         builder.HasOne<PrintJob>().WithMany().HasForeignKey(import => import.PrintJobId).OnDelete(DeleteBehavior.Cascade);
     }

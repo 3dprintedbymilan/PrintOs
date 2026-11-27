@@ -137,7 +137,7 @@ public static class PrintJobEndpoints
         return TypedResults.Created($"/api/print-jobs/{job.Id}", (await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
-    private static async Task<IResult> UpdateAsync(Guid id, PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace? currentWorkspace)
+    internal static async Task<IResult> UpdateAsync(Guid id, PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace? currentWorkspace)
     {
         var job = await dbContext.Set<PrintJob>().Include(candidate => candidate.Filaments).SingleOrDefaultAsync(candidate => candidate.Id == id);
         if (job is null)

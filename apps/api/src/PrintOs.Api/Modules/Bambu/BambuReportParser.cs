@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace PrintOs.Api.Modules.Bambu;
 
-public sealed record BambuTray(string Id, string? Type, string? Color);
+public sealed record BambuTray(string Id, string? Type, string? Color, int? Remain = null, int? WeightGrams = null);
 
 public sealed record BambuReport(
     string? GcodeState,
@@ -17,7 +17,8 @@ public sealed record BambuReport(
     string? TrayNow,
     IReadOnlyList<BambuTray>? Trays,
     string? PrintErrorCode = null,
-    IReadOnlyList<string>? HmsCodes = null);
+    IReadOnlyList<string>? HmsCodes = null,
+    string? TaskId = null);
 
 public static class BambuReportParser
 {
@@ -60,7 +61,8 @@ public static class BambuReportParser
                 ReadString(print, "tray_now") ?? ReadNestedString(print, "ams", "tray_now"),
                 ReadTrays(print),
                 ReadErrorCode(print),
-                ReadHmsCodes(print));
+                ReadHmsCodes(print),
+                ReadString(print, "task_id"));
         }
     }
 
@@ -145,7 +147,7 @@ public static class BambuReportParser
                 {
                     if (int.TryParse(ReadString(tray, "id"), CultureInfo.InvariantCulture, out var trayId))
                     {
-                        trays.Add(new BambuTray((unitId * 4 + trayId).ToString(CultureInfo.InvariantCulture), ReadString(tray, "tray_type"), NormalizeColor(ReadString(tray, "tray_color"))));
+                        trays.Add(new BambuTray((unitId * 4 + trayId).ToString(CultureInfo.InvariantCulture), ReadString(tray, "tray_type"), NormalizeColor(ReadString(tray, "tray_color")), ReadNumber(tray, "remain"), ReadNumber(tray, "tray_weight")));
                     }
                 }
             }
@@ -154,7 +156,7 @@ public static class BambuReportParser
         if (print.TryGetProperty("vt_tray", out var external) && external.ValueKind == JsonValueKind.Object)
         {
             found = true;
-            trays.Add(new BambuTray(ReadString(external, "id") ?? "254", ReadString(external, "tray_type"), NormalizeColor(ReadString(external, "tray_color"))));
+            trays.Add(new BambuTray(ReadString(external, "id") ?? "254", ReadString(external, "tray_type"), NormalizeColor(ReadString(external, "tray_color")), ReadNumber(external, "remain"), ReadNumber(external, "tray_weight")));
         }
 
         return found ? trays : null;
@@ -245,7 +247,9 @@ public static class BambuDeviceStateUpdater
             var merged = ReadStoredTrays(device).ToDictionary(tray => tray.Id);
             foreach (var tray in report.Trays)
             {
-                merged[tray.Id] = tray;
+                merged[tray.Id] = merged.TryGetValue(tray.Id, out var known)
+                    ? tray with { Type = tray.Type ?? known.Type, Color = tray.Color ?? known.Color, Remain = tray.Remain ?? known.Remain, WeightGrams = tray.WeightGrams ?? known.WeightGrams }
+                    : tray;
             }
 
             device.TraysJson = JsonSerializer.Serialize(merged.Values.Take(MaximumStoredTrays).ToList());

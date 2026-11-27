@@ -14,7 +14,7 @@ public static class BambuTaskStatus
     public const int Aborted = 3;
 }
 
-public sealed class BambuHistorySync(IBambuCloudClient cloudClient)
+public sealed class BambuHistorySync(IBambuCloudClient cloudClient, IPrintEventPublisher eventPublisher)
 {
     public const string ExternalSource = "bambu-cloud";
     private const int TaskPageSize = 50;
@@ -44,7 +44,13 @@ public sealed class BambuHistorySync(IBambuCloudClient cloudClient)
                 continue;
             }
 
-            var flag = await ImportAsync(dbContext, task, printerId, cancellationToken);
+            if (await BambuEventMatcher.AdoptAsync(dbContext, task, printerId, cancellationToken))
+            {
+                skipped++;
+                continue;
+            }
+
+            var flag = await ImportAsync(dbContext, connection.WorkspaceId, task, printerId, cancellationToken);
             imported++;
             if (flag is not null)
             {
@@ -55,7 +61,7 @@ public sealed class BambuHistorySync(IBambuCloudClient cloudClient)
         return new BambuSyncResult(imported, flagged, skipped);
     }
 
-    private static async Task<string?> ImportAsync(PrintOsDbContext dbContext, BambuTask task, Guid printerId, CancellationToken cancellationToken)
+    private async Task<string?> ImportAsync(PrintOsDbContext dbContext, Guid workspaceId, BambuTask task, Guid printerId, CancellationToken cancellationToken)
     {
         var failed = task.Status == BambuTaskStatus.Aborted;
         var finishedAt = task.FinishedAt ?? DateTimeOffset.UtcNow;
@@ -75,7 +81,7 @@ public sealed class BambuHistorySync(IBambuCloudClient cloudClient)
         }
         else
         {
-            (lines, flag) = await ResolveFilamentAsync(dbContext, task, cancellationToken);
+            (lines, flag) = await ResolveFilamentAsync(dbContext, task.Filaments, task.WeightGrams, cancellationToken);
         }
 
         PrintJobRequest Build(List<PrintJobFilamentRequest> filaments) => new(
@@ -115,15 +121,31 @@ public sealed class BambuHistorySync(IBambuCloudClient cloudClient)
             Flag = existed ? null : flag,
         });
         await dbContext.SaveChangesAsync(cancellationToken);
+        if (!existed)
+        {
+            var printerName = await dbContext.Set<Printer>().Where(printer => printer.Id == printerId).Select(printer => printer.Name).SingleOrDefaultAsync(cancellationToken) ?? string.Empty;
+            var finishedTime = job.FinishedAt ?? finishedAt;
+            var started = job.StartedAt ?? finishedTime;
+            var catchUp = DateTimeOffset.UtcNow - finishedTime > TimeSpan.FromMinutes(30);
+            if (failed)
+            {
+                await eventPublisher.PublishAsync(new PrintFailedEvent(workspaceId, printerId, printerName, job.Id, job.Name, started, finishedTime, job.Filaments.Count > 0, flag, job.OrderLineId, PrintEventSources.HistorySync, catchUp, null), cancellationToken);
+            }
+            else
+            {
+                await eventPublisher.PublishAsync(new PrintFinishedEvent(workspaceId, printerId, printerName, job.Id, job.Name, started, finishedTime, job.Filaments.Count > 0, flag, job.OrderLineId, PrintEventSources.HistorySync, catchUp), cancellationToken);
+            }
+        }
+
         return existed ? null : flag;
     }
 
-    private static async Task<(List<PrintJobFilamentRequest> Lines, string? Flag)> ResolveFilamentAsync(PrintOsDbContext dbContext, BambuTask task, CancellationToken cancellationToken)
+    internal static async Task<(List<PrintJobFilamentRequest> Lines, string? Flag)> ResolveFilamentAsync(PrintOsDbContext dbContext, IReadOnlyList<BambuTaskFilament> filaments, decimal? weightGrams, CancellationToken cancellationToken)
     {
-        var wanted = task.Filaments.Where(filament => filament.Grams is > 0).ToList();
+        var wanted = filaments.Where(filament => filament.Grams is > 0).ToList();
         if (wanted.Count == 0)
         {
-            return ([], task.WeightGrams is > 0 ? BambuImportFlags.NoMatchingSpool : BambuImportFlags.NoWeight);
+            return ([], weightGrams is > 0 ? BambuImportFlags.NoMatchingSpool : BambuImportFlags.NoWeight);
         }
 
         var spools = await (

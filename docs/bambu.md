@@ -70,3 +70,42 @@ Screen: Printers, Printer monitor (`/printers/monitor`, also linked from the Pri
 - **Stale**: no report for 5 minutes, or offline.
 - **Error codes**: `print_error` is shown as `AAAA-BBBB`, each HMS entry as `AAAA-BBBB-CCCC-DDDD` (attr and code as hexadecimal 16-bit halves). The grouping follows the community convention and is not verified against real A1 messages; PrintOS shows the raw code and does not translate it.
 - **Camera**: always the state "Camera not available via cloud" with the reason and a link to [bambu-spike.md](bambu-spike.md). A future bridge can replace that section.
+
+## Print completion events and automation (#50)
+
+The telemetry worker watches the printer state of each linked printer and turns a finished or failed print into a normal print job, exactly once.
+
+### How a print is recognised
+
+- When a report shows `printing` or `paused` and no print is being tracked, the worker stores a small context on the device row (start time, the cloud `task_id` when known, job name, a snapshot of the AMS trays with `remain` and `tray_weight`, and whether the start was observed). The context is persisted, so it survives reconnects, restarts and offline periods.
+- A transition to `finished` or `failed` while a context exists completes it. A report that shows `idle` drops the context without a job (the history sync still catches such prints). A `finished`/`failed` report without a context is ignored, so linking a printer that still shows an old FINISH never creates a job.
+- `LastCompletedTaskId` stops a stale `RUNNING` replay of an already completed task from starting a new context.
+- Offline then finish: the context is kept while offline, and the first report after reconnecting completes it. The finish time is the time the worker observed it.
+
+### Idempotency
+
+The print job uses `ExternalSource = "bambu-cloud"` and `ExternalId = <task_id>`; without a usable `task_id` (missing or `0`) it uses `live-<serial>-<start unix seconds>`. A `BambuTaskImport` row (unique per task) is written with `Source = "event"`. A duplicate or replayed completion finds that row or job and does nothing, and publishes no second event. The later history sync skips known task ids, and when it meets a cloud task whose finish time is within 20 minutes of an event-created job on the same printer it adopts that job (sets its external id to the cloud task id, marks the import `event-matched`) instead of creating a second job. Stock is therefore booked once. Several API replicas completing the same print at the same moment are not coordinated beyond the unique indexes.
+
+### Filament
+
+Stock is adjusted only through the normal print job logic (consumption movements, finished-stock hook). The amount comes from the AMS: for each tray, `(remain at start - remain at end) / 100 * tray_weight`. It is used only when the start was observed (progress at most 3 percent when tracking began), at least one tray used measurable filament, and the tray in use at the end reports a known `remain`. The spool is matched by material type and colour exactly as in the history sync (the matching spool with the least filament left that still suffices). Otherwise the job is recorded without consumption and flagged in `BambuTaskImports.Flag`: `noUsageData` (below the 1 percent AMS resolution, external spool, or no RFID data), `partialObservation` (connected mid-print), `noMatchingSpool`, `insufficientStock`. A failed print books the measured usage, not the slicer estimate. The 1 percent resolution means about 10 g steps on a 1 kg spool, so small prints are usually flagged rather than guessed.
+
+### Queue link
+
+If exactly one job is `Printing` on that printer (started from the production queue or by hand), that job is finished instead of creating a new one: it gets the external id, finish time and, when it has no filament lines yet, the measured lines; a Done job takes `finishedUnits = plannedUnits`, which books finished stock and moves the order forward (see [production-queue.md](production-queue.md)). With zero or several `Printing` jobs a new job is created.
+
+### Domain events
+
+`IPrintEventPublisher` (scoped, in-process) publishes `PrintFinishedEvent` and `PrintFailedEvent` (both derive from `PrintEvent`: workspace, printer, print job, job name, start and finish, `ConsumedStock`, `Flag`, `OrderLineId`, `Source`, `IsCatchUp`; the failed event adds `ErrorCode`). They are published once, after the job is saved, by the telemetry worker (`Source = "telemetry"`) and by the history sync for tasks it imports itself (`Source = "history-sync"`, `IsCatchUp` true when the print ended more than 30 minutes earlier, so a consumer can skip old prints).
+
+Subscribe by registering a handler:
+
+```csharp
+services.AddScoped<IPrintEventHandler<PrintFinishedEvent>, MyHandler>();
+```
+
+Handlers run inline and in registration order. A handler exception is logged and swallowed, so a failing subscriber never blocks recording a print. Handlers must be quick; do slow work through their own queue. Events are not persisted: if the process stops between saving the job and publishing, the event is lost (the job is not).
+
+### Not verified against hardware
+
+Whether the A1's MQTT `task_id` equals the cloud task id (if not, the history sync adopts the job by time match), the exact `gcode_state` values and ordering around a cancel or power loss, and how reliably an A1 with AMS lite reports `remain` and `tray_weight`.

@@ -93,6 +93,18 @@ public sealed class BambuDevice : IWorkspaceScoped
 
     public string? PrintErrorCode { get; set; }
 
+    public DateTimeOffset? ActiveStartedAt { get; set; }
+
+    public string? ActiveTaskId { get; set; }
+
+    public string? ActiveJobName { get; set; }
+
+    public string ActiveTraysJson { get; set; } = "[]";
+
+    public bool ActiveObservedFromStart { get; set; }
+
+    public string? LastCompletedTaskId { get; set; }
+
     public string HmsCodesJson { get; set; } = "[]";
 
     public DateTimeOffset? LastSeenAt { get; set; }
@@ -115,11 +127,22 @@ public sealed class BambuTaskImport : IWorkspaceScoped
 
     public string? Flag { get; set; }
 
+    public string Source { get; set; } = BambuImportSources.Sync;
+
     public DateTimeOffset ImportedAt { get; set; } = DateTimeOffset.UtcNow;
+}
+
+public static class BambuImportSources
+{
+    public const string Sync = "sync";
+    public const string Event = "event";
+    public const string EventMatched = "event-matched";
 }
 
 public static class BambuImportFlags
 {
+    public const string NoUsageData = "noUsageData";
+    public const string PartialObservation = "partialObservation";
     public const string NoWeight = "noWeight";
     public const string NoMatchingSpool = "noMatchingSpool";
     public const string InsufficientStock = "insufficientStock";

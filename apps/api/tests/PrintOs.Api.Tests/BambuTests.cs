@@ -122,7 +122,7 @@ public sealed partial class BambuTests(PostgresApiFactory factory) : IClassFixtu
         }
     }
 
-    private Harness CreateHarness()
+    private Harness CreateHarness(Action<IServiceCollection>? configure = null)
     {
         var cloud = new FakeBambuCloudClient();
         var telemetry = new FakeBambuTelemetrySource();
@@ -140,6 +140,7 @@ public sealed partial class BambuTests(PostgresApiFactory factory) : IClassFixtu
                 services.AddSingleton<IBambuCloudClient>(cloud);
                 services.RemoveAll<IBambuTelemetrySource>();
                 services.AddSingleton<IBambuTelemetrySource>(telemetry);
+                configure?.Invoke(services);
             });
         });
         using (var scope = app.Services.CreateScope())

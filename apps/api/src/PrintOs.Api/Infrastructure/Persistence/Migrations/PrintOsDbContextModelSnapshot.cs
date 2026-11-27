@@ -270,6 +270,25 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ActiveJobName")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<bool>("ActiveObservedFromStart")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("ActiveStartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ActiveTaskId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ActiveTraysJson")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
                     b.Property<decimal?>("BedTemperature")
                         .HasPrecision(6, 1)
                         .HasColumnType("numeric(6,1)");
@@ -293,6 +312,10 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.Property<string>("JobName")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
+
+                    b.Property<string>("LastCompletedTaskId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTimeOffset?>("LastSeenAt")
                         .HasColumnType("timestamp with time zone");
@@ -425,6 +448,13 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("PrintJobId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("sync");
 
                     b.Property<string>("TaskId")
                         .IsRequired()
