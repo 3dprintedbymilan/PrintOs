@@ -8,13 +8,22 @@ public sealed class BambuModule : IModule
     public void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<BambuOptions>(configuration.GetSection("Bambu"));
-        services.AddHttpClient<IBambuCloudClient, BambuCloudClient>(client =>
+        if (configuration.GetValue<bool>("Bambu:UseJourneyDoubles"))
         {
-            client.Timeout = TimeSpan.FromSeconds(20);
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("PrintOS/1.0");
-        });
+            services.AddSingleton<IBambuCloudClient, JourneyBambuCloudClient>();
+            services.AddSingleton<IBambuTelemetrySource, IdleBambuTelemetrySource>();
+        }
+        else
+        {
+            services.AddHttpClient<IBambuCloudClient, BambuCloudClient>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(20);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("PrintOS/1.0");
+            });
+            services.AddSingleton<IBambuTelemetrySource, BambuMqttTelemetrySource>();
+        }
+
         services.AddSingleton<IBambuTokenProtector, BambuTokenProtector>();
-        services.AddSingleton<IBambuTelemetrySource, BambuMqttTelemetrySource>();
         services.AddSingleton<BambuReconcileSignal>();
         services.AddScoped<BambuHistorySync>();
         services.AddScoped<BambuConnectionService>();

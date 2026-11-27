@@ -12,7 +12,8 @@
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "api:types": "openapi-typescript http://localhost:5000/openapi/v1.json -o types/api.d.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:journey": "playwright test -c playwright.journey.config.ts"
   },
   "dependencies": {
     "@nuxtjs/i18n": "10.7.0",

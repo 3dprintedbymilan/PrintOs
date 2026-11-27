@@ -56,6 +56,78 @@ jobs:
           path: apps/web/playwright-report
           retention-days: 7
 
+  journey:
+    name: MVP journey (Playwright against the real API)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: printos
+          POSTGRES_USER: printos
+          POSTGRES_PASSWORD: printos
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U printos -d printos"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      E2E_PORT: 3100
+      JOURNEY_API_BASE: http://localhost:5000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Build API
+        run: dotnet build apps/api/src/PrintOs.Api -c Release
+      - name: Start API (in-memory file storage, fake Bambu Lab client)
+        run: |
+          nohup dotnet run -c Release --no-build --no-launch-profile --project apps/api/src/PrintOs.Api > api.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://localhost:5000/health/ready > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat api.log
+          exit 1
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          ASPNETCORE_URLS: http://localhost:5000
+          ConnectionStrings__Default: Host=localhost;Port=5432;Database=printos;Username=printos;Password=printos
+          Database__MigrateOnStartup: 'true'
+          Cors__AllowedOrigins__0: http://localhost:3100
+          Storage__Provider: Memory
+          Bambu__UseJourneyDoubles: 'true'
+          Bambu__WorkerEnabled: 'false'
+      - name: Install web dependencies
+        run: npm ci --no-audit --no-fund
+        working-directory: apps/web
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - name: Build web
+        run: npm run build
+        working-directory: apps/web
+      - name: Run the journey (mobile and desktop)
+        run: npm run test:journey
+        working-directory: apps/web
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: journey-report
+          path: |
+            apps/web/playwright-report-journey
+            apps/web/test-results
+            api.log
+          retention-days: 7
+
   api:
     name: API (build, test)
     runs-on: ubuntu-latest
