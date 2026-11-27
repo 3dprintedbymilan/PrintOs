@@ -115,6 +115,12 @@ defineProps<{ name: NavIconName | 'menu' | 'chevron-left' | 'chevron-right' }>()
       <path d="M7 4h10a1 1 0 011 1v15l-3-2-3 2-3-2-3 2V5a1 1 0 011-1z" />
       <path d="M9 9h6M9 13h6" />
     </template>
+    <template v-else-if="name === 'markets'">
+      <path d="M4 9l1.5-5h13L20 9" />
+      <path d="M4 9a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0A2.7 2.7 0 0020 9" />
+      <path d="M5.5 12v8h13v-8" />
+      <path d="M10 20v-4h4v4" />
+    </template>
     <template v-else-if="name === 'customers'">
       <circle
         cx="12"
