@@ -56,6 +56,17 @@ public class MarketRulesTests
     }
 }
 
+public class MarketClosingRulesTests
+{
+    [Fact]
+    public void ExpectedCash_AddsTheFloatAndDifferenceIsCountedMinusExpected()
+    {
+        Assert.Equal(90m, MarketClosingRules.ExpectedCash(50m, 40m));
+        Assert.Equal(-5m, MarketClosingRules.Difference(85m, 90m));
+        Assert.Equal(2.5m, MarketClosingRules.Difference(92.5m, 90m));
+    }
+}
+
 public class MarketTests(PostgresApiFactory factory) : IClassFixture<PostgresApiFactory>
 {
     private const string StrongPassword = "Correct-Horse-9";
@@ -447,6 +458,72 @@ public class MarketTests(PostgresApiFactory factory) : IClassFixture<PostgresApi
         var sale = await SellAsync(client, market.Id, Checkout(variant.Id, ack: true));
         Assert.True(sale.Lines[0].RiskAcknowledged);
         Assert.Equal(4, (await ItemAsync(client, variant.Id)).OnHand);
+    }
+
+
+    private static string Today => DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy-MM-dd");
+
+    [Fact]
+    public async Task Closing_SnapshotsTotalsComparesCashAndLocksTheDay()
+    {
+        using var client = await SignedInClientAsync();
+        var market = await CreateMarketAsync(client, standCost: 45m);
+        var variant = await SeedVariantAsync(client);
+        await AdjustAsync(client, variant.Id, 20);
+        var cashSale = await SellAsync(client, market.Id, Checkout(variant.Id, 2, "cash"));
+        await SellAsync(client, market.Id, Checkout(variant.Id, 1, "card"));
+        var voidedSale = await SellAsync(client, market.Id, Checkout(variant.Id, 1, "cash"));
+        await SendAsync<MarketSaleResponse>(client, HttpMethod.Post, $"/api/market-sales/{voidedSale.Id}/void", new MarketVoidRequest("Oops"));
+
+        var closing = await CreatedAsync<MarketClosingResponse>(client, $"/api/markets/{market.Id}/closings", new MarketClosingRequest(DateOnly.Parse(Today), 50m, 85m, "Short on coins"));
+
+        Assert.Equal(2, closing.SaleCount);
+        Assert.Equal(1, closing.VoidedCount);
+        Assert.Equal(60m, closing.Revenue);
+        Assert.Equal(40m, closing.CashTotal);
+        Assert.Equal(20m, closing.CardTotal);
+        Assert.Equal(90m, closing.ExpectedCash);
+        Assert.Equal(85m, closing.CountedCash);
+        Assert.Equal(-5m, closing.Difference);
+        Assert.Equal(45m, closing.StandCost);
+        Assert.Equal(10.5m, closing.Cost);
+        Assert.Single(closing.Items);
+
+        var fetched = await client.GetFromJsonAsync<MarketClosingResponse>($"/api/markets/{market.Id}/closings/{Today}", Token);
+        Assert.Equal(closing.Id, fetched!.Id);
+        Assert.Single(await client.GetFromJsonAsync<List<MarketClosingResponse>>($"/api/markets/{market.Id}/closings", Token) ?? []);
+
+        Assert.Equal(HttpStatusCode.Conflict, (await client.PostAsJsonAsync($"/api/markets/{market.Id}/closings", new MarketClosingRequest(DateOnly.Parse(Today), 0m, 0m, null), Token)).StatusCode);
+        Assert.Equal(HttpStatusCode.Conflict, (await PostSaleAsync(client, market.Id, Checkout(variant.Id))).StatusCode);
+        Assert.Equal(HttpStatusCode.Conflict, (await client.PostAsJsonAsync($"/api/market-sales/{cashSale.Id}/void", new MarketVoidRequest("late"), Token)).StatusCode);
+        Assert.Equal(17, (await ItemAsync(client, variant.Id)).OnHand);
+
+        var otherDay = DateTimeOffset.UtcNow.AddDays(-1);
+        var yesterday = await SellAsync(client, market.Id, Checkout(variant.Id) with { SoldAt = otherDay, BusinessDate = DateOnly.FromDateTime(otherDay.UtcDateTime) });
+        Assert.Single(yesterday.Lines);
+    }
+
+    [Fact]
+    public async Task Closing_ValidatesInputAndIsIsolatedPerWorkspace()
+    {
+        using var owner = await SignedInClientAsync();
+        using var stranger = await SignedInClientAsync();
+        var market = await CreateMarketAsync(owner);
+
+        var invalid = await owner.PostAsJsonAsync($"/api/markets/{market.Id}/closings", new MarketClosingRequest(null, -1m, null, null), Token);
+        var errors = await ExpectBadRequestAsync(invalid);
+        Assert.True(errors.TryGetProperty("date", out _));
+        Assert.True(errors.TryGetProperty("countedCash", out _));
+        Assert.True(errors.TryGetProperty("openingFloat", out _));
+
+        var empty = await CreatedAsync<MarketClosingResponse>(owner, $"/api/markets/{market.Id}/closings", new MarketClosingRequest(DateOnly.Parse(Today), null, 0m, null));
+        Assert.Equal(0m, empty.Difference);
+
+        Assert.Equal(HttpStatusCode.NotFound, (await stranger.GetAsync($"/api/markets/{market.Id}/closings", Token)).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await stranger.GetAsync($"/api/markets/{market.Id}/closings/{Today}", Token)).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await stranger.PostAsJsonAsync($"/api/markets/{market.Id}/closings", new MarketClosingRequest(DateOnly.Parse(Today), 0m, 0m, null), Token)).StatusCode);
+        using var anonymous = factory.CreateClient();
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.GetAsync($"/api/markets/{market.Id}/closings", Token)).StatusCode);
     }
 
     [Fact]

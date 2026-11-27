@@ -154,6 +154,11 @@ public static class MarketSaleEndpoints
             return TypedResults.ValidationProblem(errors);
         }
 
+        if (await MarketClosingRules.IsClosedAsync(dbContext, marketId, businessDate))
+        {
+            return TypedResults.Problem("This day is already closed. Sales for it are locked.", statusCode: StatusCodes.Status409Conflict);
+        }
+
         var workspace = await ProductCostService.LoadWorkspaceAsync(currentWorkspace, dbContext);
         if (workspace is null)
         {
@@ -339,6 +344,11 @@ public static class MarketSaleEndpoints
         if (market.Status != MarketStatus.Open)
         {
             return TypedResults.Problem("This market is closed. Reopen it to void sales.", statusCode: StatusCodes.Status409Conflict);
+        }
+
+        if (await MarketClosingRules.IsClosedAsync(dbContext, sale.MarketId, sale.BusinessDate))
+        {
+            return TypedResults.Problem("This day is already closed. Sales for it are locked.", statusCode: StatusCodes.Status409Conflict);
         }
 
         foreach (var line in sale.Lines.Where(candidate => candidate.VariantId is not null).OrderBy(candidate => candidate.VariantId))

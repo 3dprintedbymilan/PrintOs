@@ -12,5 +12,6 @@ public sealed class MarketModule : IModule
     {
         endpoints.MapMarketEndpoints();
         endpoints.MapMarketSaleEndpoints();
+        endpoints.MapMarketClosingEndpoints();
     }
 }
