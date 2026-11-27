@@ -10,3 +10,4 @@ Requirements, design notes and architecture decisions for PrintOS.
 - Customers, orders, status workflow, snapshots and payments: [orders.md](orders.md)
 - Finished-goods stock ledger, reservations and the production hook: [finished-stock.md](finished-stock.md)
 - Export, deletion and retention of user data: [privacy.md](privacy.md)
+- Bambu Lab connection and events: [bambu.md](bambu.md); connectivity spike findings: [bambu-spike.md](bambu-spike.md)
