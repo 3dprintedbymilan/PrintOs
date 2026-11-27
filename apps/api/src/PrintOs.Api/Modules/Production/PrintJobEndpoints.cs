@@ -104,7 +104,7 @@ public static class PrintJobEndpoints
         return job is null ? TypedResults.NotFound() : TypedResults.Ok((await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
-    private static async Task<IResult> CreateAsync(PrintJobRequest request, PrintOsDbContext dbContext)
+    internal static async Task<IResult> CreateAsync(PrintJobRequest request, PrintOsDbContext dbContext)
     {
         if (request.ExternalSource is not null && request.ExternalId is not null)
         {
