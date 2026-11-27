@@ -156,7 +156,9 @@
     "ordersSubtitle": "Orders, payments and delivery",
     "markets": "Markets",
     "marketsSubtitle": "Register, sales and totals per market",
-    "marginsSubtitle": "Revenue, costs and margin per period"
+    "marginsSubtitle": "Revenue, costs and margin per period",
+    "bestsellers": "Bestsellers",
+    "bestsellersSubtitle": "Top products and slow movers"
   },
   "auth": {
     "modeLabel": "Sign in or create an account",
@@ -1822,6 +1824,35 @@
       "date": "Date",
       "showTable": "Show as table",
       "hideTable": "Hide table"
+    },
+    "bestsellers": {
+      "title": "Bestsellers",
+      "empty": "Nothing sold in this period yet."
+    },
+    "sort": {
+      "label": "Rank by",
+      "units": "Units",
+      "revenue": "Revenue",
+      "profit": "Profit"
+    },
+    "level": {
+      "label": "Group by",
+      "product": "Product",
+      "variant": "Variant"
+    },
+    "unitsValue": "{count} sold | {count} sold",
+    "rankMeta": "{revenue} revenue · {profit} profit · {margin} margin | {revenue} revenue · {profit} profit · {margin} margin",
+    "share": "{percent} of total",
+    "slow": {
+      "title": "Slow movers",
+      "hint": "Finished stock on hand that has not sold recently.",
+      "days": "No sales in the last",
+      "daysOption": "{days} days",
+      "empty": "No stock has been sitting for {days} days or more.",
+      "summary": "{count} product tying up {value} | {count} products tying up {value}",
+      "onHand": "{count} in stock | {count} in stock",
+      "never": "never sold",
+      "daysAgo": "sold {days} day ago | sold {days} days ago"
     }
   }
 }

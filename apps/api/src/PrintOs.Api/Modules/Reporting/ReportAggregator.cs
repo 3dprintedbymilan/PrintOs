@@ -36,6 +36,16 @@ public sealed record SaleFact(
 
 public sealed record MarketCostFact(Guid MarketId, string Name, DateOnly Day, decimal StandCost);
 
+public sealed record SlowMoverFact(
+    Guid ProductId,
+    Guid VariantId,
+    string Label,
+    string? Sku,
+    int OnHand,
+    decimal? AverageUnitCost,
+    DateTimeOffset? LastSoldAt,
+    DateTimeOffset? StockSince);
+
 public static class ReportMath
 {
     public static decimal Round(decimal value) => Math.Round(value, 2, MidpointRounding.AwayFromZero);
@@ -174,6 +184,68 @@ public static class ReportAggregator
             .ThenBy(row => row.Label, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
 
+    public static (IReadOnlyList<RankedItem> ByUnits, IReadOnlyList<RankedItem> ByRevenue, IReadOnlyList<RankedItem> ByProfit, BestsellerTotals Totals) Rank(
+        IReadOnlyCollection<SaleFact> facts,
+        bool productLevel,
+        int limit)
+    {
+        var items = Group(facts, productLevel)
+            .Select(group => (Group: group, Figures: Figures(group.Facts)))
+            .Where(item => item.Figures.Units > 0)
+            .ToList();
+        var totals = new BestsellerTotals(
+            items.Sum(item => item.Figures.Units),
+            items.Sum(item => item.Figures.Revenue),
+            items.Sum(item => item.Figures.GrossProfit),
+            items.Count);
+
+        IReadOnlyList<RankedItem> Top(Func<(ItemGroup Group, MarginFigures Figures), decimal> metric) => items
+            .OrderByDescending(metric)
+            .ThenByDescending(item => item.Figures.Units)
+            .ThenBy(item => item.Group.Label, StringComparer.CurrentCultureIgnoreCase)
+            .Take(limit)
+            .Select((item, index) => new RankedItem(
+                index + 1,
+                item.Group.Key,
+                item.Group.ProductId,
+                item.Group.VariantId,
+                item.Group.Label,
+                item.Group.Sku,
+                item.Figures.Units,
+                item.Figures.Revenue,
+                item.Figures.GrossProfit,
+                item.Figures.MarginPercent,
+                Share(item.Figures.Units, totals.Units),
+                Share(item.Figures.Revenue, totals.Revenue),
+                Share(item.Figures.GrossProfit, totals.Profit)))
+            .ToList();
+
+        return (Top(item => item.Figures.Units), Top(item => item.Figures.Revenue), Top(item => item.Figures.GrossProfit), totals);
+    }
+
+    public static IReadOnlyList<SlowMoverRow> SlowMovers(IEnumerable<SlowMoverFact> facts, DateTimeOffset now, int days)
+    {
+        var cutoff = now.AddDays(-days);
+        return facts
+            .Where(fact => fact.OnHand > 0 && (fact.LastSoldAt ?? fact.StockSince) is { } baseline && baseline <= cutoff)
+            .Select(fact => new SlowMoverRow(
+                fact.ProductId,
+                fact.VariantId,
+                fact.Label,
+                fact.Sku,
+                fact.OnHand,
+                ReportMath.Round(fact.OnHand * (fact.AverageUnitCost ?? 0m)),
+                fact.LastSoldAt,
+                fact.LastSoldAt is { } sold ? (int)Math.Floor((now - sold).TotalDays) : null,
+                fact.StockSince))
+            .OrderByDescending(row => row.DaysSinceLastSale is null)
+            .ThenByDescending(row => row.DaysSinceLastSale)
+            .ThenByDescending(row => row.StockValue)
+            .ThenBy(row => row.Label, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+    }
+
+    private static decimal? Share(decimal part, decimal whole) => whole <= 0m ? null : Math.Round(part * 100m / whole, 1, MidpointRounding.AwayFromZero);
 
     private sealed record ItemGroup(string Key, Guid? ProductId, Guid? VariantId, string Label, string? Sku, List<SaleFact> Facts);
 

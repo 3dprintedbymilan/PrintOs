@@ -35,3 +35,8 @@ Order-level and sale-level discounts are spread over the lines in proportion to 
 `GET /api/reports/margin?period=&date=&from=&to=&channel=all|orders|pos&productId=`
 
 Returns `period`, `currency`, `current` / `previous` figures, `delta`, `granularity`, `trend`, and breakdowns `channels`, `markets`, `products`, `variants`. `productId` filters everything to one product (drill-down). 400 with field keys `period`, `channel`, `from`, `to` on invalid input.
+## Bestsellers (#44)
+
+`GET /api/reports/bestsellers?period=&date=&from=&to=&channel=&productId=&level=product|variant&limit=` (limit 1-50, default 10). Uses the same facts as the margin report, restricted to the selected period. Returns `totals` (units, revenue, gross profit, item count) and three rankings, `byUnits`, `byRevenue`, `byProfit`, each item with `rank`, units, revenue, profit, margin % and its share of the total (`unitsSharePercent`, `revenueSharePercent`, `profitSharePercent`; null when the total is not positive). Items with net units of 0 or less (fully returned) are left out. Ties are broken by units, then name. Product level groups variants together; free-text lines are grouped by their description (case-insensitive).
+
+`GET /api/reports/slow-movers?days=30` (1-730): variants with finished stock on hand (`FinishedStockLevels.OnHand > 0`) whose last `Sold` movement is at least N days ago. A variant that never sold counts from the first stock increase, so freshly produced stock is not "slow". Sorted never-sold first, then longest since the last sale, then stock value (`OnHand * AverageUnitCost`).

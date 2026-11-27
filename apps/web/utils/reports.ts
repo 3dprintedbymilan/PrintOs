@@ -164,3 +164,74 @@ export function chartGeometry(points: MarginTrendPoint[], width: number, height:
   const ticks = [top, top / 2, 0].map(value => ({ value, y: scale(value) }))
   return { bars, line, max: top, ticks, hasData: peak > 0 }
 }
+
+export type RankingSort = 'units' | 'revenue' | 'profit'
+export type RankingLevel = 'product' | 'variant'
+
+export const rankingSorts: RankingSort[] = ['units', 'revenue', 'profit']
+export const rankingLevels: RankingLevel[] = ['product', 'variant']
+export const slowMoverDayOptions = [14, 30, 60, 90]
+
+export interface RankedItem {
+  rank: number
+  key: string
+  productId: string | null
+  variantId: string | null
+  label: string
+  sku: string | null
+  units: number
+  revenue: number
+  profit: number
+  marginPercent: number | null
+  unitsSharePercent: number | null
+  revenueSharePercent: number | null
+  profitSharePercent: number | null
+}
+
+export interface BestsellerReport {
+  period: ReportPeriodInfo
+  currency: string
+  channel: ReportChannel
+  level: RankingLevel
+  totals: { units: number, revenue: number, profit: number, itemCount: number }
+  byUnits: RankedItem[]
+  byRevenue: RankedItem[]
+  byProfit: RankedItem[]
+}
+
+export interface SlowMover {
+  productId: string
+  variantId: string
+  label: string
+  sku: string | null
+  onHand: number
+  stockValue: number
+  lastSoldAt: string | null
+  daysSinceLastSale: number | null
+  stockSince: string | null
+}
+
+export interface SlowMoverReport {
+  days: number
+  currency: string
+  count: number
+  stockValue: number
+  items: SlowMover[]
+}
+
+export function rankingItems(report: BestsellerReport, sort: RankingSort): RankedItem[] {
+  return sort === 'units' ? report.byUnits : sort === 'revenue' ? report.byRevenue : report.byProfit
+}
+
+export function rankingShare(item: RankedItem, sort: RankingSort): number | null {
+  return sort === 'units' ? item.unitsSharePercent : sort === 'revenue' ? item.revenueSharePercent : item.profitSharePercent
+}
+
+export function shareBarWidth(share: number | null): number {
+  if (share === null || share <= 0) return 0
+  return Math.min(100, Math.max(2, Math.round(share)))
+}
+
+export function isRankingSort(value: unknown): value is RankingSort {
+  return typeof value === 'string' && (rankingSorts as string[]).includes(value)
+}

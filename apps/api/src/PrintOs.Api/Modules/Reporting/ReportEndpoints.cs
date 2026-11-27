@@ -15,6 +15,8 @@ public static class ReportEndpoints
             .RequireAuthorization(AuthPolicies.RequireWorkspace);
 
         group.MapGet("/margin", GetMarginAsync);
+        group.MapGet("/bestsellers", GetBestsellersAsync);
+        group.MapGet("/slow-movers", GetSlowMoversAsync);
     }
 
     public static ReportQuery? ParseQuery(
@@ -132,5 +134,109 @@ public static class ReportEndpoints
         }
 
         return TypedResults.Ok(await BuildMarginAsync(dbContext, currentWorkspace, query, cancellationToken));
+    }
+
+    public const int DefaultRankingLimit = 10;
+    public const int MaximumRankingLimit = 50;
+    public const int DefaultSlowMoverDays = 30;
+    public const int MaximumSlowMoverDays = 730;
+
+    private static async Task<IResult> GetBestsellersAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        TimeProvider clock,
+        CancellationToken cancellationToken,
+        string? period = null,
+        DateOnly? date = null,
+        DateOnly? from = null,
+        DateOnly? to = null,
+        string? channel = null,
+        Guid? productId = null,
+        string? level = null,
+        int? limit = null)
+    {
+        var query = ParseQuery(clock, period, date, from, to, channel, productId, out var errors);
+        var productLevel = true;
+        switch (level?.Trim().ToLowerInvariant())
+        {
+            case null or "" or "product":
+                break;
+            case "variant":
+                productLevel = false;
+                break;
+            default:
+                errors["level"] = ["Use product or variant."];
+                break;
+        }
+
+        if (limit is < 1 or > MaximumRankingLimit)
+        {
+            errors["limit"] = [$"Use a limit between 1 and {MaximumRankingLimit}."];
+        }
+
+        if (query is null || errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        return TypedResults.Ok(await BuildBestsellersAsync(dbContext, currentWorkspace, query, productLevel, limit ?? DefaultRankingLimit, cancellationToken));
+    }
+
+    public static async Task<BestsellerReportResponse> BuildBestsellersAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        ReportQuery query,
+        bool productLevel,
+        int limit,
+        CancellationToken cancellationToken)
+    {
+        var (allFacts, _) = await ReportLoader.LoadAsync(dbContext, query.Period.From, query.Period.To, cancellationToken);
+        var facts = allFacts
+            .Where(fact => query.Period.Contains(fact.Day))
+            .Where(fact => query.Channel == ReportChannels.All || fact.Channel == query.Channel)
+            .Where(fact => query.ProductId is null || fact.ProductId == query.ProductId)
+            .ToList();
+        var (byUnits, byRevenue, byProfit, totals) = ReportAggregator.Rank(facts, productLevel, limit);
+        return new BestsellerReportResponse(
+            ToResponse(query.Period),
+            await CurrencyAsync(dbContext, currentWorkspace, cancellationToken),
+            query.Channel,
+            productLevel ? "product" : "variant",
+            totals,
+            byUnits,
+            byRevenue,
+            byProfit);
+    }
+
+    private static async Task<IResult> GetSlowMoversAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        TimeProvider clock,
+        CancellationToken cancellationToken,
+        int? days = null)
+    {
+        if (days is < 1 or > MaximumSlowMoverDays)
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]> { ["days"] = [$"Use between 1 and {MaximumSlowMoverDays} days."] });
+        }
+
+        return TypedResults.Ok(await BuildSlowMoversAsync(dbContext, currentWorkspace, clock, days ?? DefaultSlowMoverDays, cancellationToken));
+    }
+
+    public static async Task<SlowMoverReportResponse> BuildSlowMoversAsync(
+        PrintOsDbContext dbContext,
+        ICurrentWorkspace currentWorkspace,
+        TimeProvider clock,
+        int days,
+        CancellationToken cancellationToken)
+    {
+        var facts = await ReportLoader.LoadSlowMoverFactsAsync(dbContext, cancellationToken);
+        var rows = ReportAggregator.SlowMovers(facts, clock.GetUtcNow(), days);
+        return new SlowMoverReportResponse(
+            days,
+            await CurrencyAsync(dbContext, currentWorkspace, cancellationToken),
+            rows.Count,
+            ReportMath.Round(rows.Sum(row => row.StockValue)),
+            rows);
     }
 }

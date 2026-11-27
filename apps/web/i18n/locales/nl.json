@@ -156,7 +156,9 @@
     "ordersSubtitle": "Bestellingen, betalingen en levering",
     "markets": "Markten",
     "marketsSubtitle": "Kassa, verkopen en totalen per markt",
-    "marginsSubtitle": "Omzet, kosten en marge per periode"
+    "marginsSubtitle": "Omzet, kosten en marge per periode",
+    "bestsellers": "Bestsellers",
+    "bestsellersSubtitle": "Topproducten en trage verkopers"
   },
   "auth": {
     "modeLabel": "Aanmelden of account maken",
@@ -1822,6 +1824,35 @@
       "date": "Datum",
       "showTable": "Toon als tabel",
       "hideTable": "Verberg tabel"
+    },
+    "bestsellers": {
+      "title": "Bestsellers",
+      "empty": "In deze periode is nog niets verkocht."
+    },
+    "sort": {
+      "label": "Rangschik op",
+      "units": "Aantal",
+      "revenue": "Omzet",
+      "profit": "Winst"
+    },
+    "level": {
+      "label": "Groepeer per",
+      "product": "Product",
+      "variant": "Variant"
+    },
+    "unitsValue": "{count} verkocht | {count} verkocht",
+    "rankMeta": "{revenue} omzet · {profit} winst · {margin} marge | {revenue} omzet · {profit} winst · {margin} marge",
+    "share": "{percent} van het totaal",
+    "slow": {
+      "title": "Trage verkopers",
+      "hint": "Afgewerkte voorraad die al een tijd niet verkocht is.",
+      "days": "Niet verkocht in de laatste",
+      "daysOption": "{days} dagen",
+      "empty": "Er ligt geen voorraad die {days} dagen of langer stilstaat.",
+      "summary": "{count} product legt {value} vast | {count} producten leggen {value} vast",
+      "onHand": "{count} op voorraad | {count} op voorraad",
+      "never": "nooit verkocht",
+      "daysAgo": "{days} dag geleden verkocht | {days} dagen geleden verkocht"
     }
   }
 }
