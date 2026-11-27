@@ -13,7 +13,51 @@
   "home": {
     "title": "Productieoverzicht",
     "subtitle": "Bedrijfsprestaties in real time",
-    "placeholder": "Hier verschijnt je dashboard."
+    "period": {
+      "label": "Periode",
+      "today": "Vandaag",
+      "7d": "7 dagen",
+      "30d": "30 dagen",
+      "month": "Deze maand"
+    },
+    "actions": {
+      "label": "Snelle acties",
+      "print": "Print toevoegen",
+      "spool": "Spool toevoegen",
+      "calculator": "Kostencalculator"
+    },
+    "kpi": {
+      "label": "Kerncijfers",
+      "prints": "Prints klaar",
+      "success": "{percent}% geslaagd",
+      "hours": "Printtijd",
+      "hoursValue": "{hours} u",
+      "filament": "Filament verbruikt",
+      "kgValue": "{kg} kg",
+      "cost": "Filamentkost",
+      "printers": "Printers aan het printen",
+      "printersValue": "{printing} van {total}",
+      "online": "{online} online",
+      "stock": "Filament op voorraad",
+      "alerts": "geen meldingen | {count} melding | {count} meldingen"
+    },
+    "trend": {
+      "title": "Printuren per dag",
+      "empty": "Nog geen afgeronde prints in deze periode.",
+      "bar": "{date}: {hours} u, {count} prints"
+    },
+    "empty": "In deze periode is nog niets geprint. Log een print om je productie hier te zien.",
+    "recent": {
+      "title": "Recente prints",
+      "empty": "Nog geen prints gelogd.",
+      "all": "Alle prints"
+    },
+    "licenses": {
+      "title": "Licenties",
+      "expired": "{count} licentie verlopen | {count} licenties verlopen",
+      "soon": "{count} licentie verloopt binnen 30 dagen | {count} licenties verlopen binnen 30 dagen",
+      "review": "Bekijken"
+    }
   },
   "prints": {
     "title": "Prints",

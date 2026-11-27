@@ -13,7 +13,51 @@
   "home": {
     "title": "Production Overview",
     "subtitle": "Real-time business performance",
-    "placeholder": "Your dashboard will appear here."
+    "period": {
+      "label": "Period",
+      "today": "Today",
+      "7d": "7 days",
+      "30d": "30 days",
+      "month": "This month"
+    },
+    "actions": {
+      "label": "Quick actions",
+      "print": "Add print",
+      "spool": "Add spool",
+      "calculator": "Cost calculator"
+    },
+    "kpi": {
+      "label": "Key figures",
+      "prints": "Prints done",
+      "success": "{percent}% success",
+      "hours": "Print time",
+      "hoursValue": "{hours} h",
+      "filament": "Filament used",
+      "kgValue": "{kg} kg",
+      "cost": "Filament cost",
+      "printers": "Printers printing",
+      "printersValue": "{printing} of {total}",
+      "online": "{online} online",
+      "stock": "Filament in stock",
+      "alerts": "no alerts | {count} alert | {count} alerts"
+    },
+    "trend": {
+      "title": "Print hours per day",
+      "empty": "No finished prints in this period yet.",
+      "bar": "{date}: {hours} h, {count} prints"
+    },
+    "empty": "Nothing printed in this period yet. Log a print to see your production here.",
+    "recent": {
+      "title": "Recent prints",
+      "empty": "No prints logged yet.",
+      "all": "All prints"
+    },
+    "licenses": {
+      "title": "Licenses",
+      "expired": "{count} license expired | {count} licenses expired",
+      "soon": "{count} license expires within 30 days | {count} licenses expire within 30 days",
+      "review": "Review"
+    }
   },
   "prints": {
     "title": "Prints",
