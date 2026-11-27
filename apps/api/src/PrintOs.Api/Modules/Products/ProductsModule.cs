@@ -10,5 +10,6 @@ public sealed class ProductsModule : IModule
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapProductEndpoints();
     }
 }
