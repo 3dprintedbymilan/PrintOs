@@ -25,6 +25,8 @@ public sealed class BambuModule : IModule
 
         services.AddSingleton<IBambuTokenProtector, BambuTokenProtector>();
         services.AddSingleton<BambuReconcileSignal>();
+        services.AddScoped<IPrintEventPublisher, InProcessPrintEventPublisher>();
+        services.AddScoped<BambuPrintCompletion>();
         services.AddScoped<BambuHistorySync>();
         services.AddScoped<BambuConnectionService>();
         services.AddSingleton<BambuTelemetryWorker>();

@@ -281,16 +281,38 @@ public sealed class BambuTelemetryWorker(
             return;
         }
 
+        var triggers = new List<BambuCompletionTrigger>();
         foreach (var report in pending)
         {
             var previousState = device.State;
             var now = DateTimeOffset.UtcNow;
             BambuDeviceStateUpdater.Apply(device, report, now);
             BambuStateHistory.Track(dbContext, device, previousState, now);
+            if (BambuPrintTracker.Observe(device, report, now) is { } trigger)
+            {
+                triggers.Add(trigger);
+            }
         }
 
         pending.Clear();
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        if (triggers.Count > 0 && device.PrinterId is { } printerId)
+        {
+            var completion = scope.ServiceProvider.GetRequiredService<BambuPrintCompletion>();
+            foreach (var trigger in triggers)
+            {
+                try
+                {
+                    await completion.CompleteAsync(dbContext, workspaceId, device.Serial, printerId, trigger, cancellationToken);
+                }
+                catch (Exception exception) when (exception is not OperationCanceledException)
+                {
+                    dbContext.ChangeTracker.Clear();
+                    logger.LogError(exception, "Recording a finished Bambu Lab print failed for device {DeviceId}", deviceId);
+                }
+            }
+        }
     }
 
     private async Task MarkOfflineAsync(Guid workspaceId, Guid deviceId)
