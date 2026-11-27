@@ -59,7 +59,7 @@ jobs:
       PGDATABASE: printos
       PGSSLMODE: require
       BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
-      BACKUP_DIR: ${{ runner.temp }}/backups
+      BACKUP_DIR: ${{ github.workspace }}/.backups
       PG_IMAGE: postgres:18-alpine
     steps:
       - uses: actions/checkout@v4
