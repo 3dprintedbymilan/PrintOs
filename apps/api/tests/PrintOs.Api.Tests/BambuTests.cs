@@ -275,6 +275,23 @@ public sealed class BambuTests(PostgresApiFactory factory) : IClassFixture<Postg
     }
 
     [Fact]
+    public async Task Connect_NeverWritesTheTokenOrTelemetryToTheAuditLog()
+    {
+        await using var harness = CreateHarness();
+        using var client = await SignedInClientAsync(harness);
+        await ConnectAndLinkAsync(client);
+        await client.DeleteAsync("/api/bambu/connection", TestContext.Current.CancellationToken);
+
+        using var scope = harness.App.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<PrintOs.Api.Infrastructure.Persistence.PrintOsDbContext>();
+        var entries = dbContext.Set<PrintOs.Api.Modules.Audit.AuditEntry>().IgnoreQueryFilters().ToList();
+
+        Assert.NotEmpty(entries);
+        Assert.DoesNotContain(entries, entry => entry.EntityType.StartsWith("Bambu", StringComparison.Ordinal));
+        Assert.DoesNotContain(entries, entry => entry.Changes.Contains("EncryptedAccessToken", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task Connect_RejectsARefusedTokenWithAFieldError()
     {
         await using var harness = CreateHarness();

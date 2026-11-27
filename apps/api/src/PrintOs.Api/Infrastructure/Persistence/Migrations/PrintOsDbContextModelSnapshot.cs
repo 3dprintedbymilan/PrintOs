@@ -215,6 +215,193 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.ToTable("AuditEntries", (string)null);
                 });
 
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuConnection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccountName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("AccountUid")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTimeOffset>("ConnectedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EncryptedAccessToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("LastSyncAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTimeOffset?>("StatusChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkspaceId")
+                        .IsUnique();
+
+                    b.ToTable("BambuConnections", (string)null);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuDevice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("BedTemperature")
+                        .HasPrecision(6, 1)
+                        .HasColumnType("numeric(6,1)");
+
+                    b.Property<Guid>("ConnectionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FilamentColor")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("FilamentType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("JobName")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTimeOffset?>("LastSeenAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("Layer")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal?>("NozzleTemperature")
+                        .HasPrecision(6, 1)
+                        .HasColumnType("numeric(6,1)");
+
+                    b.Property<bool>("Online")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("PrinterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ProgressPercent")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("RemainingMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Serial")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int?>("TotalLayers")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TrayNow")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("TraysJson")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConnectionId");
+
+                    b.HasIndex("PrinterId");
+
+                    b.HasIndex("WorkspaceId", "PrinterId")
+                        .IsUnique()
+                        .HasFilter("\"PrinterId\" IS NOT NULL");
+
+                    b.HasIndex("WorkspaceId", "Serial")
+                        .IsUnique();
+
+                    b.ToTable("BambuDevices", (string)null);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuTaskImport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("ConsumedStock")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Flag")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<DateTimeOffset>("ImportedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PrintJobId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TaskId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrintJobId");
+
+                    b.HasIndex("WorkspaceId", "TaskId")
+                        .IsUnique();
+
+                    b.ToTable("BambuTaskImports", (string)null);
+                });
+
             modelBuilder.Entity("PrintOs.Api.Modules.Costing.CostSnapshot", b =>
                 {
                     b.Property<Guid>("Id")
@@ -887,6 +1074,38 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
                         .WithMany()
                         .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuConnection", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuDevice", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Bambu.BambuConnection", null)
+                        .WithMany()
+                        .HasForeignKey("ConnectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Production.Printer", null)
+                        .WithMany()
+                        .HasForeignKey("PrinterId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.Bambu.BambuTaskImport", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Production.PrintJob", null)
+                        .WithMany()
+                        .HasForeignKey("PrintJobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
