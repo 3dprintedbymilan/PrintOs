@@ -14,7 +14,6 @@ onMounted(() => {
 
 const sections = computed(() => [
   { key: 'margins', title: t('business.margins') },
-  { key: 'marketStock', title: t('business.marketStock') },
 ])
 </script>
 
@@ -44,6 +43,11 @@ const sections = computed(() => [
       to="/orders"
       :title="$t('business.orders')"
       :subtitle="$t('business.ordersSubtitle')"
+    />
+    <UiListRow
+      to="/markets"
+      :title="$t('business.markets')"
+      :subtitle="$t('business.marketsSubtitle')"
     />
     <UiListRow
       to="/customers"
