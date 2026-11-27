@@ -4,6 +4,20 @@ namespace PrintOs.Api.Modules.Inventory;
 
 public static class StockLedger
 {
+    public static void AddSpool(PrintOsDbContext dbContext, FilamentSpool spool, string reason)
+    {
+        spool.RemainingWeightGrams = spool.InitialWeightGrams;
+        dbContext.Set<FilamentSpool>().Add(spool);
+        dbContext.Set<MaterialMovement>().Add(new MaterialMovement
+        {
+            SpoolId = spool.Id,
+            Kind = MovementKind.Initial,
+            DeltaGrams = spool.InitialWeightGrams,
+            BalanceAfterGrams = spool.RemainingWeightGrams,
+            Reason = reason,
+        });
+    }
+
     public static bool TryApply(
         PrintOsDbContext dbContext,
         FilamentSpool spool,

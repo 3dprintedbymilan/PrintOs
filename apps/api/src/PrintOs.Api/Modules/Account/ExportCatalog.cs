@@ -7,6 +7,7 @@ using PrintOs.Api.Modules.ModelLibrary;
 using PrintOs.Api.Modules.Production;
 using PrintOs.Api.Modules.Products;
 using PrintOs.Api.Modules.Sales;
+using PrintOs.Api.Modules.Purchases;
 
 namespace PrintOs.Api.Modules.Account;
 
@@ -23,6 +24,8 @@ public static class ExportCatalog
         [typeof(Material)] = "Filament materials (type, brand, colour).",
         [typeof(FilamentSpool)] = "Individual filament spools with remaining weight and price.",
         [typeof(MaterialMovement)] = "Stock movements of spools (initial, adjustment, consumption).",
+        [typeof(Purchase)] = "Supplier purchases with invoice reference, shipping, discount and status (receipt files under files/Purchase).",
+        [typeof(PurchaseLine)] = "Lines of a purchase: material, colour, quantity, weight and price.",
         [typeof(License)] = "Model licenses, attribution texts and proof of purchase (files under files/License).",
         [typeof(PrintModel)] = "Models in the library (thumbnails under files/PrintModel).",
         [typeof(PrintModelVersion)] = "Versions of a model with the uploaded model file (files under files/PrintModelVersion).",

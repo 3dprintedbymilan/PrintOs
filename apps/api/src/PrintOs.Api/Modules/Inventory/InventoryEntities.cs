@@ -38,6 +38,8 @@ public sealed class FilamentSpool : IWorkspaceScoped
 
     public Guid? SupplierId { get; set; }
 
+    public Guid? PurchaseLineId { get; set; }
+
     public string ColorName { get; set; } = string.Empty;
 
     public string? ColorHex { get; set; }

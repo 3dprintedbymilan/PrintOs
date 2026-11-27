@@ -82,6 +82,16 @@ onMounted(load)
         :title="$t('alerts.materialsTitle')"
         :subtitle="$t('alerts.materialsSubtitle')"
       />
+      <UiListRow
+        to="/inventory/purchases"
+        :title="$t('purchases.title')"
+        :subtitle="$t('purchases.linkSubtitle')"
+      />
+      <UiListRow
+        to="/inventory/prices"
+        :title="$t('prices.title')"
+        :subtitle="$t('prices.linkSubtitle')"
+      />
 
       <template v-if="spools.length > 0">
         <div class="filters">

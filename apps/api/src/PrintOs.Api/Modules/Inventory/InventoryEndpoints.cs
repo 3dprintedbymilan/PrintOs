@@ -34,7 +34,7 @@ public static partial class InventoryEndpoints
     }
 
     [GeneratedRegex("^#[0-9A-Fa-f]{6}$")]
-    private static partial Regex HexColor();
+    internal static partial Regex HexColor();
 
     private static async Task<IResult> ListSuppliersAsync(PrintOsDbContext dbContext) =>
         TypedResults.Ok(await dbContext.Set<Supplier>().OrderBy(supplier => supplier.Name)
@@ -192,15 +192,7 @@ public static partial class InventoryEndpoints
             InitialWeightGrams = request.InitialWeightGrams,
             RemainingWeightGrams = request.InitialWeightGrams,
         };
-        dbContext.Set<FilamentSpool>().Add(spool);
-        dbContext.Set<MaterialMovement>().Add(new MaterialMovement
-        {
-            SpoolId = spool.Id,
-            Kind = MovementKind.Initial,
-            DeltaGrams = spool.InitialWeightGrams,
-            BalanceAfterGrams = spool.RemainingWeightGrams,
-            Reason = "Spool added",
-        });
+        StockLedger.AddSpool(dbContext, spool, "Spool added");
         await dbContext.SaveChangesAsync();
 
         var created = await LoadSpoolAsync(dbContext, spool.Id);
