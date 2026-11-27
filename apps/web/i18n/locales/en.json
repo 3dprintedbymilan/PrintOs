@@ -498,5 +498,98 @@
       "failed": "The preview could not be loaded.",
       "hint": "Drag to rotate, pinch or scroll to zoom."
     }
+  },
+  "bambu": {
+    "title": "Bambu Lab",
+    "rowSubtitle": "Connect your account for live status",
+    "never": "not yet",
+    "reconnect": "Reconnect",
+    "connect": {
+      "heading": "Connect your Bambu Lab account",
+      "intro": "Paste your access token once. PrintOS never asks for your Bambu password and only reads status and print history. It cannot control your printer.",
+      "guideTitle": "Where do I find the access token?",
+      "step1": "Sign in at bambulab.com in your browser.",
+      "step2": "Open the developer tools of your browser (F12) and go to Application or Storage, then Cookies.",
+      "step3": "Select https://bambulab.com and copy the value of the cookie named token.",
+      "step4": "Paste it below. It stays on the server, encrypted, and is never shown again.",
+      "guideNote": "This is an unofficial method and Bambu Lab can change it. The token expires after a while; then you paste a new one.",
+      "tokenLabel": "Access token",
+      "tokenHint": "Treat it like a password. Do not share it.",
+      "show": "Show token",
+      "hide": "Hide token",
+      "region": "Account region",
+      "regions": {
+        "global": "Global (Europe, Americas and others)",
+        "china": "China"
+      },
+      "submit": "Connect"
+    },
+    "connected": {
+      "heading": "Connected",
+      "chip": "Connected",
+      "account": "Account: {name}",
+      "lastSync": "Last synced: {time}",
+      "flagged": "{count} imported prints did not book any filament. Check them in your print log.",
+      "refresh": "Sync now",
+      "retry": "Try again",
+      "done": "Connected to Bambu Lab.",
+      "refreshed": "Synced with Bambu Lab."
+    },
+    "devices": {
+      "heading": "Your printers",
+      "empty": "No printers found on this account.",
+      "online": "Online",
+      "offline": "Offline",
+      "linkLabel": "Link {name} to",
+      "createNew": "Create a new printer (A1 defaults)",
+      "link": "Link printer",
+      "unlink": "Unlink",
+      "linkedTo": "Linked to {printer}",
+      "linked": "Printer linked. Live status starts in a moment.",
+      "unlinked": "Printer unlinked."
+    },
+    "disconnect": {
+      "button": "Disconnect Bambu Lab",
+      "title": "Disconnect Bambu Lab?",
+      "body": "The stored token is deleted and live status stops. Your printers and imported prints stay.",
+      "confirm": "Disconnect",
+      "cancel": "Cancel",
+      "done": "Disconnected from Bambu Lab."
+    },
+    "errors": {
+      "required": "Paste your access token.",
+      "spaces": "The token has spaces in it. Copy only the value.",
+      "rejected": "Bambu Lab did not accept this token. Copy a fresh one and try again.",
+      "unreachable": "Bambu Lab cannot be reached right now. Try again in a minute.",
+      "unreachableTitle": "Bambu Lab is not answering",
+      "generic": "Something went wrong. Try again.",
+      "link": "Could not change the link. Try again.",
+      "expiredTitle": "Your token has expired",
+      "expiredBody": "Paste a new access token below to reconnect. Your printers and prints are kept.",
+      "expiredShort": "Bambu Lab token expired."
+    },
+    "state": {
+      "idle": "Idle",
+      "printing": "Printing",
+      "paused": "Paused",
+      "finished": "Finished",
+      "failed": "Failed",
+      "offline": "Offline"
+    },
+    "live": {
+      "remaining": "{time} left",
+      "layer": "Layer {layer} of {total}",
+      "nozzle": "Nozzle {value} °C",
+      "bed": "Bed {value} °C"
+    },
+    "now": {
+      "title": "What am I printing",
+      "notConnected": "Connect your Bambu Lab account to see live prints here.",
+      "connect": "Connect Bambu Lab",
+      "noPrinters": "No printer is linked yet.",
+      "link": "Link a printer",
+      "nothing": "Nothing is printing right now.",
+      "unnamed": "Unnamed print"
+    }
   }
 }

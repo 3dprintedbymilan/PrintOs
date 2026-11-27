@@ -9,6 +9,8 @@ const props = defineProps<{
   autocomplete?: string
   name?: string
   revealable?: boolean
+  showLabel?: string
+  hideLabel?: string
 }>()
 const model = defineModel<string>({ default: '' })
 const id = useId()
@@ -36,7 +38,7 @@ const inputType = computed(() => (props.revealable && revealed.value ? 'text' : 
         v-if="revealable"
         type="button"
         class="toggle"
-        :aria-label="revealed ? $t('common.hidePassword') : $t('common.showPassword')"
+        :aria-label="revealed ? (hideLabel ?? $t('common.hidePassword')) : (showLabel ?? $t('common.showPassword'))"
         @click="revealed = !revealed"
       >
         <svg

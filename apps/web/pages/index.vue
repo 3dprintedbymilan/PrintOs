@@ -7,6 +7,7 @@ definePageMeta({ titleKey: 'home.title' })
     <p class="subtitle">
       {{ $t('home.subtitle') }}
     </p>
+    <BambuNowCard />
     <StockAlertsCard />
   </div>
 </template>
