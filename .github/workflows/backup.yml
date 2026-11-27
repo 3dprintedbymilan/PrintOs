@@ -35,10 +35,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - name: Install dotnet-ef
-        run: |
-          dotnet tool install --global dotnet-ef
-          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+      - name: Restore dotnet tools (dotnet-ef)
+        run: dotnet tool restore
+        working-directory: apps/api
       - name: Roundtrip
         run: bash scripts/backup/roundtrip-test.sh
 
