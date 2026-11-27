@@ -902,5 +902,49 @@
       "noModel": "Geen model",
       "hint": "Koppel het model zodat afgewerkte stuks meetellen voor de limiet van de licentie."
     }
+  },
+  "accountData": {
+    "title": "Account en gegevens",
+    "deletedNotice": "Je account en alle gegevens zijn verwijderd.",
+    "fields": {
+      "password": "Je wachtwoord"
+    },
+    "export": {
+      "title": "Mijn gegevens exporteren",
+      "intro": "Download alles uit je werkruimte als ZIP: een JSON-bestand per soort gegevens, een README met de velden en je geüploade bestanden (modellen, thumbnails, licentiebewijzen). Wachtwoorden en toegangstokens zitten er nooit in.",
+      "passwordHint": "We vragen je wachtwoord opnieuw om je gegevens te beschermen.",
+      "action": "Mijn gegevens exporteren",
+      "running": "Bezig met exporteren…",
+      "progress": "Je export wordt voorbereid. Bij grote bibliotheken kan dit even duren.",
+      "done": "Download gestart: {name}"
+    },
+    "delete": {
+      "title": "Mijn account verwijderen",
+      "intro": "Verwijder je account, werkruimte en alles erin definitief. Dit kan niet ongedaan worden gemaakt.",
+      "open": "Mijn account verwijderen",
+      "dialogTitle": "Account verwijderen?",
+      "warning": "Dit gebeurt direct en kan niet ongedaan worden gemaakt.",
+      "consequences": {
+        "data": "Alle gegevens in deze werkruimte worden verwijderd: modellen, producten, voorraad, printopdrachten, licenties en het auditlogboek.",
+        "files": "Alle geüploade bestanden worden verwijderd.",
+        "bambu": "De Bambu Lab-koppeling en het toegangstoken worden verwijderd.",
+        "signedOut": "Iedereen in deze werkruimte wordt afgemeld en de accounts worden verwijderd.",
+        "backups": "Eerder gemaakte back-ups verlopen automatisch binnen de bewaartermijn."
+      },
+      "typeName": "Typ de naam van de werkruimte \"{name}\" om te bevestigen",
+      "cancel": "Annuleren",
+      "confirm": "Alles definitief verwijderen"
+    },
+    "errors": {
+      "passwordRequired": "Vul je wachtwoord in.",
+      "passwordWrong": "Dat wachtwoord klopt niet.",
+      "nameMismatch": "De naam komt niet overeen met de naam van je werkruimte.",
+      "workspaceNameWrong": "De naam komt niet overeen met de naam van je werkruimte.",
+      "rateLimited": "Je hebt net al geëxporteerd. Probeer het over een tijdje opnieuw.",
+      "locked": "Je account is tijdelijk geblokkeerd na te veel pogingen. Probeer het later opnieuw.",
+      "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
+      "exportFailed": "De export is mislukt. Probeer opnieuw.",
+      "deleteFailed": "Account verwijderen is mislukt. Er is niets verwijderd; probeer opnieuw."
+    }
   }
 }

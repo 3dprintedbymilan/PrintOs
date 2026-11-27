@@ -6,3 +6,4 @@ Requirements, design notes and architecture decisions for PrintOS.
 - Design reference: dark, emerald-accent, rounded-card iPhone UI (Home, Prints, Inventory, Business)
 - Azure hosting and runbook: [azure.md](azure.md)
 - Backups, encryption and the restore test: [backups.md](backups.md)
+- Export, deletion and retention of user data: [privacy.md](privacy.md)

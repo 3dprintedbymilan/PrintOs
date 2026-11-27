@@ -125,8 +125,20 @@ public sealed class BambuTelemetryWorker(
             }
 
             var runner = new DeviceRunner();
+            runner.WorkspaceId = target.WorkspaceId;
             runner.Start(token => RunDeviceAsync(target.WorkspaceId, target.DeviceId, target.ConnectionId, token));
             runners[key] = runner;
+        }
+    }
+
+    public async Task StopWorkspaceAsync(Guid workspaceId)
+    {
+        foreach (var (key, runner) in runners.Where(pair => pair.Value.WorkspaceId == workspaceId).ToList())
+        {
+            if (runners.TryRemove(key, out var removed))
+            {
+                await removed.StopAsync();
+            }
         }
     }
 
@@ -278,6 +290,8 @@ public sealed class BambuTelemetryWorker(
     private sealed class DeviceRunner
     {
         private readonly CancellationTokenSource cancellation = new();
+
+        public Guid WorkspaceId { get; set; }
         private Task running = Task.CompletedTask;
 
         public bool Completed => running.IsCompleted;
