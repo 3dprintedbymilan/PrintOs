@@ -15,6 +15,7 @@ function job(overrides: Partial<PrintJob>): PrintJob {
     notes: null,
     finishedUnits: null,
     externalSource: null,
+    modelId: null,
     externalId: null,
     totalGrams: 42,
     wasteGrams: 4,
@@ -28,6 +29,7 @@ function form(overrides: Partial<JobFormValues>): JobFormValues {
   return {
     name: 'Benchy',
     printerId: 'p1',
+    modelId: '',
     status: 'Done',
     startedAt: '2026-11-26T08:00',
     finishedAt: '2026-11-26T09:35',

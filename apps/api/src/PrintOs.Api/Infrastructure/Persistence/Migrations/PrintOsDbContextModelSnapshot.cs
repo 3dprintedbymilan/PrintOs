@@ -1224,6 +1224,14 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("ReadyForSale")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTimeOffset?>("SaleRiskAcknowledgedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Sku")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");

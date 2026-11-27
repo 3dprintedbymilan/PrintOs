@@ -33,6 +33,7 @@ public sealed class ProductVariantConfiguration : IEntityTypeConfiguration<Produ
         builder.Property(variant => variant.Price).HasPrecision(12, 2);
         builder.Property(variant => variant.TargetMarginPercent).HasPrecision(5, 2);
         builder.Property(variant => variant.FeePercent).HasPrecision(5, 2);
+        builder.Property(variant => variant.ReadyForSale).HasDefaultValue(false);
         builder.HasIndex(variant => new { variant.WorkspaceId, variant.Sku }).IsUnique().HasFilter("\"Sku\" IS NOT NULL");
         builder.HasIndex(variant => variant.ProductId);
         builder.HasOne<Product>().WithMany().HasForeignKey(variant => variant.ProductId).OnDelete(DeleteBehavior.Cascade);

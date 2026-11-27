@@ -28,6 +28,10 @@ public static partial class ProductEndpoints
         group.MapPut("/{id:guid}/variants/{variantId:guid}/bom-lines/{lineId:guid}", UpdateLineAsync);
         group.MapDelete("/{id:guid}/variants/{variantId:guid}/bom-lines/{lineId:guid}", DeleteLineAsync);
 
+        group.MapGet("/{id:guid}/commercial-rights", GetProductRightsAsync);
+        group.MapGet("/{id:guid}/variants/{variantId:guid}/commercial-rights", GetVariantRightsAsync);
+        group.MapPut("/{id:guid}/variants/{variantId:guid}/sale-status", SetSaleStatusAsync);
+
         group.MapGet("/{id:guid}/variants/{variantId:guid}/cost", GetCostAsync);
         group.MapGet("/{id:guid}/variants/{variantId:guid}/cost-snapshots", ListSnapshotsAsync);
         group.MapPost("/{id:guid}/variants/{variantId:guid}/cost-snapshots", CreateSnapshotAsync);
@@ -61,12 +65,15 @@ public static partial class ProductEndpoints
         var productIds = products.Select(product => product.Id).ToList();
         var prices = await dbContext.Set<ProductVariant>()
             .Where(variant => productIds.Contains(variant.ProductId))
-            .Select(variant => new { variant.ProductId, variant.Price })
+            .Select(variant => new { variant.Id, variant.ProductId, variant.Price })
             .ToListAsync();
+        var rights = await CommercialRightsService.EvaluateVariantsAsync(dbContext, prices.Select(price => price.Id).ToList());
 
         return TypedResults.Ok(products.Select(product =>
         {
-            var productPrices = prices.Where(price => price.ProductId == product.Id).Select(price => price.Price).ToList();
+            var productVariants = prices.Where(price => price.ProductId == product.Id).ToList();
+            var productPrices = productVariants.Select(price => price.Price).ToList();
+            var variantStatuses = productVariants.Select(price => Enum.Parse<CommercialRightsStatus>(rights[price.Id].Status)).ToList();
             return new ProductSummaryResponse(
                 product.Id,
                 product.Name,
@@ -77,7 +84,9 @@ public static partial class ProductEndpoints
                 productPrices.Count,
                 productPrices.Count > 0 ? productPrices.Min() : null,
                 productPrices.Count > 0 ? productPrices.Max() : null,
-                product.CreatedAt);
+                product.CreatedAt,
+                CommercialRightsRules.Combine(variantStatuses).ToString(),
+                variantStatuses.Count(status => status == CommercialRightsStatus.NotCleared));
         }));
     }
 
@@ -259,6 +268,7 @@ public static partial class ProductEndpoints
     {
         var workspace = await ProductCostService.LoadWorkspaceAsync(currentWorkspace, dbContext) ?? throw new InvalidOperationException("Workspace not found.");
         var variants = await dbContext.Set<ProductVariant>().Where(variant => variant.ProductId == product.Id).OrderBy(variant => variant.CreatedAt).ToListAsync();
+        var loaded = await ProductCostService.LoadVariantsAsync(dbContext, workspace, variants);
         return new ProductResponse(
             product.Id,
             product.Name,
@@ -267,7 +277,74 @@ public static partial class ProductEndpoints
             product.ArchivedAt is not null,
             product.CreatedAt,
             workspace.Currency,
-            await ProductCostService.LoadVariantsAsync(dbContext, workspace, variants));
+            loaded,
+            CommercialRightsRules.Combine(loaded.Select(variant => Enum.Parse<CommercialRightsStatus>(variant.CommercialRights.Status)).ToList()).ToString());
+    }
+
+    private static async Task<IResult> GetProductRightsAsync(Guid id, PrintOsDbContext dbContext)
+    {
+        if (!await dbContext.Set<Product>().AnyAsync(product => product.Id == id))
+        {
+            return TypedResults.NotFound();
+        }
+
+        var variants = await dbContext.Set<ProductVariant>().Where(variant => variant.ProductId == id).OrderBy(variant => variant.CreatedAt).ToListAsync();
+        var rights = await CommercialRightsService.EvaluateVariantsAsync(dbContext, variants.Select(variant => variant.Id).ToList());
+        var items = variants.Select(variant => new VariantCommercialRightsResponse(variant.Id, variant.Name, variant.ReadyForSale, rights[variant.Id])).ToList();
+        var status = CommercialRightsRules.Combine(items.Select(item => Enum.Parse<CommercialRightsStatus>(item.CommercialRights.Status)).ToList());
+        return TypedResults.Ok(new ProductCommercialRightsResponse(
+            id,
+            status.ToString(),
+            status == CommercialRightsStatus.Cleared,
+            items.Count(item => item.CommercialRights.Status == nameof(CommercialRightsStatus.NotCleared)),
+            items,
+            CommercialRightsRules.MergeAttributions(items.Select(item => item.CommercialRights))));
+    }
+
+    private static async Task<IResult> GetVariantRightsAsync(Guid id, Guid variantId, PrintOsDbContext dbContext)
+    {
+        var variant = await FindVariantAsync(id, variantId, dbContext);
+        if (variant is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var rights = (await CommercialRightsService.EvaluateVariantsAsync(dbContext, [variant.Id]))[variant.Id];
+        return TypedResults.Ok(new VariantCommercialRightsResponse(variant.Id, variant.Name, variant.ReadyForSale, rights));
+    }
+
+    private static async Task<IResult> SetSaleStatusAsync(Guid id, Guid variantId, VariantSaleStatusRequest request, ICurrentWorkspace currentWorkspace, PrintOsDbContext dbContext)
+    {
+        var variant = await FindVariantAsync(id, variantId, dbContext);
+        if (variant is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        if (request.ReadyForSale)
+        {
+            var rights = (await CommercialRightsService.EvaluateVariantsAsync(dbContext, [variant.Id]))[variant.Id];
+            var notCleared = rights.Status == nameof(CommercialRightsStatus.NotCleared);
+            if (notCleared && request.AcknowledgeRisk != true)
+            {
+                var blockers = string.Join(", ", rights.Models.Where(model => !model.AllowsCommercialSale).Select(model => $"{model.ModelName} ({model.LicenseStatus})"));
+                return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["commercialRights"] = [$"Commercial rights are not verified for: {blockers}. Set acknowledgeRisk to true to mark this variant ready for sale anyway."],
+                });
+            }
+
+            variant.ReadyForSale = true;
+            variant.SaleRiskAcknowledgedAt = notCleared ? DateTimeOffset.UtcNow : null;
+        }
+        else
+        {
+            variant.ReadyForSale = false;
+            variant.SaleRiskAcknowledgedAt = null;
+        }
+
+        await dbContext.SaveChangesAsync();
+        return TypedResults.Ok(await LoadVariantAsync(variant, currentWorkspace, dbContext));
     }
 
     private static string? NormalizeSku(string? sku) => string.IsNullOrWhiteSpace(sku) ? null : sku.Trim();

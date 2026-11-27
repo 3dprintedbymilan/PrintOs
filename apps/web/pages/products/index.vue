@@ -104,12 +104,23 @@ onMounted(load)
             :subtitle="subtitle(product)"
           >
             <template
-              v-if="product.isArchived"
+              v-if="product.isArchived || product.commercialRightsStatus === 'NotCleared'"
               #trailing
             >
-              <UiStatusChip status="neutral">
-                {{ $t('products.archived') }}
-              </UiStatusChip>
+              <span class="chips">
+                <UiStatusChip
+                  v-if="product.commercialRightsStatus === 'NotCleared'"
+                  status="danger"
+                >
+                  {{ $t('rights.listNotCleared') }}
+                </UiStatusChip>
+                <UiStatusChip
+                  v-if="product.isArchived"
+                  status="neutral"
+                >
+                  {{ $t('products.archived') }}
+                </UiStatusChip>
+              </span>
             </template>
           </UiListRow>
         </li>
@@ -127,6 +138,8 @@ onMounted(load)
 
 <style scoped>
 .stack { display: grid; gap: var(--space-3); }
+.chips { display: grid; justify-items: end; gap: var(--space-1); }
+.chips :deep(.chip) { white-space: nowrap; }
 .list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 .back { display: inline-flex; align-items: center; justify-self: start; min-height: var(--tap-size); color: var(--accent); font-weight: 600; text-decoration: none; }
 .toggle { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap-size); color: var(--muted); font-size: var(--font-size-sm); }

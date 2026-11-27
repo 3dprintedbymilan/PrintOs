@@ -27,6 +27,7 @@ export interface PrintJob {
   finishedUnits: number | null
   externalSource: string | null
   externalId: string | null
+  modelId: string | null
   totalGrams: number
   wasteGrams: number
   createdAt: string
@@ -100,6 +101,7 @@ export interface JobLineValues {
 export interface JobFormValues {
   name: string
   printerId: string
+  modelId: string
   status: PrintJobStatus
   startedAt: string
   finishedAt: string
@@ -121,6 +123,7 @@ export interface PrintJobBody {
   finishedUnits: number | null
   externalSource: string | null
   externalId: string | null
+  modelId: string | null
   filaments: { spoolId: string, grams: number, wasteGrams: number }[]
 }
 
@@ -192,6 +195,7 @@ export function validateJobForm(
       finishedUnits,
       externalSource: external.externalSource,
       externalId: external.externalId,
+      modelId: values.modelId || null,
       filaments,
     },
     errors,
@@ -202,6 +206,7 @@ export function jobToFormValues(job: PrintJob): JobFormValues {
   return {
     name: job.name,
     printerId: job.printerId,
+    modelId: job.modelId ?? '',
     status: job.status,
     startedAt: toLocalInput(job.startedAt),
     finishedAt: toLocalInput(job.finishedAt),
@@ -219,7 +224,7 @@ export function jobToFormValues(job: PrintJob): JobFormValues {
 export function mapServerErrors(fieldErrors: Record<string, string[]>): { fields: Record<string, string>, general: string[] } {
   const fields: Record<string, string> = {}
   const general: string[] = []
-  const known = ['name', 'printerId', 'status', 'startedAt', 'finishedAt', 'finishedUnits', 'notes']
+  const known = ['name', 'printerId', 'modelId', 'status', 'startedAt', 'finishedAt', 'finishedUnits', 'notes']
   for (const [key, messages] of Object.entries(fieldErrors)) {
     const message = messages[0] ?? ''
     const line = /^filaments\[(\d+)]\.(\w+)$/.exec(key)

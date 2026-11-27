@@ -47,6 +47,7 @@ public static class ProductCostService
         var spoolsById = spools.ToDictionary(spool => spool.Id);
         var rates = new BomWorkspaceRates(workspace.WastePercent, workspace.ElectricityPricePerKwh, workspace.MachineRatePerHour, workspace.LabourRatePerHour);
 
+        var rights = await CommercialRightsService.EvaluateVariantsAsync(dbContext, variantIds);
         var responses = new List<VariantResponse>();
         foreach (var variant in variants)
         {
@@ -98,7 +99,7 @@ public static class ProductCostService
                 line.Kind is BomLineKinds.Print or BomLineKinds.Labour ? line.Minutes : null,
                 line.Kind is BomLineKinds.Packaging or BomLineKinds.Extra ? line.Amount : null)).ToList();
 
-            responses.Add(new VariantResponse(variant.Id, variant.ProductId, variant.Name, variant.Sku, variant.Price, variant.TargetMarginPercent, variant.FeePercent, lineResponses, cost));
+            responses.Add(new VariantResponse(variant.Id, variant.ProductId, variant.Name, variant.Sku, variant.Price, variant.TargetMarginPercent, variant.FeePercent, lineResponses, cost, variant.ReadyForSale, variant.SaleRiskAcknowledgedAt is not null, rights[variant.Id]));
         }
 
         return responses;

@@ -220,6 +220,12 @@ async function saveSnapshot() {
       </UiStatusChip>
     </header>
 
+    <CommercialRightsPanel
+      :product-id="productId"
+      :variant="variant"
+      @updated="emit('updated', $event)"
+    />
+
     <dl class="metrics">
       <div>
         <dt>{{ $t('products.price') }}</dt>

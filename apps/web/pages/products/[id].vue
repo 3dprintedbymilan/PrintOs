@@ -164,6 +164,12 @@ onMounted(load)
           </p>
         </div>
         <UiStatusChip
+          v-if="product.commercialRightsStatus === 'NotCleared'"
+          status="danger"
+        >
+          {{ $t('rights.listNotCleared') }}
+        </UiStatusChip>
+        <UiStatusChip
           v-if="product.isArchived"
           status="neutral"
         >

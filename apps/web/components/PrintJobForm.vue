@@ -3,6 +3,7 @@ import { finishedStatuses, fromLocalInput, isFinished, mapServerErrors, jobToFor
 import type { JobFormValues, PrintJob, PrintJobStatus } from '~/utils/printJobs'
 import type { Printer } from '~/utils/printerForm'
 import type { Spool } from '~/utils/inventory'
+import type { ModelSummary } from '~/utils/modelLibrary'
 
 const props = defineProps<{ mode: 'create' | 'edit' | 'finish', job?: PrintJob }>()
 const emit = defineEmits<{ saved: [job: PrintJob], cancel: [] }>()
@@ -19,6 +20,7 @@ function nowLocal() {
 
 const printers = ref<Printer[]>([])
 const spools = ref<Spool[]>([])
+const models = ref<ModelSummary[]>([])
 const loadStatus = ref<'loading' | 'ready' | 'failed'>('loading')
 const saving = ref(false)
 const saveError = ref('')
@@ -27,7 +29,7 @@ let lineKey = 100
 
 const form = reactive<JobFormValues>(props.job
   ? jobToFormValues(props.job)
-  : { name: '', printerId: '', status: 'Printing', startedAt: nowLocal(), finishedAt: '', finishedUnits: '', notes: '', lines: [] })
+  : { name: '', printerId: '', modelId: '', status: 'Printing', startedAt: nowLocal(), finishedAt: '', finishedUnits: '', notes: '', lines: [] })
 
 if (props.mode === 'finish') {
   form.status = 'Done'
@@ -41,6 +43,10 @@ const statusOptions = computed(() => {
   return list.map(value => ({ value, label: t(`printJobs.status.${value}`) }))
 })
 const printerOptions = computed(() => printers.value.map(printer => ({ value: printer.id, label: printer.name })))
+const modelOptions = computed(() => [
+  { value: '', label: t('rights.printJob.noModel') },
+  ...models.value.map(model => ({ value: model.id, label: model.name })),
+])
 const finished = computed(() => isFinished(form.status))
 const showDetails = computed(() => props.mode !== 'finish')
 const title = computed(() => t(`printJobs.form.${props.mode}`))
@@ -57,12 +63,14 @@ function spoolOptions(selected: string) {
 async function load() {
   loadStatus.value = 'loading'
   try {
-    const [loadedPrinters, loadedSpools] = await Promise.all([
+    const [loadedPrinters, loadedSpools, loadedModels] = await Promise.all([
       auth.authorizedFetch<Printer[]>('/api/printers'),
       auth.authorizedFetch<Spool[]>('/api/spools', { query: { includeArchived: true } }),
+      auth.authorizedFetch<ModelSummary[]>('/api/models').catch(() => [] as ModelSummary[]),
     ])
     printers.value = loadedPrinters
     spools.value = loadedSpools
+    models.value = loadedModels
     if (!form.printerId) form.printerId = loadedPrinters[0]?.id ?? ''
     loadStatus.value = 'ready'
   }
@@ -183,6 +191,17 @@ onMounted(load)
             :options="printerOptions"
             :error="errors.printerId"
           />
+          <div class="model-pick">
+            <UiSelect
+              v-model="form.modelId"
+              :label="$t('rights.printJob.model')"
+              :options="modelOptions"
+              :error="errors.modelId"
+            />
+            <p class="hint">
+              {{ $t('rights.printJob.hint') }}
+            </p>
+          </div>
         </template>
         <UiSelect
           v-model="form.status"
@@ -316,6 +335,7 @@ onMounted(load)
 .hint { margin: 0; color: var(--muted); font-size: var(--font-size-sm); }
 .line { display: grid; gap: var(--space-3); margin: 0; padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
 .line legend { padding: 0 var(--space-2); color: var(--muted); font-size: var(--font-size-sm); font-weight: 600; }
+.model-pick { display: grid; gap: var(--space-1); }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
 .field { display: grid; gap: var(--space-1); }
 .field label { font-size: var(--font-size-sm); color: var(--muted); }
