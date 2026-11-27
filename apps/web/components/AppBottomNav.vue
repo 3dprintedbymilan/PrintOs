@@ -4,10 +4,14 @@ const route = useRoute()
 
 const tabs = computed(() => [
   { to: '/', icon: 'home', label: t('nav.home') },
-  { to: '/prints', icon: 'prints', label: t('nav.prints') },
+  { to: '/prints', icon: 'prints', label: t('nav.prints'), also: '/models' },
   { to: '/inventory', icon: 'inventory', label: t('nav.inventory') },
   { to: '/business', icon: 'business', label: t('nav.business') },
-] as const)
+] as { to: string, icon: 'home' | 'prints' | 'inventory' | 'business', label: string, also?: string }[])
+
+function isAlsoActive(tab: { also?: string }) {
+  return !!tab.also && route.path.startsWith(tab.also)
+}
 </script>
 
 <template>
@@ -20,7 +24,7 @@ const tabs = computed(() => [
       :key="tab.to"
       :to="tab.to"
       class="tab"
-      :class="{ active: tab.to === '/prints' && route.path.startsWith('/print-jobs') }"
+      :class="{ active: isAlsoActive(tab) || (tab.to === '/prints' && route.path.startsWith('/print-jobs')) }"
       active-class="active"
       exact-active-class="active"
     >
