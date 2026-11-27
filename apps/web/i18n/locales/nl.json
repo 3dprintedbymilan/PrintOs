@@ -191,7 +191,9 @@
     "hidePassword": "Verberg wachtwoord",
     "rejected": "Deze waarde wordt niet aanvaard. Controleer ze en probeer opnieuw.",
     "serverErrors": {
-      "spoolStock": "Deze spoel heeft nog maar {grams} g over."
+      "spoolStock": "Deze spoel heeft nog maar {grams} g over.",
+      "finishedOnHand": "Slechts {count} op voorraad.",
+      "finishedAvailable": "Slechts {available} beschikbaar ({reserved} gereserveerd)."
     }
   },
   "theme": {
@@ -1367,5 +1369,83 @@
     "compare": "Vergelijk leveranciers",
     "cheapest": "Goedkoopst",
     "noPurchases": "Nog geen inkopen voor dit materiaal."
+  },
+  "finished": {
+    "title": "Afgewerkte voorraad",
+    "linkSubtitle": "Producten op voorraad, gereserveerd en beschikbaar",
+    "backToInventory": "Terug naar voorraad",
+    "back": "Terug naar afgewerkte voorraad",
+    "detailTitle": "Afgewerkte voorraad",
+    "kpi": {
+      "units": "Stuks",
+      "skus": "Producten op voorraad",
+      "available": "Beschikbaar"
+    },
+    "stockValue": "Voorraadwaarde {amount}",
+    "empty": "Nog geen producten. Voeg eerst een product toe, boek daarna afgewerkte prints of pas hier de voorraad aan.",
+    "search": "Producten zoeken",
+    "onlyLow": "Alleen lage voorraad ({count})",
+    "noMatches": "Geen producten gevonden voor je zoekopdracht.",
+    "low": "Lage voorraad",
+    "onHand": "{count} op voorraad",
+    "reserved": "{count} gereserveerd",
+    "availableCount": "{count} beschikbaar",
+    "onHandLabel": "Op voorraad",
+    "reservedLabel": "Gereserveerd",
+    "availableLabel": "Beschikbaar",
+    "shortage": "Tekort van {count}",
+    "unitCost": "Gemiddelde kost {amount}",
+    "adjust": "Voorraad aanpassen",
+    "add": "Toevoegen",
+    "remove": "Verwijderen",
+    "direction": "Richting",
+    "amount": "Stuks",
+    "reason": "Reden",
+    "reasonHint": "Bijvoorbeeld: geteld op de markt, stuk, cadeau.",
+    "allowBelowReserved": "Voorraad onder het gereserveerde aantal toestaan",
+    "saveAdjustment": "Aanpassing opslaan",
+    "adjusted": "Voorraad aangepast.",
+    "lowStockTitle": "Waarschuwing lage voorraad",
+    "threshold": "Waarschuw wanneer beschikbaar gelijk is aan of lager dan",
+    "thresholdHint": "Laat leeg voor geen waarschuwing.",
+    "saveThreshold": "Waarschuwingsniveau opslaan",
+    "thresholdSaved": "Waarschuwingsniveau opgeslagen.",
+    "reservationsTitle": "Gereserveerd voor bestellingen",
+    "orderNumber": "Bestelling {number}",
+    "units": "{count} stuks",
+    "history": "Geschiedenis",
+    "noHistory": "Nog geen bewegingen.",
+    "kinds": {
+      "Produced": "Geproduceerd",
+      "Sold": "Verkocht",
+      "Reserved": "Gereserveerd",
+      "ReservationReleased": "Reservatie vrijgegeven",
+      "Adjustment": "Aanpassing",
+      "Returned": "Teruggebracht"
+    },
+    "reservedDelta": "{count} gereserveerd",
+    "balance": "{count} op voorraad",
+    "errors": {
+      "amount": "Vul een geheel aantal stuks in, minstens 1.",
+      "reason": "Geef een reden op.",
+      "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
+      "save": "Opslaan is mislukt. Probeer opnieuw.",
+      "threshold": "Vul een geheel getal in, 0 of meer, of laat het leeg."
+    },
+    "order": {
+      "title": "Voorraadreservatie",
+      "lineStock": "{available} beschikbaar, {onHand} op voorraad",
+      "status": {
+        "None": "Niet gereserveerd",
+        "Active": "Gereserveerd {reserved}/{quantity}",
+        "Released": "Vrijgegeven",
+        "Fulfilled": "Geleverd {fulfilled}/{quantity}"
+      },
+      "reserve": "Reserveren uit voorraad",
+      "reserveAnyway": "Toch reserveren",
+      "release": "Reservatie vrijgeven",
+      "reserved": "Voorraad gereserveerd.",
+      "released": "Reservatie vrijgegeven."
+    }
   }
 }

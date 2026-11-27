@@ -191,7 +191,9 @@
     "hidePassword": "Hide password",
     "rejected": "This value was not accepted. Check it and try again.",
     "serverErrors": {
-      "spoolStock": "This spool only has {grams} g left."
+      "spoolStock": "This spool only has {grams} g left.",
+      "finishedOnHand": "Only {count} on hand.",
+      "finishedAvailable": "Only {available} available ({reserved} reserved)."
     }
   },
   "theme": {
@@ -1367,5 +1369,83 @@
     "compare": "Compare suppliers",
     "cheapest": "Cheapest",
     "noPurchases": "No purchases for this material yet."
+  },
+  "finished": {
+    "title": "Finished stock",
+    "linkSubtitle": "Products on hand, reserved and available",
+    "backToInventory": "Back to inventory",
+    "back": "Back to finished stock",
+    "detailTitle": "Finished stock",
+    "kpi": {
+      "units": "Units",
+      "skus": "Products in stock",
+      "available": "Available"
+    },
+    "stockValue": "Stock value {amount}",
+    "empty": "No products yet. Add a product first, then book finished prints or adjust the stock here.",
+    "search": "Search products",
+    "onlyLow": "Only low stock ({count})",
+    "noMatches": "No products match your search.",
+    "low": "Low stock",
+    "onHand": "{count} on hand",
+    "reserved": "{count} reserved",
+    "availableCount": "{count} available",
+    "onHandLabel": "On hand",
+    "reservedLabel": "Reserved",
+    "availableLabel": "Available",
+    "shortage": "Short by {count}",
+    "unitCost": "Average cost {amount}",
+    "adjust": "Adjust stock",
+    "add": "Add",
+    "remove": "Remove",
+    "direction": "Direction",
+    "amount": "Units",
+    "reason": "Reason",
+    "reasonHint": "For example: counted at the market, broken, gift.",
+    "allowBelowReserved": "Allow stock below the reserved amount",
+    "saveAdjustment": "Save adjustment",
+    "adjusted": "Stock adjusted.",
+    "lowStockTitle": "Low stock warning",
+    "threshold": "Warn when available is at or below",
+    "thresholdHint": "Leave empty for no warning.",
+    "saveThreshold": "Save warning level",
+    "thresholdSaved": "Warning level saved.",
+    "reservationsTitle": "Reserved for orders",
+    "orderNumber": "Order {number}",
+    "units": "{count} units",
+    "history": "History",
+    "noHistory": "No movements yet.",
+    "kinds": {
+      "Produced": "Produced",
+      "Sold": "Sold",
+      "Reserved": "Reserved",
+      "ReservationReleased": "Reservation released",
+      "Adjustment": "Adjustment",
+      "Returned": "Returned"
+    },
+    "reservedDelta": "{count} reserved",
+    "balance": "{count} on hand",
+    "errors": {
+      "amount": "Enter a whole number of units, 1 or more.",
+      "reason": "Give a reason.",
+      "network": "No connection. Check your internet and try again.",
+      "save": "Saving failed. Try again.",
+      "threshold": "Enter a whole number, 0 or more, or leave it empty."
+    },
+    "order": {
+      "title": "Stock reservation",
+      "lineStock": "{available} available, {onHand} on hand",
+      "status": {
+        "None": "Not reserved",
+        "Active": "Reserved {reserved}/{quantity}",
+        "Released": "Released",
+        "Fulfilled": "Delivered {fulfilled}/{quantity}"
+      },
+      "reserve": "Reserve from stock",
+      "reserveAnyway": "Reserve anyway",
+      "release": "Release reservation",
+      "reserved": "Stock reserved.",
+      "released": "Reservation released."
+    }
   }
 }

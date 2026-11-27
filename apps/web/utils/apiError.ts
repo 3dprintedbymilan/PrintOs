@@ -23,6 +23,8 @@ type Translate = (key: string, params?: Record<string, unknown>) => string
 
 const knownServerMessages: { pattern: RegExp, key: string, params: (match: RegExpExecArray) => Record<string, unknown> }[] = [
   { pattern: /^The spool only has (\d+) g left\.$/, key: 'common.serverErrors.spoolStock', params: match => ({ grams: Number(match[1]) }) },
+  { pattern: /^Only (\d+) on hand\.$/, key: 'common.serverErrors.finishedOnHand', params: match => ({ count: Number(match[1]) }) },
+  { pattern: /^Only (\d+) available \((\d+) reserved\)\.$/, key: 'common.serverErrors.finishedAvailable', params: match => ({ available: Number(match[1]), reserved: Number(match[2]) }) },
 ]
 
 export function localizeServerMessage(message: string, translate: Translate): string | undefined {

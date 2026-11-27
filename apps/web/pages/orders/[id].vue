@@ -15,7 +15,8 @@ import {
   transitionLabelKey,
   validateOrderForm,
 } from '~/utils/orders'
-import { parseApiError } from '~/utils/apiError'
+import { parseApiError, localizeServerMessage } from '~/utils/apiError'
+import type { OrderReservations } from '~/utils/finishedStock'
 import { parseDecimal } from '~/utils/settingsForm'
 
 definePageMeta({ titleKey: 'orders.detailTitle' })
@@ -37,6 +38,11 @@ const editing = ref(false)
 const form = ref<OrderFormValues | null>(null)
 const errors = ref<Record<string, string>>({})
 const saving = ref(false)
+
+const reservations = ref<OrderReservations | null>(null)
+const reserveError = ref('')
+const offerOverReserve = ref(false)
+const reserving = ref(false)
 
 const confirmCancel = ref(false)
 const confirmDelete = ref(false)
@@ -64,11 +70,63 @@ async function load() {
   try {
     order.value = await auth.authorizedFetch<Order>(`/api/orders/${id}`)
     status.value = 'ready'
+    loadReservations()
   }
   catch {
     status.value = 'failed'
   }
 }
+
+async function loadReservations() {
+  try {
+    reservations.value = await auth.authorizedFetch<OrderReservations>(`/api/orders/${id}/reservations`)
+  }
+  catch {
+    reservations.value = null
+  }
+}
+
+async function reserveStock(allowOverReserve = false) {
+  reserving.value = true
+  reserveError.value = ''
+  offerOverReserve.value = false
+  try {
+    reservations.value = await auth.authorizedFetch<OrderReservations>(`/api/orders/${id}/reservations`, { method: 'POST', body: { allowOverReserve } })
+    notice.value = t('finished.order.reserved')
+  }
+  catch (error) {
+    const parsed = parseApiError(error)
+    const first = parsed.kind === 'validation' ? Object.values(parsed.fieldErrors)[0]?.[0] ?? '' : ''
+    const detail = first.includes(': ') ? first.slice(first.lastIndexOf(': ') + 2) : first
+    reserveError.value = (detail ? localizeServerMessage(detail, t) : undefined) ?? t('finished.errors.save')
+    offerOverReserve.value = /Only \d+ available/.test(detail)
+  }
+  finally {
+    reserving.value = false
+  }
+}
+
+async function releaseStock() {
+  reserving.value = true
+  reserveError.value = ''
+  offerOverReserve.value = false
+  try {
+    reservations.value = await auth.authorizedFetch<OrderReservations>(`/api/orders/${id}/reservations`, { method: 'DELETE' })
+    notice.value = t('finished.order.released')
+  }
+  catch {
+    reserveError.value = t('finished.errors.save')
+  }
+  finally {
+    reserving.value = false
+  }
+}
+
+const hasActiveReservation = computed(() => reservations.value?.lines.some(line => line.status === 'Active') ?? false)
+
+watch(() => order.value?.status, (current, previous) => {
+  if (previous !== undefined && current !== previous) loadReservations()
+})
 
 async function runAction(task: () => Promise<Order>, message: string) {
   busy.value = true
@@ -452,6 +510,61 @@ onMounted(load)
           >
             {{ $t('orders.costIncomplete') }}
           </p>
+        </UiCard>
+
+        <UiCard
+          v-if="reservations && reservations.lines.length > 0"
+          class="group"
+        >
+          <h3>{{ $t('finished.order.title') }}</h3>
+          <ul class="line-list">
+            <li
+              v-for="line in reservations.lines"
+              :key="line.orderLineId"
+            >
+              <span class="line-main">
+                <strong>{{ line.description }}</strong>
+                <span class="hint">{{ $t('finished.order.lineStock', { available: line.available, onHand: line.onHand }) }}</span>
+              </span>
+              <UiStatusChip :status="line.status === 'Active' ? 'info' : line.status === 'Fulfilled' ? 'success' : 'neutral'">
+                {{ $t(`finished.order.status.${line.status}`, { reserved: line.reserved, quantity: line.quantity, fulfilled: line.fulfilledQuantity }) }}
+              </UiStatusChip>
+            </li>
+          </ul>
+          <p
+            v-if="reserveError"
+            class="error"
+            role="alert"
+          >
+            {{ reserveError }}
+          </p>
+          <template v-if="reservations.canReserve">
+            <UiButton
+              block
+              :loading="reserving"
+              @click="reserveStock(false)"
+            >
+              {{ $t('finished.order.reserve') }}
+            </UiButton>
+            <UiButton
+              v-if="offerOverReserve"
+              variant="secondary"
+              block
+              :loading="reserving"
+              @click="reserveStock(true)"
+            >
+              {{ $t('finished.order.reserveAnyway') }}
+            </UiButton>
+            <UiButton
+              v-if="hasActiveReservation"
+              variant="secondary"
+              block
+              :loading="reserving"
+              @click="releaseStock"
+            >
+              {{ $t('finished.order.release') }}
+            </UiButton>
+          </template>
         </UiCard>
 
         <UiCard class="group">
