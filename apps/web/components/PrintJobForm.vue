@@ -34,6 +34,7 @@ const form = reactive<JobFormValues>(props.job
 if (props.mode === 'finish') {
   form.status = 'Done'
   form.finishedAt = nowLocal()
+  if (props.job?.plannedUnits && !form.finishedUnits) form.finishedUnits = String(props.job.plannedUnits)
 }
 
 const statusOptions = computed(() => {

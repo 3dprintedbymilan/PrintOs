@@ -195,6 +195,12 @@ onMounted(load)
           </p>
         </section>
 
+        <JobOrderLink
+          :job="job"
+          @changed="job = $event"
+          @requeued="navigateTo(`/print-jobs/${$event.id}`)"
+        />
+
         <UiCard
           v-if="job.notes"
           class="group"
