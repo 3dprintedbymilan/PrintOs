@@ -246,7 +246,7 @@ onMounted(load)
           v-if="connection.flaggedImports > 0"
           class="flag"
         >
-          {{ $t('bambu.connected.flagged', { count: connection.flaggedImports }) }}
+          {{ $t('bambu.connected.flagged', { count: connection.flaggedImports }, connection.flaggedImports) }}
         </p>
         <UiButton
           variant="secondary"

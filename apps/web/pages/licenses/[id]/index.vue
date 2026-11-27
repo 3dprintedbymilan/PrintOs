@@ -47,7 +47,7 @@ async function uploadProof(event: Event) {
   message.value = ''
   const problem = validateProofFile(file)
   if (problem) {
-    proofError.value = problem === 'size' ? t('licenses.errors.proofSize', { max: formatFileSize(maxProofBytes) }) : t(`licenses.errors.proof${problem === 'type' ? 'Type' : 'Empty'}`)
+    proofError.value = problem === 'size' ? t('licenses.errors.proofSize', { max: formatFileSize(maxProofBytes, locale.value) }) : t(`licenses.errors.proof${problem === 'type' ? 'Type' : 'Empty'}`)
     return
   }
   const body = new FormData()
@@ -153,7 +153,7 @@ onMounted(load)
           class="warn"
           role="status"
         >
-          {{ $t('licenses.limitNear', { remaining: license.assessment.unitsRemaining ?? 0 }) }}
+          {{ $t('licenses.limitNear', { remaining: license.assessment.unitsRemaining ?? 0 }, license.assessment.unitsRemaining ?? 0) }}
         </p>
 
         <dl class="facts">
@@ -269,7 +269,7 @@ onMounted(load)
             :class="{ error: !!proofError }"
             :role="proofError ? 'alert' : undefined"
           >
-            {{ proofError || (uploading ? $t('licenses.proof.uploading') : $t('licenses.proof.hint', { max: formatFileSize(maxProofBytes) })) }}
+            {{ proofError || (uploading ? $t('licenses.proof.uploading') : $t('licenses.proof.hint', { max: formatFileSize(maxProofBytes, locale) })) }}
           </p>
         </div>
       </UiCard>
@@ -305,7 +305,7 @@ onMounted(load)
         :title="$t('licenses.deleteTitle')"
       >
         <p class="text">
-          {{ $t('licenses.deleteBody', { name: license.name, count: detail.models.length }) }}
+          {{ $t('licenses.deleteBody', { name: license.name, count: detail.models.length }, detail.models.length) }}
         </p>
         <div class="actions">
           <UiButton

@@ -162,7 +162,7 @@ test('a server stock error shows inline on the spool line', async ({ page }) => 
   await page.getByLabel('Gebruikt (gram)').fill('900')
   await page.getByRole('button', { name: 'Print opslaan' }).click()
 
-  await expect(page.getByText('The spool only has 750 g left.')).toBeVisible()
+  await expect(page.getByText('Deze spoel heeft nog maar 750 g over.')).toBeVisible()
   await expect(page.getByLabel('Gebruikt (gram)')).toBeFocused()
 })
 

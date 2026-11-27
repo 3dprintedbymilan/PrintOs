@@ -18,7 +18,7 @@ const errors = reactive({ email: '', password: '', workspaceName: '' })
 
 const isSignUp = computed(() => mode.value === 'sign-up')
 
-useHead({ title: computed(() => `${isSignUp.value ? t('auth.signUpTitle') : t('auth.signInTitle')} Â· ${t('app.name')}`) })
+useHead({ title: computed(() => `${isSignUp.value ? t('auth.signUpTitle') : t('auth.signInTitle')} ·${t('app.name')}`) })
 
 const modeOptions = computed(() => [
   { value: 'sign-in', label: t('auth.signIn') },
@@ -71,11 +71,11 @@ async function submit() {
   catch (error) {
     const parsed = parseApiError(error)
     if (parsed.kind === 'validation') {
-      const { fields, unmatched } = mapSignUpFieldErrors(parsed.fieldErrors)
-      errors.email = fields.email ?? ''
-      errors.password = fields.password ?? ''
-      errors.workspaceName = fields.workspaceName ?? ''
-      formError.value = unmatched[0] ?? (Object.keys(fields).length === 0 ? t('auth.errors.unknown') : '')
+      const { fields, hasUnmatched } = mapSignUpFieldErrors(parsed.fieldErrors)
+      errors.email = fields.email ? t(`auth.errors.${fields.email}`) : ''
+      errors.password = fields.password === 'passwordRejected' ? t('auth.passwordRules', { min: minimumPasswordLength }) : fields.password ? t(`auth.errors.${fields.password}`) : ''
+      errors.workspaceName = fields.workspaceName ? t(`auth.errors.${fields.workspaceName}`) : ''
+      formError.value = hasUnmatched || Object.keys(fields).length === 0 ? t('auth.errors.unknown') : ''
       await focusFirstInvalidField()
     }
     else if (parsed.kind === 'invalidCredentials') formError.value = t('auth.errors.invalidCredentials')

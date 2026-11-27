@@ -73,8 +73,8 @@ async function load() {
 
 function describeError(error: unknown) {
   const parsed = parseApiError(error)
-  if (parsed.kind === 'validation') return Object.values(parsed.fieldErrors)[0]?.[0] ?? t('models.errors.save')
-  if (parsed.status === 413) return t('models.errors.size', { max: formatFileSize(maxModelFileBytes) })
+  if (parsed.kind === 'validation') return t('models.errors.save')
+  if (parsed.status === 413) return t('models.errors.size', { max: formatFileSize(maxModelFileBytes, locale.value) })
   if (parsed.status === 503) return t('models.errors.storage')
   return parsed.kind === 'network' ? t('models.errors.network') : t('models.errors.save')
 }
@@ -181,7 +181,7 @@ async function addVersion() {
   if (!versionFile.value) next.file = t('models.errors.required')
   else {
     const kind = validateModelFile(versionFile.value)
-    if (kind) next.file = kind === 'size' ? t('models.errors.size', { max: formatFileSize(maxModelFileBytes) }) : t(`models.errors.${kind}`)
+    if (kind) next.file = kind === 'size' ? t('models.errors.size', { max: formatFileSize(maxModelFileBytes, locale.value) }) : t(`models.errors.${kind}`)
   }
   const { profile, errors } = validateProfileForm(versionProfile.value)
   Object.assign(next, profileErrorMap(errors))
@@ -406,7 +406,7 @@ onMounted(load)
           {{ $t('models.profile.title') }}
         </h2>
         <p class="meta">
-          {{ selected.fileName }} · {{ selected.format.toUpperCase() }} · {{ formatFileSize(selected.sizeBytes) }} · {{ new Date(selected.createdAt).toLocaleDateString(locale) }}
+          {{ selected.fileName }} · {{ selected.format.toUpperCase() }} · {{ formatFileSize(selected.sizeBytes, locale) }} · {{ new Date(selected.createdAt).toLocaleDateString(locale) }}
         </p>
         <p
           v-if="selected.notes && !editingProfile"
@@ -526,7 +526,7 @@ onMounted(load)
               class="help"
               :class="{ error: !!versionErrors.file }"
             >
-              {{ versionErrors.file || $t('models.hints.file', { max: formatFileSize(maxModelFileBytes) }) }}
+              {{ versionErrors.file || $t('models.hints.file', { max: formatFileSize(maxModelFileBytes, locale) }) }}
             </p>
           </div>
           <UiInput

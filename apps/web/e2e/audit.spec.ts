@@ -23,7 +23,7 @@ test('the audit log lists who changed what, with before and after values', async
 
   await expect(page.getByRole('heading', { level: 1, name: 'Auditlog' })).toBeVisible()
   await expect(page.getByText('owner@example.com')).toBeVisible()
-  await expect(page.getByText('0.3 → 0.45')).toBeVisible()
+  await expect(page.getByText('0,3 → 0,45')).toBeVisible()
   await expect(page.getByLabel('Filter op onderdeel')).toBeVisible()
 })
 

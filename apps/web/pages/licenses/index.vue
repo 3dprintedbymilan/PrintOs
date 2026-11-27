@@ -52,7 +52,7 @@ onMounted(load)
         class="attention"
         role="status"
       >
-        {{ $t('licenses.attention', { count: attention }) }}
+        {{ $t('licenses.attention', { count: attention }, attention) }}
       </p>
       <StateEmpty
         v-if="licenses.length === 0"

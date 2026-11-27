@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { describeChanges, hasMorePages } from '~/utils/audit'
-import type { AuditEntry, AuditPage } from '~/utils/audit'
+import type { AuditEntry, AuditLabels, AuditPage } from '~/utils/audit'
 
 definePageMeta({ titleKey: 'audit.title' })
 
-const { t, te, d } = useI18n()
+const { t, te, d, n } = useI18n()
 const auth = useAuthStore()
 
 const entries = ref<AuditEntry[]>([])
@@ -69,6 +69,14 @@ async function loadMore() {
   }
 }
 
+const labels: AuditLabels = {
+  field: name => (te(`audit.fields.${name}`) ? t(`audit.fields.${name}`) : undefined),
+  value: raw => (te(`audit.values.${raw}`) ? t(`audit.values.${raw}`) : undefined),
+  boolean: value => t(value ? 'audit.values.true' : 'audit.values.false'),
+  dateTime: iso => d(new Date(iso), { dateStyle: 'medium', timeStyle: 'short' }),
+  number: value => n(value),
+}
+
 function actor(entry: AuditEntry) {
   return entry.actorEmail ?? t('audit.system')
 }
@@ -126,7 +134,7 @@ onMounted(load)
             </p>
             <ul class="changes">
               <li
-                v-for="line in describeChanges(entry)"
+                v-for="line in describeChanges(entry, labels)"
                 :key="line.field"
               >
                 <span class="field">{{ line.field }}</span>

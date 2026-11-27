@@ -71,10 +71,11 @@ export function validateModelFile(file: { name: string, size: number }): FileErr
   return null
 }
 
-export function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+export function formatFileSize(bytes: number, locale?: string): string {
+  const format = (value: number, digits: number) => new Intl.NumberFormat(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value)
+  if (bytes < 1024) return `${format(bytes, 0)} B`
+  if (bytes < 1024 * 1024) return `${format(bytes / 1024, 0)} KB`
+  return `${format(bytes / (1024 * 1024), 1)} MB`
 }
 
 export function nameFromFileName(fileName: string): string {

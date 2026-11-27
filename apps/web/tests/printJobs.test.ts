@@ -122,8 +122,8 @@ describe('jobToFormValues', () => {
 
 describe('mapServerErrors', () => {
   it('maps line errors and known fields, the rest is general', () => {
-    const { fields, general } = mapServerErrors({ 'filaments[1].grams': ['Only 3 g left.'], name: ['Required.'], other: ['Odd.'] })
-    expect(fields).toEqual({ 'lines.1.grams': 'Only 3 g left.', name: 'Required.' })
-    expect(general).toEqual(['Odd.'])
+    const { fields, hasGeneral } = mapServerErrors({ 'filaments[1].grams': ['Only 3 g left.'], name: ['Required.'], other: ['Odd.'] }, message => `Rejected: ${message}`)
+    expect(fields).toEqual({ 'lines.1.grams': 'Rejected: Only 3 g left.', name: 'Rejected: Required.' })
+    expect(hasGeneral).toBe(true)
   })
 })

@@ -14,7 +14,7 @@ import type { ModelDetail } from '~/utils/modelLibrary'
 
 definePageMeta({ titleKey: 'models.uploadTitle' })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const auth = useAuthStore()
 
 const fileInput = ref<HTMLInputElement>()
@@ -43,7 +43,7 @@ function onFile(event: Event) {
 }
 
 function fileErrorText(kind: ReturnType<typeof validateModelFile>) {
-  return kind === 'size' ? t('models.errors.size', { max: formatFileSize(maxModelFileBytes) }) : t(`models.errors.${kind ?? 'required'}`)
+  return kind === 'size' ? t('models.errors.size', { max: formatFileSize(maxModelFileBytes, locale.value) }) : t(`models.errors.${kind ?? 'required'}`)
 }
 
 async function save() {
@@ -84,7 +84,9 @@ async function save() {
     const parsed = parseApiError(error)
     if (parsed.kind === 'validation') {
       const server: Record<string, string> = {}
-      for (const [field, messages] of Object.entries(parsed.fieldErrors)) server[field] = messages[0] ?? ''
+      for (const field of Object.keys(parsed.fieldErrors)) server[field] = t('common.rejected')
+      if (server.file) server.file = t('models.errors.type')
+      if (server.name) server.name = t('models.errors.nameRequired')
       if (server.layerHeightMillimetres) server.layerHeight = t('models.errors.layerRange')
       if (server.infillPercent) server.infill = t('models.errors.infillRange')
       if (server.sourceUrl) server.sourceUrl = t('models.errors.sourceUrl')
@@ -94,7 +96,7 @@ async function save() {
       await nextTick()
       document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
     }
-    else if (parsed.status === 413) saveError.value = t('models.errors.size', { max: formatFileSize(maxModelFileBytes) })
+    else if (parsed.status === 413) saveError.value = t('models.errors.size', { max: formatFileSize(maxModelFileBytes, locale.value) })
     else if (parsed.status === 503) saveError.value = t('models.errors.storage')
     else saveError.value = parsed.kind === 'network' ? t('models.errors.network') : t('models.errors.save')
   }
@@ -135,7 +137,7 @@ async function save() {
             class="help"
             :class="{ error: !!errors.file }"
           >
-            {{ errors.file || (file ? `${file.name} · ${formatFileSize(file.size)}` : $t('models.hints.file', { max: formatFileSize(maxModelFileBytes) })) }}
+            {{ errors.file || (file ? `${file.name} · ${formatFileSize(file.size, locale)}` : $t('models.hints.file', { max: formatFileSize(maxModelFileBytes, locale) })) }}
           </p>
         </div>
         <UiInput

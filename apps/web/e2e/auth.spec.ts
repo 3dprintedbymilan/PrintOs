@@ -117,7 +117,7 @@ test('a duplicate email from the server is shown on the email field', async ({ p
   await page.getByLabel('Wachtwoord', { exact: true }).fill('Correct-Horse-9')
   await page.getByRole('button', { name: 'Account maken', exact: true }).last().click()
 
-  await expect(page.getByText('Email is already taken.')).toBeVisible()
+  await expect(page.getByText('Er bestaat al een account met dit e-mailadres.')).toBeVisible()
 })
 
 test('a signed-in visitor opening the sign-in screen is sent home', async ({ page }) => {

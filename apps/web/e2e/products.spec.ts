@@ -228,7 +228,7 @@ test('a cost snapshot can be saved and its history read', async ({ page }) => {
   await expect(card.getByRole('status')).toContainText('Kostprijs vastgelegd')
 
   await card.getByText('Geschiedenis').click()
-  await expect(card.getByText(/Kost .*7,10.*prijs .*20,00.*marge 64,5%/)).toBeVisible()
+  await expect(card.getByText(/Kostprijs .*7,10.*prijs .*20,00.*marge 64,5%/)).toBeVisible()
 })
 
 test('editing a variant saves the new price and archiving a product is possible', async ({ page }) => {
