@@ -1,6 +1,7 @@
 using PrintOs.Api.Modules.Audit;
 using PrintOs.Api.Modules.Bambu;
 using PrintOs.Api.Modules.Costing;
+using PrintOs.Api.Modules.FinishedStock;
 using PrintOs.Api.Modules.Inventory;
 using PrintOs.Api.Modules.Licensing;
 using PrintOs.Api.Modules.ModelLibrary;
@@ -39,6 +40,9 @@ public static class ExportCatalog
         [typeof(Order)] = "Orders with status, totals, payment status, due date and notes.",
         [typeof(OrderLine)] = "Order lines with the price and cost frozen at the time of the order.",
         [typeof(OrderPayment)] = "Payments recorded against orders.",
+        [typeof(FinishedStockLevel)] = "Finished goods on hand and reserved per product variant, with the average unit cost and low-stock threshold.",
+        [typeof(FinishedStockMovement)] = "Finished goods ledger (produced, sold, reserved, released, adjustment, returned) with unit cost and links to print jobs and orders.",
+        [typeof(StockReservation)] = "Finished goods reserved for order lines.",
         [typeof(VariantCostSnapshot)] = "Calculated cost and margin snapshots of variants.",
     };
 }

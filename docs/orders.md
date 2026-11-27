@@ -40,7 +40,7 @@ Derived (not stored) from `AmountPaid` and `TotalAmount`: `Unpaid` (nothing paid
 - Free-text lines carry an optional `UnitCost` supplied by the user.
 - `RiskAcknowledgedAt`: see commercial rights.
 
-Reservation (#37) and production tasks (#36) should add their own tables keyed by `OrderLine.Id` instead of widening these.
+Reservations (#37, see [finished-stock.md](finished-stock.md)) live in `StockReservations` keyed by `OrderLine.Id`; delivering an order fulfils them and cancelling releases them. Production tasks (#36) should add their own tables keyed by `OrderLine.Id` instead of widening these.
 
 ## Status workflow
 

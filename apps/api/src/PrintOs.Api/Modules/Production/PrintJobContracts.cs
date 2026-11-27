@@ -14,7 +14,8 @@ public sealed record PrintJobRequest(
     string? ExternalSource,
     string? ExternalId,
     List<PrintJobFilamentRequest>? Filaments,
-    Guid? ModelId = null);
+    Guid? ModelId = null,
+    Guid? ProductVariantId = null);
 
 public sealed record FinishPrintJobRequest(
     string Status,
@@ -22,7 +23,8 @@ public sealed record FinishPrintJobRequest(
     int? DurationMinutes,
     string? Notes,
     int? FinishedUnits,
-    List<PrintJobFilamentRequest>? Filaments);
+    List<PrintJobFilamentRequest>? Filaments,
+    Guid? ProductVariantId = null);
 
 public sealed record PrintJobFilamentResponse(
     Guid SpoolId,
@@ -46,6 +48,7 @@ public sealed record PrintJobResponse(
     string? ExternalSource,
     string? ExternalId,
     Guid? ModelId,
+    Guid? ProductVariantId,
     int TotalGrams,
     int WasteGrams,
     DateTimeOffset CreatedAt,

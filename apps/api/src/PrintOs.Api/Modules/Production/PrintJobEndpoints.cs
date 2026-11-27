@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using PrintOs.Api.Infrastructure.Persistence;
+using PrintOs.Api.Modules.FinishedStock;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
 using PrintOs.Api.Modules.ModelLibrary;
+using PrintOs.Api.Modules.Products;
 
 namespace PrintOs.Api.Modules.Production;
 
@@ -20,11 +22,15 @@ public static class PrintJobEndpoints
 
         group.MapGet("", ListAsync);
         group.MapGet("/{id:guid}", GetAsync);
-        group.MapPost("", CreateAsync);
-        group.MapPut("/{id:guid}", UpdateAsync);
+        group.MapPost("", (PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace currentWorkspace) =>
+            FinishedStockRetry.RunAsync(dbContext, () => CreateAsync(request, dbContext, currentWorkspace)));
+        group.MapPut("/{id:guid}", (Guid id, PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace currentWorkspace) =>
+            FinishedStockRetry.RunAsync(dbContext, () => UpdateAsync(id, request, dbContext, currentWorkspace)));
         group.MapPost("/{id:guid}/start", StartAsync);
-        group.MapPost("/{id:guid}/finish", FinishAsync);
-        group.MapDelete("/{id:guid}", DeleteAsync);
+        group.MapPost("/{id:guid}/finish", (Guid id, FinishPrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace currentWorkspace) =>
+            FinishedStockRetry.RunAsync(dbContext, () => FinishAsync(id, request, dbContext, currentWorkspace)));
+        group.MapDelete("/{id:guid}", (Guid id, PrintOsDbContext dbContext) =>
+            FinishedStockRetry.RunAsync(dbContext, () => DeleteAsync(id, dbContext)));
     }
 
     private static async Task<IResult> ListAsync(
@@ -105,7 +111,7 @@ public static class PrintJobEndpoints
         return job is null ? TypedResults.NotFound() : TypedResults.Ok((await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
-    internal static async Task<IResult> CreateAsync(PrintJobRequest request, PrintOsDbContext dbContext)
+    internal static async Task<IResult> CreateAsync(PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace? currentWorkspace = null)
     {
         if (request.ExternalSource is not null && request.ExternalId is not null)
         {
@@ -118,7 +124,7 @@ public static class PrintJobEndpoints
         }
 
         var job = new PrintJob();
-        var problem = await ApplyAsync(job, request, dbContext);
+        var problem = await ApplyAsync(job, request, dbContext, currentWorkspace);
         if (problem is not null)
         {
             return problem;
@@ -129,7 +135,7 @@ public static class PrintJobEndpoints
         return TypedResults.Created($"/api/print-jobs/{job.Id}", (await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
-    private static async Task<IResult> UpdateAsync(Guid id, PrintJobRequest request, PrintOsDbContext dbContext)
+    private static async Task<IResult> UpdateAsync(Guid id, PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace? currentWorkspace)
     {
         var job = await dbContext.Set<PrintJob>().Include(candidate => candidate.Filaments).SingleOrDefaultAsync(candidate => candidate.Id == id);
         if (job is null)
@@ -137,7 +143,7 @@ public static class PrintJobEndpoints
             return TypedResults.NotFound();
         }
 
-        var problem = await ApplyAsync(job, request, dbContext);
+        var problem = await ApplyAsync(job, request, dbContext, currentWorkspace);
         if (problem is not null)
         {
             return problem;
@@ -166,7 +172,7 @@ public static class PrintJobEndpoints
         return TypedResults.Ok((await ToResponsesAsync(dbContext, [job]))[0]);
     }
 
-    private static async Task<IResult> FinishAsync(Guid id, FinishPrintJobRequest request, PrintOsDbContext dbContext)
+    private static async Task<IResult> FinishAsync(Guid id, FinishPrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace? currentWorkspace)
     {
         var job = await dbContext.Set<PrintJob>().Include(candidate => candidate.Filaments).SingleOrDefaultAsync(candidate => candidate.Id == id);
         if (job is null)
@@ -198,9 +204,10 @@ public static class PrintJobEndpoints
             job.ExternalSource,
             job.ExternalId,
             filaments,
-            job.ModelId);
+            job.ModelId,
+            request.ProductVariantId ?? job.ProductVariantId);
 
-        var problem = await ApplyAsync(job, merged, dbContext);
+        var problem = await ApplyAsync(job, merged, dbContext, currentWorkspace);
         if (problem is not null)
         {
             return problem;
@@ -219,6 +226,12 @@ public static class PrintJobEndpoints
         }
 
         await ReconcileStockAsync(job, new Dictionary<Guid, int>(), "Print job deleted", dbContext);
+        var producedProblem = await FinishedStockLedger.ReconcileProducedAsync(dbContext, null, job, null, 0);
+        if (producedProblem is not null)
+        {
+            return TypedResults.ValidationProblem(producedProblem);
+        }
+
         dbContext.Set<PrintJob>().Remove(job);
         await dbContext.SaveChangesAsync();
         return TypedResults.NoContent();
@@ -227,7 +240,7 @@ public static class PrintJobEndpoints
     private static bool TryParseStatus(string? value, out PrintJobStatus status) =>
         Enum.TryParse(value, true, out status) && Enum.IsDefined(status);
 
-    private static async Task<IResult?> ApplyAsync(PrintJob job, PrintJobRequest request, PrintOsDbContext dbContext)
+    private static async Task<IResult?> ApplyAsync(PrintJob job, PrintJobRequest request, PrintOsDbContext dbContext, ICurrentWorkspace? currentWorkspace)
     {
         var errors = new Dictionary<string, string[]>();
         var name = request.Name?.Trim() ?? string.Empty;
@@ -273,6 +286,11 @@ public static class PrintJobEndpoints
         if (request.ModelId is { } modelId && !await dbContext.Set<PrintModel>().AnyAsync(model => model.Id == modelId))
         {
             errors["modelId"] = ["Choose an existing model."];
+        }
+
+        if (request.ProductVariantId is { } variantId && !await dbContext.Set<ProductVariant>().AnyAsync(variant => variant.Id == variantId))
+        {
+            errors["productVariantId"] = ["Choose an existing product variant."];
         }
 
         var finishedAt = request.FinishedAt;
@@ -365,6 +383,7 @@ public static class PrintJobEndpoints
         job.ExternalSource = externalSource;
         job.ExternalId = externalId;
         job.ModelId = request.ModelId;
+        job.ProductVariantId = request.ProductVariantId;
 
         var desired = job.ConsumesStock
             ? lines.ToDictionary(line => line.SpoolId, line => line.Grams)
@@ -373,6 +392,17 @@ public static class PrintJobEndpoints
         if (stockProblem is not null)
         {
             return stockProblem;
+        }
+
+        var producedProblem = await FinishedStockLedger.ReconcileProducedAsync(
+            dbContext,
+            currentWorkspace,
+            job,
+            request.ProductVariantId,
+            status == PrintJobStatus.Done ? request.FinishedUnits ?? 0 : 0);
+        if (producedProblem is not null)
+        {
+            return TypedResults.ValidationProblem(producedProblem);
         }
 
         dbContext.Set<PrintJobFilament>().RemoveRange(job.Filaments);
@@ -458,6 +488,7 @@ public static class PrintJobEndpoints
             job.ExternalSource,
             job.ExternalId,
             job.ModelId,
+            job.ProductVariantId,
             job.Filaments.Sum(line => line.Grams),
             job.Filaments.Sum(line => line.WasteGrams),
             job.CreatedAt,

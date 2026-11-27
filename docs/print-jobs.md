@@ -20,6 +20,7 @@ Request body: `printerId`, `name`, `status` (`Planned|Printing|Done|Failed|Cance
 - `durationMinutes` is computed from the two times when omitted.
 - `finishedAt` is only allowed on Done/Failed/Cancelled and defaults to now there; Printing defaults `startedAt` to now.
 - `finishedUnits` is only allowed on Done jobs.
+- `productVariantId` (optional, also on finish) links the job to a product variant: a Done job with `finishedUnits` books those units into finished stock, see [finished-stock.md](finished-stock.md).
 - `ModelId` exists on the entity as a nullable column for the later model/product link; it is not exposed for writing yet.
 - Validation errors are 400 ValidationProblem with camel-case keys, for example `filaments[0].grams`.
 
