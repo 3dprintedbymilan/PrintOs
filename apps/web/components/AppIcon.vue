@@ -111,6 +111,18 @@ defineProps<{ name: NavIconName | 'menu' | 'chevron-left' | 'chevron-right' }>()
       />
       <path d="M12 7v5l3 2" />
     </template>
+    <template v-else-if="name === 'orders'">
+      <path d="M7 4h10a1 1 0 011 1v15l-3-2-3 2-3-2-3 2V5a1 1 0 011-1z" />
+      <path d="M9 9h6M9 13h6" />
+    </template>
+    <template v-else-if="name === 'customers'">
+      <circle
+        cx="12"
+        cy="8"
+        r="3.5"
+      />
+      <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+    </template>
     <template v-else-if="name === 'chevron-left'">
       <path d="M14 6l-6 6 6 6" />
     </template>

@@ -18,7 +18,7 @@ test('the customer list shows contact details and is reachable from the Business
   await mockApi(page, { 'GET /api/customers': () => ({ status: 200, json: [jan] }) })
 
   await page.goto('/business')
-  await page.getByRole('link', { name: /Klanten/ }).click()
+  await page.getByRole('main').getByRole('link', { name: /Klanten/ }).click()
 
   await expect(page).toHaveURL(/\/customers$/)
   await expect(page.getByRole('link', { name: /Jan Peeters/ })).toContainText('jan@example.com')
@@ -67,6 +67,7 @@ test('an existing customer can be archived', async ({ page }) => {
   await mockApi(page, {
     'GET /api/customers': () => ({ status: 200, json: [] }),
     [`GET /api/customers/${jan.id}`]: () => ({ status: 200, json: jan }),
+    'GET /api/orders': () => ({ status: 200, json: [] }),
     [`POST /api/customers/${jan.id}/archive`]: () => {
       archivedCalled = true
       return { status: 200, json: { ...jan, isArchived: true } }
