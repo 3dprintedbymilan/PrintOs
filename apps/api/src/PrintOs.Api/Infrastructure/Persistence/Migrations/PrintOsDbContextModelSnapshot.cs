@@ -461,6 +461,163 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.ToTable("CostSnapshots", (string)null);
                 });
 
+            modelBuilder.Entity("PrintOs.Api.Modules.FinishedStock.FinishedStockLevel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("AverageUnitCost")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)");
+
+                    b.Property<int?>("LowStockThreshold")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OnHand")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Reserved")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VariantId");
+
+                    b.HasIndex("WorkspaceId", "VariantId")
+                        .IsUnique();
+
+                    b.ToTable("FinishedStockLevels", (string)null);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.FinishedStock.FinishedStockMovement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("BalanceAfter")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Delta")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid?>("MarketSaleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("OrderLineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PrintJobId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<int>("ReservedAfter")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReservedDelta")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("UnitCost")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("PrintJobId");
+
+                    b.HasIndex("WorkspaceId");
+
+                    b.HasIndex("VariantId", "CreatedAt");
+
+                    b.ToTable("FinishedStockMovements", (string)null);
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.FinishedStock.StockReservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FulfilledQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrderLineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("OrderLineId")
+                        .IsUnique();
+
+                    b.HasIndex("VariantId");
+
+                    b.HasIndex("WorkspaceId");
+
+                    b.ToTable("StockReservations", (string)null);
+                });
+
             modelBuilder.Entity("PrintOs.Api.Modules.Identity.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -990,6 +1147,9 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("PrinterId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ProductVariantId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTimeOffset?>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -1004,6 +1164,8 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PrinterId");
+
+                    b.HasIndex("ProductVariantId");
 
                     b.HasIndex("WorkspaceId", "StartedAt");
 
@@ -1766,6 +1928,51 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PrintOs.Api.Modules.FinishedStock.FinishedStockLevel", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Products.ProductVariant", null)
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.FinishedStock.FinishedStockMovement", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Products.ProductVariant", null)
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrintOs.Api.Modules.FinishedStock.StockReservation", b =>
+                {
+                    b.HasOne("PrintOs.Api.Modules.Products.ProductVariant", null)
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PrintOs.Api.Modules.Identity.ApplicationUser", b =>
                 {
                     b.HasOne("PrintOs.Api.Modules.Identity.Workspace", "Workspace")
@@ -1880,6 +2087,11 @@ namespace PrintOs.Api.Infrastructure.Persistence.Migrations
                         .HasForeignKey("PrinterId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("PrintOs.Api.Modules.Products.ProductVariant", null)
+                        .WithMany()
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("PrintOs.Api.Modules.Identity.Workspace", null)
                         .WithMany()

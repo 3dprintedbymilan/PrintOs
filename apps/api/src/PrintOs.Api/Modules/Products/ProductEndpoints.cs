@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using PrintOs.Api.Infrastructure.Persistence;
 using PrintOs.Api.Modules.Costing;
+using PrintOs.Api.Modules.FinishedStock;
 using PrintOs.Api.Modules.Identity;
 
 namespace PrintOs.Api.Modules.Products;
@@ -139,6 +140,12 @@ public static partial class ProductEndpoints
         }
 
         var variants = await dbContext.Set<ProductVariant>().Where(variant => variant.ProductId == id).ToListAsync();
+        var variantIds = variants.Select(variant => variant.Id).ToList();
+        if (await dbContext.Set<FinishedStockLevel>().AnyAsync(level => variantIds.Contains(level.VariantId)))
+        {
+            return TypedResults.Conflict("This product has finished stock history. Archive it instead.");
+        }
+
         dbContext.Set<ProductVariant>().RemoveRange(variants);
         dbContext.Set<Product>().Remove(product);
         await dbContext.SaveChangesAsync();
@@ -203,6 +210,11 @@ public static partial class ProductEndpoints
         if (variant is null)
         {
             return TypedResults.NotFound();
+        }
+
+        if (await dbContext.Set<FinishedStockLevel>().AnyAsync(level => level.VariantId == variantId))
+        {
+            return TypedResults.Conflict("This variant has finished stock history. Archive the product instead.");
         }
 
         dbContext.Set<ProductVariant>().Remove(variant);

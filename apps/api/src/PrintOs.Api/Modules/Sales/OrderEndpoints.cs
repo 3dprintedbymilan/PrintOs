@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PrintOs.Api.Infrastructure.Persistence;
+using PrintOs.Api.Modules.FinishedStock;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Products;
 
@@ -20,9 +21,11 @@ public static class OrderEndpoints
         group.MapGet("", ListAsync);
         group.MapPost("", CreateAsync);
         group.MapGet("/{id:guid}", GetAsync);
-        group.MapPut("/{id:guid}", UpdateAsync);
+        group.MapPut("/{id:guid}", (Guid id, OrderRequest request, ICurrentWorkspace currentWorkspace, PrintOsDbContext dbContext) =>
+            FinishedStockRetry.RunAsync(dbContext, () => UpdateAsync(id, request, currentWorkspace, dbContext)));
         group.MapDelete("/{id:guid}", DeleteAsync);
-        group.MapPost("/{id:guid}/status", ChangeStatusAsync);
+        group.MapPost("/{id:guid}/status", (Guid id, OrderStatusRequest request, PrintOsDbContext dbContext) =>
+            FinishedStockRetry.RunAsync(dbContext, () => ChangeStatusAsync(id, request, dbContext)));
         group.MapPost("/{id:guid}/payments", AddPaymentAsync);
         group.MapDelete("/{id:guid}/payments/{paymentId:guid}", DeletePaymentAsync);
     }
@@ -183,6 +186,7 @@ public static class OrderEndpoints
             return problem;
         }
 
+        await FinishedStockLedger.ReconcileOrderAsync(dbContext, order);
         await dbContext.SaveChangesAsync();
         return TypedResults.Ok(await ToResponseAsync(dbContext, order));
     }
@@ -265,6 +269,15 @@ public static class OrderEndpoints
                 order.CancelledAt = null;
                 order.ConfirmedAt = null;
                 break;
+        }
+
+        if (target == OrderStatus.Delivered)
+        {
+            await FinishedStockLedger.FulfilOrderAsync(dbContext, order);
+        }
+        else if (target == OrderStatus.Cancelled)
+        {
+            await FinishedStockLedger.ReleaseOrderAsync(dbContext, order, $"Order #{order.Number} cancelled");
         }
 
         order.Status = target;

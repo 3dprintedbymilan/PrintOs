@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
+using PrintOs.Api.Modules.Products;
 
 namespace PrintOs.Api.Modules.Production;
 
@@ -22,6 +23,7 @@ public sealed class PrintJobConfiguration : IEntityTypeConfiguration<PrintJob>
             .IsUnique()
             .HasFilter("\"ExternalSource\" IS NOT NULL AND \"ExternalId\" IS NOT NULL");
         builder.HasOne<Printer>().WithMany().HasForeignKey(job => job.PrinterId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne<ProductVariant>().WithMany().HasForeignKey(job => job.ProductVariantId).OnDelete(DeleteBehavior.SetNull);
         builder.HasOne<Workspace>().WithMany().HasForeignKey(job => job.WorkspaceId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(job => job.Filaments).WithOne().HasForeignKey(filament => filament.PrintJobId).OnDelete(DeleteBehavior.Cascade);
     }

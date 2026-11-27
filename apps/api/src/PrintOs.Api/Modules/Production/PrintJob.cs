@@ -39,6 +39,8 @@ public sealed class PrintJob : IWorkspaceScoped
 
     public Guid? ModelId { get; set; }
 
+    public Guid? ProductVariantId { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public List<PrintJobFilament> Filaments { get; set; } = [];
