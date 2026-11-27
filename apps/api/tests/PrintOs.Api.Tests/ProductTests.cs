@@ -142,6 +142,7 @@ public class ProductTests(PostgresApiFactory factory) : IClassFixture<PostgresAp
 
         var found = Assert.Single(byName!);
         Assert.Equal(2, found.VariantCount);
+        Assert.Equal("EUR", found.Currency);
         Assert.Equal(10m, found.LowestPrice);
         Assert.Equal(25m, found.HighestPrice);
         Assert.Equal("Keychain", Assert.Single(bySku!).Name);

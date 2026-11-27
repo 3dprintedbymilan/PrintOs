@@ -45,8 +45,10 @@ public static partial class ProductEndpoints
         return snapshot is null ? TypedResults.NotFound() : TypedResults.Ok(ProductCostService.ToResponse(snapshot));
     }
 
-    private static async Task<IResult> ListAsync(PrintOsDbContext dbContext, string? search = null, bool includeArchived = false)
+    private static async Task<IResult> ListAsync(ICurrentWorkspace currentWorkspace, PrintOsDbContext dbContext, string? search = null, bool includeArchived = false)
     {
+        var workspace = await ProductCostService.LoadWorkspaceAsync(currentWorkspace, dbContext);
+        var currency = workspace?.Currency ?? WorkspaceSettingsDefaults.Currency;
         var query = dbContext.Set<Product>().Where(product => includeArchived || product.ArchivedAt == null);
         var term = search?.Trim();
         if (!string.IsNullOrEmpty(term))
@@ -71,6 +73,7 @@ public static partial class ProductEndpoints
                 product.Description,
                 product.Sku,
                 product.ArchivedAt is not null,
+                currency,
                 productPrices.Count,
                 productPrices.Count > 0 ? productPrices.Min() : null,
                 productPrices.Count > 0 ? productPrices.Max() : null,

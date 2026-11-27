@@ -20,6 +20,7 @@ public sealed record ProductSummaryResponse(
     string? Description,
     string? Sku,
     bool IsArchived,
+    string Currency,
     int VariantCount,
     decimal? LowestPrice,
     decimal? HighestPrice,
