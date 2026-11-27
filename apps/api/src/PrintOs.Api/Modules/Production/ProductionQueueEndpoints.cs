@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PrintOs.Api.Infrastructure.Persistence;
+using PrintOs.Api.Modules.FinishedStock;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
 using PrintOs.Api.Modules.Sales;
@@ -25,7 +26,8 @@ public static class ProductionQueueEndpoints
         var jobs = endpoints.MapGroup("/api/print-jobs")
             .WithTags("Production queue")
             .RequireAuthorization(AuthPolicies.RequireWorkspace);
-        jobs.MapPost("/{id:guid}/order-line", LinkOrderLineAsync);
+        jobs.MapPost("/{id:guid}/order-line", (Guid id, LinkOrderLineRequest request, PrintOsDbContext dbContext, ICurrentWorkspace currentWorkspace) =>
+            FinishedStockRetry.RunAsync(dbContext, () => LinkOrderLineAsync(id, request, dbContext, currentWorkspace)));
         jobs.MapPost("/{id:guid}/requeue", RequeueAsync);
     }
 
@@ -241,6 +243,7 @@ public static class ProductionQueueEndpoints
                     Name = $"{prefix}{description}{suffix}",
                     Status = PrintJobStatus.Planned,
                     OrderLineId = line.Id,
+                    ProductVariantId = line.VariantId,
                     PlannedUnits = parts[part],
                 };
                 created.Add(job);
@@ -257,7 +260,7 @@ public static class ProductionQueueEndpoints
         return TypedResults.Created($"/api/production/orders/{order.Id}", await PrintJobEndpoints.ToResponsesAsync(dbContext, created));
     }
 
-    private static async Task<IResult> LinkOrderLineAsync(Guid id, LinkOrderLineRequest request, PrintOsDbContext dbContext)
+    private static async Task<IResult> LinkOrderLineAsync(Guid id, LinkOrderLineRequest request, PrintOsDbContext dbContext, ICurrentWorkspace currentWorkspace)
     {
         var job = await dbContext.Set<PrintJob>().Include(candidate => candidate.Filaments).SingleOrDefaultAsync(candidate => candidate.Id == id);
         if (job is null)
@@ -301,6 +304,12 @@ public static class ProductionQueueEndpoints
         if (job.Status == PrintJobStatus.Done)
         {
             job.FinishedUnits = units;
+            job.ProductVariantId ??= await dbContext.Set<OrderLine>().Where(line => line.Id == lineId).Select(line => line.VariantId).SingleOrDefaultAsync();
+            var producedProblem = await FinishedStockLedger.ReconcileProducedAsync(dbContext, currentWorkspace, job, job.ProductVariantId, units!.Value);
+            if (producedProblem is not null)
+            {
+                return TypedResults.ValidationProblem(producedProblem);
+            }
         }
         else
         {
@@ -356,6 +365,7 @@ public static class ProductionQueueEndpoints
             OrderLineId = job.OrderLineId,
             PlannedUnits = plannedUnits,
             RequeuedFromId = job.Id,
+            ProductVariantId = job.ProductVariantId,
         };
         foreach (var filament in job.Filaments)
         {

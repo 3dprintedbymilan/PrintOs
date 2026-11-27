@@ -323,6 +323,27 @@ public class ProductionQueueTests(PostgresApiFactory factory) : IClassFixture<Po
     }
 
     [Fact]
+    public async Task FinishedQueueJobs_BookFinishedStockOnceEvenWhenLinkedAgain()
+    {
+        using var client = await SignedInClientAsync();
+        var printer = await CreatePrinterAsync(client);
+        var product = await PostAsync<PrintOs.Api.Modules.Products.ProductResponse>(client, "/api/products", new PrintOs.Api.Modules.Products.ProductRequest("Vase", null, null));
+        var variant = await PostAsync<PrintOs.Api.Modules.Products.VariantResponse>(client, $"/api/products/{product.Id}/variants", new PrintOs.Api.Modules.Products.VariantRequest("Large", null, 20m, 40m, 0m));
+        var created = await PostAsync<OrderResponse>(client, "/api/orders", new OrderRequest(null, null, null, null, null, null, [new OrderLineRequest(null, variant.Id, null, 4, null, null, null)], null));
+        var order = await PostAsync<OrderResponse>(client, $"/api/orders/{created.Id}/status", new OrderStatusRequest("Confirmed", null), HttpStatusCode.OK);
+        var job = (await CreateJobsAsync(client, order.Id))[0];
+
+        await PostAsync<PrintJobResponse>(client, $"/api/print-jobs/{job.Id}/finish", new FinishPrintJobRequest("Done", null, 30, null, null, null), HttpStatusCode.OK);
+        await PostAsync<PrintJobResponse>(client, $"/api/print-jobs/{job.Id}/order-line", new LinkOrderLineRequest(order.Lines[0].Id, 4), HttpStatusCode.OK);
+        await PostAsync<PrintJobResponse>(client, $"/api/print-jobs/{job.Id}/order-line", new LinkOrderLineRequest(order.Lines[0].Id, 4), HttpStatusCode.OK);
+
+        var detail = await SendAsync<PrintOs.Api.Modules.FinishedStock.FinishedStockDetailResponse>(client, HttpMethod.Get, $"/api/finished-stock/{variant.Id}");
+        Assert.Equal(4, detail.Item.OnHand);
+        Assert.Equal("Ready", (await GetOrderAsync(client, order.Id)).Status);
+        Assert.Equal(printer.Id, (await client.GetFromJsonAsync<PrintJobResponse>($"/api/print-jobs/{job.Id}", Token))!.PrinterId);
+    }
+
+    [Fact]
     public async Task EditingAPlannedJob_KeepsItsOrderLinkWhenTheBodyOmitsIt()
     {
         using var client = await SignedInClientAsync();
