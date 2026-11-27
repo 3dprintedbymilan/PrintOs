@@ -13,6 +13,7 @@ function summary(done: number, failed: number, kilograms: number): DashboardSumm
     production: { printsDone: done, printsFailed: failed, successRatePercent: null, printHours: 0, filamentKilograms: kilograms, filamentCost: 0, trend: [] },
     printers: { total: 0, online: null, printing: 0 },
     stock: { spools: 0, totalGrams: 0, alertCount: 0 },
+    licenses: { expiringSoon: 0, expired: 0 },
     recentPrints: [],
   }
 }

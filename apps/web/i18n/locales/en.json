@@ -51,6 +51,12 @@
       "title": "Recent prints",
       "empty": "No prints logged yet.",
       "all": "All prints"
+    },
+    "licenses": {
+      "title": "Licenses",
+      "expired": "{count} license expired | {count} licenses expired",
+      "soon": "{count} license expires within 30 days | {count} licenses expire within 30 days",
+      "review": "Review"
     }
   },
   "prints": {

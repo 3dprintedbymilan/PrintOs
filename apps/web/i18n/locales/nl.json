@@ -51,6 +51,12 @@
       "title": "Recente prints",
       "empty": "Nog geen prints gelogd.",
       "all": "Alle prints"
+    },
+    "licenses": {
+      "title": "Licenties",
+      "expired": "{count} licentie verlopen | {count} licenties verlopen",
+      "soon": "{count} licentie verloopt binnen 30 dagen | {count} licenties verlopen binnen 30 dagen",
+      "review": "Bekijken"
     }
   },
   "prints": {

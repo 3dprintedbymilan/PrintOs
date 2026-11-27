@@ -3,6 +3,7 @@ using PrintOs.Api.Infrastructure.Persistence;
 using PrintOs.Api.Modules.Bambu;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
+using PrintOs.Api.Modules.Licensing;
 using PrintOs.Api.Modules.Production;
 
 namespace PrintOs.Api.Modules.Dashboard;
@@ -101,6 +102,11 @@ public static class DashboardEndpoints
             .Select(job => new DashboardRecentPrint(job.Id, job.Name, job.PrinterName, job.Status.ToString(), job.At, job.DurationMinutes, job.Grams))
             .ToList();
 
+        var today = DateOnly.FromDateTime(now.UtcDateTime);
+        var soon = today.AddDays(LicenseRules.ExpiringSoonDays);
+        var expired = await dbContext.Set<License>().CountAsync(license => license.ValidUntil != null && license.ValidUntil < today, cancellationToken);
+        var expiringSoon = await dbContext.Set<License>().CountAsync(license => license.ValidUntil != null && license.ValidUntil >= today && license.ValidUntil <= soon, cancellationToken);
+
         var workspaceId = currentWorkspace.WorkspaceId;
         var currency = await dbContext.Set<Workspace>()
             .Where(workspace => workspace.Id == workspaceId)
@@ -115,6 +121,7 @@ public static class DashboardEndpoints
             production,
             new DashboardPrinters(printersTotal, online, printing),
             new DashboardStock(spools.Count, spools.Sum(spool => spool.RemainingWeightGrams), alertCount),
+            new DashboardLicenses(expiringSoon, expired),
             recent));
     }
 

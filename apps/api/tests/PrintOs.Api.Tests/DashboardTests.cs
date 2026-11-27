@@ -5,6 +5,7 @@ using System.Text.Json;
 using PrintOs.Api.Modules.Dashboard;
 using PrintOs.Api.Modules.Identity;
 using PrintOs.Api.Modules.Inventory;
+using PrintOs.Api.Modules.Licensing;
 using PrintOs.Api.Modules.Production;
 
 namespace PrintOs.Api.Tests;
@@ -179,6 +180,9 @@ public class DashboardTests(PostgresApiFactory factory) : IClassFixture<Postgres
         await PostAsync<PrintJobResponse>(client, "/api/print-jobs", new PrintJobRequest(
             printer.Id, "Running", "Printing", finished.AddMinutes(1), null, null, null, null, null, null, null));
 
+        var inTenDays = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(10));
+        await PostAsync<LicenseResponse>(client, "/api/licenses", new LicenseRequest("Soon", "MakerWorld", "Commercial", false, null, null, null, inTenDays, null, null));
+
         var summary = await SummaryAsync(client, "?period=30d");
 
         Assert.Equal(1, summary.Production.PrintsDone);
@@ -193,6 +197,8 @@ public class DashboardTests(PostgresApiFactory factory) : IClassFixture<Postgres
         Assert.Equal(1, summary.Stock.Spools);
         Assert.Equal(850, summary.Stock.TotalGrams);
         Assert.Equal(1, summary.Stock.AlertCount);
+        Assert.Equal(1, summary.Licenses.ExpiringSoon);
+        Assert.Equal(0, summary.Licenses.Expired);
         Assert.Equal(3, summary.RecentPrints.Count);
         Assert.Equal("Running", summary.RecentPrints[0].Name);
     }

@@ -26,6 +26,7 @@ export interface DashboardSummary {
   }
   printers: { total: number, online: number | null, printing: number }
   stock: { spools: number, totalGrams: number, alertCount: number }
+  licenses: { expiringSoon: number, expired: number }
   recentPrints: {
     id: string
     name: string

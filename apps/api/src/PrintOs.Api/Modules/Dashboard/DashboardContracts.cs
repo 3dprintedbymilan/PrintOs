@@ -15,6 +15,8 @@ public sealed record DashboardPrinters(int Total, int? Online, int Printing);
 
 public sealed record DashboardStock(int Spools, int TotalGrams, int AlertCount);
 
+public sealed record DashboardLicenses(int ExpiringSoon, int Expired);
+
 public sealed record DashboardRecentPrint(
     Guid Id,
     string Name,
@@ -32,4 +34,5 @@ public sealed record DashboardSummaryResponse(
     DashboardProduction Production,
     DashboardPrinters Printers,
     DashboardStock Stock,
+    DashboardLicenses Licenses,
     List<DashboardRecentPrint> RecentPrints);

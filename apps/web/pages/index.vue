@@ -163,6 +163,31 @@ function recentMeta(print: DashboardSummary['recentPrints'][number]) {
     <StockAlertsCard />
 
     <UiCard
+      v-if="summary && (summary.licenses.expired > 0 || summary.licenses.expiringSoon > 0)"
+      class="panel"
+    >
+      <h2>{{ $t('home.licenses.title') }}</h2>
+      <NuxtLink
+        to="/licenses"
+        class="license-link"
+      >
+        <span class="text">
+          <span
+            v-if="summary.licenses.expired > 0"
+            class="detail"
+          >{{ $t('home.licenses.expired', { count: summary.licenses.expired }, summary.licenses.expired) }}</span>
+          <span
+            v-if="summary.licenses.expiringSoon > 0"
+            class="detail"
+          >{{ $t('home.licenses.soon', { count: summary.licenses.expiringSoon }, summary.licenses.expiringSoon) }}</span>
+        </span>
+        <UiStatusChip :status="summary.licenses.expired > 0 ? 'danger' : 'warning'">
+          {{ $t('home.licenses.review') }}
+        </UiStatusChip>
+      </NuxtLink>
+    </UiCard>
+
+    <UiCard
       v-if="state === 'ready' && summary"
       class="panel"
     >
@@ -223,7 +248,7 @@ function recentMeta(print: DashboardSummary['recentPrints'][number]) {
 h2 { margin: 0; font-size: var(--font-size-md); }
 .calm { margin: 0; color: var(--muted); font-size: var(--font-size-sm); }
 ul { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
-li a { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--tap-size); color: var(--text); text-decoration: none; }
+li a, .license-link { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--tap-size); color: var(--text); text-decoration: none; }
 .text { display: grid; min-width: 0; }
 .text strong { overflow-wrap: anywhere; }
 .detail { color: var(--muted); font-size: var(--font-size-sm); }

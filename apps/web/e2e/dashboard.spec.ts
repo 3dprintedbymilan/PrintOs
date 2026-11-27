@@ -12,6 +12,7 @@ function summary(period: string, overrides: Record<string, unknown> = {}) {
     production: { printsDone: 8, printsFailed: 2, successRatePercent: 80, printHours: 24.5, filamentKilograms: 0.62, filamentCost: 12.4, trend },
     printers: { total: 2, online: 1, printing: 1 },
     stock: { spools: 4, totalGrams: 3200, alertCount: 1 },
+    licenses: { expiringSoon: 2, expired: 0 },
     recentPrints: [
       { id: 'j1', name: 'Benchy', printerName: 'A1 #1', status: 'Done', at: '2026-11-27T10:00:00Z', durationMinutes: 95, grams: 42 },
       { id: 'j2', name: 'Vase', printerName: 'A1 #1', status: 'Failed', at: '2026-11-26T10:00:00Z', durationMinutes: 30, grams: 10 },
@@ -37,6 +38,7 @@ test('dashboard shows KPI tiles, recent prints and quick actions', async ({ page
   await expect(kpis).toContainText('24,5 u')
   await expect(kpis).toContainText('1 van 2')
   await expect(kpis).toContainText('1 melding')
+  await expect(page.getByRole('link', { name: /2 licenties verlopen binnen 30 dagen/ })).toBeVisible()
   await expect(page.getByRole('link', { name: /Benchy/ })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Print toevoegen' })).toHaveAttribute('href', '/print-jobs/new')
   await expect(page.getByRole('link', { name: 'Spool toevoegen' })).toBeVisible()
@@ -75,6 +77,7 @@ test('dashboard explains an empty period', async ({ page }) => {
         production: { printsDone: 0, printsFailed: 0, successRatePercent: null, printHours: 0, filamentKilograms: 0, filamentCost: 0, trend: [] },
         printers: { total: 0, online: null, printing: 0 },
         stock: { spools: 0, totalGrams: 0, alertCount: 0 },
+        licenses: { expiringSoon: 0, expired: 0 },
         recentPrints: [],
       }),
     }),
