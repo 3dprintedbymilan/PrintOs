@@ -4,6 +4,7 @@ using PrintOs.Api.Modules.Costing;
 using PrintOs.Api.Modules.FinishedStock;
 using PrintOs.Api.Modules.Inventory;
 using PrintOs.Api.Modules.Licensing;
+using PrintOs.Api.Modules.Markets;
 using PrintOs.Api.Modules.ModelLibrary;
 using PrintOs.Api.Modules.Production;
 using PrintOs.Api.Modules.Products;
@@ -43,6 +44,9 @@ public static class ExportCatalog
         [typeof(FinishedStockLevel)] = "Finished goods on hand and reserved per product variant, with the average unit cost and low-stock threshold.",
         [typeof(FinishedStockMovement)] = "Finished goods ledger (produced, sold, reserved, released, adjustment, returned) with unit cost and links to print jobs and orders.",
         [typeof(StockReservation)] = "Finished goods reserved for order lines.",
+        [typeof(Market)] = "Markets and events where you sell: dates, location, stand cost, notes and open/closed status.",
+        [typeof(MarketSale)] = "Market (point of sale) sales: receipt number, payment method, totals with the cost snapshot, amount tendered and change, void status.",
+        [typeof(MarketSaleLine)] = "Lines of a market sale with the price and cost frozen at the time of the sale.",
         [typeof(VariantCostSnapshot)] = "Calculated cost and margin snapshots of variants.",
     };
 }
